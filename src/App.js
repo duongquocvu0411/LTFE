@@ -10,6 +10,10 @@ import HeadersUsers from './component/users/HeaderUsers';
 import Shop from "./component/users/Shop";
 import Checkout from "./component/users/Checkout";
 import Shopdetail from "./component/users/Shopdetail";
+import Cart from "./component/users/cart";
+import Testimonial from "./component/users/Testimonial";
+import ErrorPage from "./component/users/ErrorPage";
+
 
 function App() {
   
@@ -29,6 +33,9 @@ function App() {
           <Route path="/shop" element={<Shop />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/shop-detail" element={<Shopdetail/>}/>
+          <Route path="/cart" element={<Cart/>}/>
+          <Route path="/Testimonial" element={<Testimonial/>}/>
+          <Route path="/page404" element={<ErrorPage/>}/>
         </Routes>
       </Router>
     </>
