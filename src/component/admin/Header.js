@@ -1,12 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
     <nav className="navbar navbar-expand navbar-light bg-light h-25">
-      <a className="navbar-brand" href="/">AdminLTE</a>
+      <Link className="navbar-brand" to="/admin/Dashboard">AdminLTE</Link>
       <ul className="navbar-nav ml-auto">
         <li className="nav-item">
-          <a className="nav-link" href="/profile">Profile</a>
+          <Link className="nav-link" to="/admin/profile">Profile</Link>
         </li>
       </ul>
     </nav>

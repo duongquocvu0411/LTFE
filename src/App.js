@@ -9,6 +9,7 @@ import HeadersUsers from './component/users/HeaderUsers';
 
 import Shop from "./component/users/Shop";
 import Checkout from "./component/users/Checkout";
+import Shopdetail from "./component/users/Shopdetail";
 
 function App() {
   
@@ -27,6 +28,7 @@ function App() {
           <Route path="/" element={<HeadersUsers />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/shop-detail" element={<Shopdetail/>}/>
         </Routes>
       </Router>
     </>

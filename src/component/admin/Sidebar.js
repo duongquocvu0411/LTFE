@@ -15,6 +15,8 @@ const Sidebar = () => {
         style={{
           width: isCollapsed ? '80px' : '250px', 
           height: '86.5vh',
+          height: '88.4vh',
+
           overflowY: 'auto',  // Enable vertical scrolling
           overflowX: 'hidden', // Disable horizontal scroll
           transition: 'width 0.3s',

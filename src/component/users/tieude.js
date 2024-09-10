@@ -29,7 +29,10 @@ const Tieude = () => {
         <div className="navbar-nav mx-auto">
           <Link to="/" className="nav-item nav-link active">Home</Link>
           <Link to="/shop" className="nav-item nav-link">Shop</Link>
+
           <Link to="/" className="nav-item nav-link">Shop Detail</Link>
+
+          <Link to="/Shop-detail" className="nav-item nav-link">Shop Detail</Link>
           <div className="nav-item dropdown">
             <Link to="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</Link>
             <div className="dropdown-menu m-0 bg-secondary rounded-0">
@@ -39,7 +42,7 @@ const Tieude = () => {
               <Link to="/" className="dropdown-item">404 Page</Link>
             </div>
           </div>
-          <Link to="contact.html" className="nav-item nav-link">Contact</Link>
+          <Link to="/" className="nav-item nav-link">Contact</Link>
           <Link to="/admin/dashboard" className='nav-item nav-link'> <sup>Admin</sup></Link>
         </div>
         <div className="d-flex m-3 me-0">
