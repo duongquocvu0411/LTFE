@@ -27,19 +27,19 @@ const Tieude = () => {
       </button>
       <div className="collapse navbar-collapse bg-white" id="navbarCollapse">
         <div className="navbar-nav mx-auto">
-          <Link to="index.html" className="nav-item nav-link active">Home</Link>
-          <Link to="shop.html" className="nav-item nav-link">Shop</Link>
-          <Link to="shop-detail.html" className="nav-item nav-link">Shop Detail</Link>
+          <Link to="/" className="nav-item nav-link active">Home</Link>
+          <Link to="/shop" className="nav-item nav-link">Shop</Link>
+          <Link to="/Shop-detail" className="nav-item nav-link">Shop Detail</Link>
           <div className="nav-item dropdown">
             <Link to="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</Link>
             <div className="dropdown-menu m-0 bg-secondary rounded-0">
               <Link to="/shop" className="dropdown-item">Cart</Link>
               <Link to="/checkout" className="dropdown-item">Checkout</Link>
-              <Link to="testimonial.html" className="dropdown-item">Testimonial</Link>
-              <Link to="404.html" className="dropdown-item">404 Page</Link>
+              <Link to="/" className="dropdown-item">Testimonial</Link>
+              <Link to="/" className="dropdown-item">404 Page</Link>
             </div>
           </div>
-          <Link to="contact.html" className="nav-item nav-link">Contact</Link>
+          <Link to="/" className="nav-item nav-link">Contact</Link>
           <Link to="/admin/dashboard" className='nav-item nav-link'> <sup>Admin</sup></Link>
         </div>
         <div className="d-flex m-3 me-0">
