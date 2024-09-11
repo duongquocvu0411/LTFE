@@ -38,8 +38,8 @@ const Tieude = () => {
             <div className="dropdown-menu m-0 bg-secondary rounded-0">
               <Link to="/cart" className="dropdown-item">Cart</Link>
               <Link to="/checkout" className="dropdown-item">Checkout</Link>
-              <Link to="/" className="dropdown-item">Testimonial</Link>
-              <Link to="/" className="dropdown-item">404 Page</Link>
+              <Link to="/Testimonial" className="dropdown-item">Testimonial</Link>
+              <Link to="/page404" className="dropdown-item">404 Page</Link>
             </div>
           </div>
           <Link to="/" className="nav-item nav-link">Contact</Link>
