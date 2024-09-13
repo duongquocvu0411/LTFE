@@ -17,7 +17,7 @@ const Dashboard = () => {
         </div>
       </div>
       <Footer/>
-      </div>
+      </div>    
       
 
     </>

@@ -11,7 +11,7 @@ const Sidebar = () => {
   return (
     <>
       <div
-        className={`d-flex flex-column bg-dark ${
+        className={`d-flex siderbar flex-column bg-dark ${
           isCollapsed ? "collapsed" : ""
         }`}
         style={{
@@ -58,7 +58,7 @@ const Sidebar = () => {
             >
               <i className="fas fa-user"></i>
               <span className={`ms-3 ${isCollapsed ? "d-none" : ""}`}>
-                Profile
+                Cart
               </span>
             </Link>
           </li>{" "}

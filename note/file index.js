@@ -8,12 +8,14 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import 'lightbox2/dist/css/lightbox.min.css';
 import 'lightbox2/dist/js/lightbox-plus-jquery.min.js';
-
+import { CartProvider } from './component/users/page/CartContext';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
+    <CartProvider>
     <App />
+  </CartProvider>
   </React.StrictMode>
 );
 

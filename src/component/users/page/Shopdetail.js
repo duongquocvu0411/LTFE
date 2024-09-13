@@ -1,6 +1,6 @@
 import React from "react";
-import Tieude from "./tieude";
-import Footerusers from "./Footerusers";
+import Tieude from "../HeaderUsers";
+import Footerusers from "../Footerusers";
 const Shopdetail = ()=>{
     return (
         <>

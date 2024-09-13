@@ -26,7 +26,7 @@ const Header = () => {
   return (
     <>
     <nav className="navbar navbar-expand-lg navbar-light bg-light h-25">
-      <a className="navbar-brand" href="admin/Dashboard">AdminLTE</a>
+      <Link className="navbar-brand" to="/admin/Dashboard">AdminLTE</Link>
 
       {/* Button for mobile menu */}
       <button 
@@ -44,7 +44,7 @@ const Header = () => {
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav ml-auto">
           <li className="nav-item">
-            <Link className="nav-link" to="/profile">Profile</Link>
+            <Link className="nav-link" to="/admin/ProfileAdmin">Profile</Link>
           </li>
           
         </ul>

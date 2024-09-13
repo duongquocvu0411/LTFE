@@ -1,4 +1,7 @@
 
+
+
+
 /*** Spinner Start ***/
 #spinner {
   opacity: 0;
@@ -197,7 +200,7 @@
   background: linear-gradient(rgba(255, 181, 36, 0.7), rgba(255, 181, 36, 0.7));
 }
 
-.carousel-control-next,
+/* .carousel-control-next,
 .carousel-control-prev {
   width: 48px;
   height: 48px;
@@ -215,7 +218,7 @@
 
 .carousel-control-prev {
   margin-left: 20px;
-}
+} */
 
 .page-header {
   position: relative;

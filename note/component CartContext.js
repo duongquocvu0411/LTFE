@@ -1,7 +1,23 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import Tieude from "./tieude";
 import Footerusers from "./Footerusers";
+import axios from "axios";
 const Cart=() =>{
+  const [sanpham, setSanpham] = useState([]);
+
+  useEffect(() => {
+    fetchSanpham();
+  }, []);
+
+    // Fetch the list of products (GET request)
+    const fetchSanpham = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/sanpham');
+        setSanpham(response.data);
+      } catch (error) {
+        console.error('Error fetching sanpham:', error);
+      }
+    };
     return(
         <>
         <div>
@@ -37,38 +53,48 @@ const Cart=() =>{
   <div className="container-fluid py-5">
     <div className="container py-5">
       <div className="table-responsive">
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">Products</th>
-              <th scope="col">Name</th>
-              <th scope="col">Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Total</th>
-              <th scope="col">Handle</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
+      <table className="table">
+        <thead>
+          <tr>
+            <th scope="col">Products</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total</th>
+            <th scope="col">Handle</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sanpham.map((item) => (
+            <tr key={item.id}>
               <th scope="row">
                 <div className="d-flex align-items-center">
-                  <img src="img/vegetable-item-3.png" className="img-fluid me-5 rounded-circle" style={{width: 80, height: 80}} alt />
+                  <img
+                    src={`http://127.0.0.1:8000/${item.hinhanh}`}
+                    className="img-fluid me-5 rounded-circle"
+                    style={{ width: 80, height: 80 }}
+                    alt={item.tensp}
+                  />
                 </div>
               </th>
               <td>
-                <p className="mb-0 mt-4">Big Banana</p>
+                <p className="mb-0 mt-4">{item.tensp}</p>
               </td>
               <td>
-                <p className="mb-0 mt-4">2.99 $</p>
+                <p className="mb-0 mt-4">{item.gia} $</p>
               </td>
               <td>
-                <div className="input-group quantity mt-4" style={{width: 100}}>
+                <div className="input-group quantity mt-4" style={{ width: 100 }}>
                   <div className="input-group-btn">
                     <button className="btn btn-sm btn-minus rounded-circle bg-light border">
                       <i className="fa fa-minus" />
                     </button>
                   </div>
-                  <input type="text" className="form-control form-control-sm text-center border-0" defaultValue={1} />
+                  <input
+                    type="text"
+                    className="form-control form-control-sm text-center border-0"
+                    defaultValue={1}
+                  />
                   <div className="input-group-btn">
                     <button className="btn btn-sm btn-plus rounded-circle bg-light border">
                       <i className="fa fa-plus" />
@@ -77,7 +103,7 @@ const Cart=() =>{
                 </div>
               </td>
               <td>
-                <p className="mb-0 mt-4">2.99 $</p>
+                <p className="mb-0 mt-4">{item.gia} $</p>
               </td>
               <td>
                 <button className="btn btn-md rounded-circle bg-light border mt-4">
@@ -85,80 +111,9 @@ const Cart=() =>{
                 </button>
               </td>
             </tr>
-            <tr>
-              <th scope="row">
-                <div className="d-flex align-items-center">
-                  <img src="img/vegetable-item-5.jpg" className="img-fluid me-5 rounded-circle" style={{width: 80, height: 80}} alt />
-                </div>
-              </th>
-              <td>
-                <p className="mb-0 mt-4">Potatoes</p>
-              </td>
-              <td>
-                <p className="mb-0 mt-4">2.99 $</p>
-              </td>
-              <td>
-                <div className="input-group quantity mt-4" style={{width: 100}}>
-                  <div className="input-group-btn">
-                    <button className="btn btn-sm btn-minus rounded-circle bg-light border">
-                      <i className="fa fa-minus" />
-                    </button>
-                  </div>
-                  <input type="text" className="form-control form-control-sm text-center border-0" defaultValue={1} />
-                  <div className="input-group-btn">
-                    <button className="btn btn-sm btn-plus rounded-circle bg-light border">
-                      <i className="fa fa-plus" />
-                    </button>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <p className="mb-0 mt-4">2.99 $</p>
-              </td>
-              <td>
-                <button className="btn btn-md rounded-circle bg-light border mt-4">
-                  <i className="fa fa-times text-danger" />
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <div className="d-flex align-items-center">
-                  <img src="img/vegetable-item-2.jpg" className="img-fluid me-5 rounded-circle" style={{width: 80, height: 80}} alt />
-                </div>
-              </th>
-              <td>
-                <p className="mb-0 mt-4">Awesome Brocoli</p>
-              </td>
-              <td>
-                <p className="mb-0 mt-4">2.99 $</p>
-              </td>
-              <td>
-                <div className="input-group quantity mt-4" style={{width: 100}}>
-                  <div className="input-group-btn">
-                    <button className="btn btn-sm btn-minus rounded-circle bg-light border">
-                      <i className="fa fa-minus" />
-                    </button>
-                  </div>
-                  <input type="text" className="form-control form-control-sm text-center border-0" defaultValue={1} />
-                  <div className="input-group-btn">
-                    <button className="btn btn-sm btn-plus rounded-circle bg-light border">
-                      <i className="fa fa-plus" />
-                    </button>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <p className="mb-0 mt-4">2.99 $</p>
-              </td>
-              <td>
-                <button className="btn btn-md rounded-circle bg-light border mt-4">
-                  <i className="fa fa-times text-danger" />
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          ))}
+        </tbody>
+      </table>
       </div>
       <div className="mt-5">
         <input type="text" className="border-0 border-bottom rounded me-5 py-3 mb-4" placeholder="Coupon Code" />
@@ -200,3 +155,32 @@ const Cart=() =>{
 export default Cart;
 
 
+import React, { createContext, useState } from 'react';
+
+// Create the context
+export const CartContext = createContext();
+
+// Create the provider component
+export const CartProvider = ({ children }) => {
+  const [cart, setCart] = useState([]);
+
+  // Add product to cart function
+  const addToCart = (product) => {
+    setCart((prevCart) => {
+      const existingProduct = prevCart.find(item => item.id === product.id);
+      if (existingProduct) {
+        return prevCart.map(item =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      } else {
+        return [...prevCart, { ...product, quantity: 1 }];
+      }
+    });
+  };
+
+  return (
+    <CartContext.Provider value={{ cart, addToCart }}>
+      {children}
+    </CartContext.Provider>
+  );
+};
