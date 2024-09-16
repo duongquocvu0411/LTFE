@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const Sanpham = () => {
+const Product = () => {
   const [sanpham, setSanpham] = useState([]);
   const [tensp, setTensp] = useState('');
   const [gia, setGia] = useState('');
@@ -113,4 +113,4 @@ const Sanpham = () => {
   );
 };
 
-export default Sanpham;
+export default Product;

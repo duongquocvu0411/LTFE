@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from './../Sidebar';
-import Footer from './../Footer';
-import Header from './../Header';
+import Sidebar from '../Sidebar';
+import Footer from '../Footer';
+import Header from '../Header';
 import axios from 'axios';
-import { Modal, Button,Form, ModalHeader, ModalTitle, ModalBody } from 'react-bootstrap';
+import { Modal, Button,Form } from 'react-bootstrap';
 
 
 
-const Profile = () => {
+const Sanpham = () => {
   const [sanpham, setSanpham] = useState([]);
   const [showModal, setShowModal] = useState(false); //MODLA CHO FROM EDIT SẢN PHẨM
   const [showAddModal, setShowAddModal] = useState(false); // Modal cho thêm sản phẩm
@@ -15,6 +15,18 @@ const Profile = () => {
   const [gia, setGia] = useState('');
   const [hinhanh, setHinhanh] = useState(null);
   const [currentProduct, setCurrentProduct] = useState({ id: '', tensp: '', gia: '', hinhanh: '' });
+
+
+  // start phân trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 4;
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const PageProducts = sanpham.slice(indexOfFirstProduct, indexOfLastProduct);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const totalPages = Math.ceil(sanpham.length / productsPerPage);
+
+  //end phân trang
 
   useEffect(() => {
     fetchSanpham();
@@ -115,20 +127,20 @@ const Profile = () => {
               <h1>Cart</h1>   
               <div className='text-end'>
               <Button variant="primary" onClick={() => setShowAddModal(true)} >
-              <i class="bi bi-file-plus-fill"></i>
+              <i className="bi bi-file-plus-fill"></i>
               </Button>
               </div>
-                <table className="table table table-hover">
+                <table className="table table-bordered  border-dark table-hover">
                   <thead>
                     <tr>
-                      <th scope="col">Products</th>
-                      <th scope="col">Name</th>
-                      <th scope="col">Price</th>
-                      <th scope="col">Handle</th>
+                      <th scope="col">Hình ảnh</th>
+                      <th scope="col">Tên</th>
+                      <th scope="col">Gía</th>
+                      <th scope="col">Chức năng</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {sanpham.map((item) => (
+                    {PageProducts.map((item) => (
                       <tr key={item.id}>
                         <th scope="row">
                           <div className="d-flex align-items-center">
@@ -164,10 +176,26 @@ const Profile = () => {
                     ))}
                   </tbody>
                 </table>
-            
-            </div>
-          </div>
-        </div>
+             {/* Pagination */}
+             <div className="col-12">
+                      <div className="pagination d-flex justify-content-center mt-5">
+                        <a href="#" className="rounded" onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}>«</a>
+                        {[...Array(totalPages)].map((_, i) => (
+                          <a
+                            href="#"
+                            key={i + 1}
+                            onClick={() => paginate(i + 1)}
+                            className={`rounded ${currentPage === i + 1 ? 'active' : ''}`}
+                          >
+                            {i + 1}
+                          </a>
+                        ))}
+                        <a href="#" className="rounded" onClick={() => paginate(currentPage < totalPages ? currentPage + 1 : totalPages)}>»</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
         <Footer />
       </div>
  {/* Modal for adding product */}
@@ -252,4 +280,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Sanpham;

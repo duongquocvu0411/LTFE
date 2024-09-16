@@ -117,7 +117,7 @@ const HomeUsers = () => {
 </div>
 {/* Featurs Section End */}
 {/* Fruits Shop Start*/}
-<div className="container-fluid fruite py-5">
+<div className="container-fluid fruite py-5 OurProduct">
   <div className="container py-5">
     <div className="tab-class text-center">
       <div className="row g-4">
@@ -906,7 +906,7 @@ const HomeUsers = () => {
   </div>
   {/* Fact Start */}
   {/* Tastimonial Start */}
-  <div className="container-fluid testimonial py-5">
+  {/* <div className="container-fluid testimonial py-5">
     <div className="container py-5">
       <div className="testimonial-header text-center">
         <h4 className="text-primary">Our Testimonial</h4>
@@ -990,7 +990,7 @@ const HomeUsers = () => {
         </div>
       </div>
     </div>
-  </div>
+  </div> */}
   {/* Tastimonial End */}
   <div>
   <Footerusers/>

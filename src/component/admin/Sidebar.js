@@ -56,9 +56,9 @@ const Sidebar = () => {
               to="/admin/profile"
               className="nav-link text-white d-flex align-items-center"
             >
-              <i className="fas fa-user"></i>
+              <i className="bi bi-box "></i>
               <span className={`ms-3 ${isCollapsed ? "d-none" : ""}`}>
-                Cart
+                Sản phẩm
               </span>
             </Link>
           </li>{" "}
@@ -69,7 +69,7 @@ const Sidebar = () => {
             >
               <i className="fas fa-user"></i>
               <span className={`ms-3 ${isCollapsed ? "d-none" : ""}`}>
-                Profile2
+                --
               </span>
             </Link>
           </li>
@@ -80,7 +80,7 @@ const Sidebar = () => {
             >
               <i className="fas fa-user"></i>
               <span className={`ms-3 ${isCollapsed ? "d-none" : ""}`}>
-                Profile3
+                --
               </span>
             </Link>
           </li>
