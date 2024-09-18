@@ -36,7 +36,7 @@ useEffect(() => {
 
 const fetchSanpham = async () => {
   try {
-    const response = await axios.get('http://127.0.0.1:8000/api/sanpham');
+    const response = await axios.get('http://127.0.0.1:8000/api/products');
     setSanpham(response.data);
   } catch (error) {
     console.error('Error fetching sanpham:', error);
@@ -294,9 +294,9 @@ const totalPages = Math.ceil(sanpham.length / productsPerPage);
                           <div className="rounded position-relative fruite-item">
                             <div className="fruite-img">
                               <img
-                                  src={`http://127.0.0.1:8000/${product.hinhanh}`}
+                                  src={`http://127.0.0.1:8000/storage/${product.image}`} 
                                 className="img-fluid w-100 rounded-top"
-                                alt={product.tensp}
+                                alt={product.title}
                               />
                             </div>
                             <div
@@ -306,10 +306,10 @@ const totalPages = Math.ceil(sanpham.length / productsPerPage);
                               Fruits
                             </div>
                             <div className="p-4 border border-secondary border-top-0 rounded-bottom">
-                              <h4>{product.tensp}</h4>
-                              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt</p>
+                              <h4>{product.title}</h4>
+                              <p>{product.description}</p>
                               <div className="d-flex justify-content-between flex-lg-wrap">
-                                <p className="text-dark fs-5 fw-bold mb-0">${product.gia} / kg</p>
+                                <p className="text-dark fs-5 fw-bold mb-0">${product.price} / kg</p>
                                 <a
                                   href="#"
                                   className="btn border border-secondary rounded-pill px-3 text-primary"

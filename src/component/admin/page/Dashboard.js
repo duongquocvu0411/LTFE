@@ -2,24 +2,23 @@ import React from 'react';
 import Sidebar from './../Sidebar';
 import Header from '../Header';
 import Footer from '../Footer';
+import DanhThu from './Danhthu';
 
 
 const Dashboard = () => {
   return (
     <>
     <div>
-    <Header/>
+        <Header />
         <div className="d-flex">
-          <Sidebar/>
-          
+          <Sidebar />
           <div className="flex-grow-1 p-4">
-            <h2> Hello admin </h2>
+            {/* Chèn component DanhThu */}
+            <DanhThu />
+          </div>
         </div>
+        <Footer />
       </div>
-      <Footer/>
-      </div>    
-      
-
     </>
   );
 };

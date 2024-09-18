@@ -1,6 +1,9 @@
 <?php
 
-use App\Http\Controllers\SanphamController;
+use App\Http\Controllers\DanhsachsanphamController;
+
+use App\Http\Controllers\SanphamsController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,4 +22,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
    
 }); 
-Route::apiResource('sanpham', SanphamController::class);
+//sản phẩm
+Route::get('/products', [SanphamsController::class, 'index']);
+Route::post('/products', [SanphamsController::class, 'store']);
+Route::get('/products/{id}', [SanphamsController::class, 'show']);
+Route::put('/products/{id}', [SanphamsController::class, 'update']);
+Route::delete('/products/{id}', [SanphamsController::class, 'destroy']);
+
+//danh sách sản phẩm
+
+Route::apiResource('danhsachsanpham', DanhsachsanphamController::class);
