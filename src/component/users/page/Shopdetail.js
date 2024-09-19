@@ -395,7 +395,7 @@ const Shopdetail = ()=>{
       
     </div>
   </div>
-  {/* Single Product End */}
+  {/* Single Product End s*/}
   <Footerusers/>
 </div>
 

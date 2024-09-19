@@ -13,7 +13,7 @@ const Dashboard = () => {
         <div className="d-flex">
           <Sidebar />
           <div className="flex-grow-1 p-4">
-            {/* Chèn component DanhThu */}
+            {/* Chèn component DanhThus */}
             <DanhThu />
           </div>
         </div>

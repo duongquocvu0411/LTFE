@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 
 const ProfileAdmin = () => {
-  // Static Data
+  // Static Datas
   const userData = {
     name: 'John Doe',
     email: 'johndoe@example.com',

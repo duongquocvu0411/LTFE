@@ -61,11 +61,11 @@ const DanhThu = () => {
     },
   };
 
-  // Hàm chuyển đổi giữa biểu đồ cột và miền
+  // Hàm chuyển đổi giữa biểu đồ cột và miềns
   const toggleChart = () => {
     setShowBarChart((prevShowBarChart) => !prevShowBarChart);
   }; 
-  //Hàm này được gọi khi người dùng nhấn vào nút chuyển đổi. Nó đảo ngược giá trị của showBarChart, giúp chuyển đổi giữa hai loại biểu đồ.
+  //Hàm này được gọi khi người dùng nhấn vào nút chuyển đổi. Nó đảo ngược giá trị của showBarCharts, giúp chuyển đổi giữa hai loại biểu đồ.
 
   return (
     <div className="container mt-4">

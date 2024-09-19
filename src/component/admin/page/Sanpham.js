@@ -79,7 +79,7 @@ const Sanpham = () => {
               </button>
             </div>
 
-            {/* Bảng sản phẩm */}
+            {/* Bảng sản phẩms */}
             <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
             <table className="table table-bordered border-dark table-hover">
               <thead>

@@ -272,7 +272,7 @@ const totalPages = Math.ceil(sanpham.length / productsPerPage);
                       </div>
                     </div>
                   </div>
-                 {/* Product List */}
+                 {/* Product Lists */}
                  <div className="col-lg-9">
                     <div className="row g-4 justify-content-center">
                       {currentProducts.map((product) => (

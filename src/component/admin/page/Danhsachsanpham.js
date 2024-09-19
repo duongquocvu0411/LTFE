@@ -53,7 +53,7 @@ const Danhsachsanpham = () => {
     setShowModal(true);
   };
 
-  // Delete a Danhsachsanphams
+  // Delete a Danhsachsanphamss
   const handleDeleteDanhsachsanphams = (id) => {
     axios.delete(`http://127.0.0.1:8000/api/danhsachsanpham/${id}`)
       .then(() => {

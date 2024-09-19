@@ -23,7 +23,7 @@ return(
       </div>
     </div>
   </div>
-  {/* Modal Search End */}
+  {/* Modal Search Ends */}
   {/* Single Page Header start */}
   <div className="container-fluid page-header py-5">
     <h1 className="text-center text-white display-6">Testimonial</h1>

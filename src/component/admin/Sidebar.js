@@ -23,7 +23,7 @@ const Sidebar = () => {
           paddingRight: isCollapsed ? "0" : "10px", 
         }}
       >
-        {/* Sidebar Header */}
+        {/* Sidebar Header s*/}
         <div className="sidebar-header p-4 text-white d-flex justify-content-between align-items-cente ">
           <h4 className={`m-0 ${isCollapsed ? "d-none" : ""}`}>AdminLTE</h4>
           <button className="btn btn-dark" onClick={handleToggle}>

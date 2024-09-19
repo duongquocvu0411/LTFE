@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="text-bg-success">
       <div className=' col-md text-center'>
         
-          <strong>Copyright © 2024 <a href="https://adminlte.io">AdminLTE</a>.</strong>
+          <strong>Copyright © 2024 <a href="#">AdminLTE</a>.</strong>
       All rights reserved.
      
          

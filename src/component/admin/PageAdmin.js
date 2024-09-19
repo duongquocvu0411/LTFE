@@ -6,6 +6,7 @@ const PageAdmin = () =>
     return(
 
         <>
+        {/* ss */}
         <div className="d-flex justify-content-center mt-5">
               <ul className="pagination">
                 <li className={`page-item ${currentPage === 1 && 'disabled'}`}>

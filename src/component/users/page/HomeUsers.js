@@ -159,7 +159,7 @@ const HomeUsers = () => {
   </div>
 </div>
 {/* Featurs Section End */}
-{/* Fruits Shop Start*/}
+{/* Fruits Shop Starts*/}
 <div className="container-fluid fruite py-5 OurProduct">
   <div className="container py-5">
     <div className="tab-class text-center">

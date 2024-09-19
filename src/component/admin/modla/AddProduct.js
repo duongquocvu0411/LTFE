@@ -58,7 +58,7 @@ const AddOrEditProductModal = ({ show, handleClose, isEdit, product, fetchSanpha
             })
             .catch(error => console.log('Error updating product:', error));
         } else {
-            // Thêm sản phẩm mới
+            // Thêm sản phẩm mớis
             axios.post('http://127.0.0.1:8000/api/products', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'

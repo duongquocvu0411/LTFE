@@ -22,7 +22,7 @@ const Header = () => {
 
   //Một modal Bootstrap được hiển thị có điều kiện khi showModallà true. Modal yêu cầu xác nhận để đăng xuất.
   //Nếu người dùng nhấp vào "Đăng xuất", handleConfirmLogoutlệnh sẽ được thực hiện và người dùng sẽ được chuyển hướng đến /logouttuyến đường.
-  //Nếu người dùng nhấp vào "Hủy", hộp thoại sẽ đóng lại bằng cách đặt showModalthành false.
+  //Nếu người dùng nhấp vào "Hủy", hộp thoại sẽ đóng lại bằng cách đặt showModalthành false.s
   return (
     <>
     <nav className="navbar navbar-expand-lg navbar-light bg-light h-25">

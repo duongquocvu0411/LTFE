@@ -18,7 +18,7 @@ const ModlaAdddanhsachsanpham = ({ show, handleClose, isEdit, product, fetchProd
 
   const handleSubmit = async () => {
     if (isEdit) {
-      // Update existing profile
+      // Update existing profiles
       axios.put(`http://127.0.0.1:8000/api/danhsachsanpham/${product.id}`, { name })
         .then(() => {
           fetchProducts(); // Refresh profile list

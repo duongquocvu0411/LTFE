@@ -7,7 +7,7 @@ const ErrorPage = () =>{
         <>
         <Tieude/>
 <div>
-  {/* Modal Search Start */}
+  {/* Modal Search Starts*/}
   <div className="modal fade" id="searchModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div className="modal-dialog modal-fullscreen">
       <div className="modal-content rounded-0">
