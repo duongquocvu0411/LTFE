@@ -236,7 +236,7 @@ const HomeUsers = () => {
       <div className="col-md-6 col-lg-4">
         <a href="#">
           <div className="service-item bg-secondary rounded border border-secondary">
-            <img src="img/featur-1.jpg" className="img-fluid rounded-top w-100" alt />
+            <img src="img/featur-1.jpg" className="img-fluid rounded-top w-100"  />
             <div className="px-4 rounded-bottom">
               <div className="service-content bg-primary text-center p-4 rounded">
                 <h5 className="text-white">Fresh Apples</h5>
@@ -249,7 +249,7 @@ const HomeUsers = () => {
       <div className="col-md-6 col-lg-4">
         <a href="#">
           <div className="service-item bg-dark rounded border border-dark">
-            <img src="img/featur-2.jpg" className="img-fluid rounded-top w-100" alt />
+            <img src="img/featur-2.jpg" className="img-fluid rounded-top w-100"  />
             <div className="px-4 rounded-bottom">
               <div className="service-content bg-light text-center p-4 rounded">
                 <h5 className="text-primary">Tasty Fruits</h5>
@@ -262,7 +262,7 @@ const HomeUsers = () => {
       <div className="col-md-6 col-lg-4">
         <a href="#">
           <div className="service-item bg-primary rounded border border-primary">
-            <img src="img/featur-3.jpg" className="img-fluid rounded-top w-100" alt />
+            <img src="img/featur-3.jpg" className="img-fluid rounded-top w-100"  />
             <div className="px-4 rounded-bottom">
               <div className="service-content bg-secondary text-center p-4 rounded">
                 <h5 className="text-white">Exotic Vegitable</h5>

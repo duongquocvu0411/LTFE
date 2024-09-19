@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bar, Line } from 'react-chartjs-2';
+import { Bar, Line } from 'react-chartjs-2'; //để tạo biểu đồ cột và biểu đồ đường/mảng.
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 
 ChartJS.register(
@@ -12,7 +12,7 @@ ChartJS.register(
   Tooltip,
   Legend,
   Filler
-);
+); //Đăng ký các module của thư viện chart.js để sử dụng các chức năng như vẽ biểu đồ, thang đo, tiêu đề, và các tùy chọn khác
 
 const DanhThu = () => {
   // State để quản lý hiển thị biểu đồ
@@ -64,7 +64,8 @@ const DanhThu = () => {
   // Hàm chuyển đổi giữa biểu đồ cột và miền
   const toggleChart = () => {
     setShowBarChart((prevShowBarChart) => !prevShowBarChart);
-  };
+  }; 
+  //Hàm này được gọi khi người dùng nhấn vào nút chuyển đổi. Nó đảo ngược giá trị của showBarChart, giúp chuyển đổi giữa hai loại biểu đồ.
 
   return (
     <div className="container mt-4">
@@ -77,7 +78,7 @@ const DanhThu = () => {
 
       {/* Hiển thị biểu đồ dựa trên trạng thái */}
       {showBarChart ? (
-        <div>
+        <div >
           <h3>Biểu đồ cột - Doanh thu</h3>
           <Bar data={barData} options={options} />
         </div>

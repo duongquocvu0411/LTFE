@@ -91,7 +91,7 @@ const Danhsachsanpham = () => {
                   {currentDanhsachsanphamss.map((Danhsachsanphams, index) => (
                     <tr key={nanoid()}>
                       <td>
-                      <p className="mb-0 mt-4">{indexOfLastDanhsachsanphams + index + 1}</p>
+                      <p className='mb-0 mt-4'>{indexOfFirstDanhsachsanphams + index + 1}</p>
                       </td>
                       <td>
                       <p className="mb-0 mt-4">{Danhsachsanphams.name}</p>
