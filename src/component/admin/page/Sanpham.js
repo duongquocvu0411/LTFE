@@ -5,17 +5,18 @@ import Header from '../Header';
 import axios from 'axios';
 import AddOrEditProductModal from '../modla/AddProduct';
 import { Button } from 'react-bootstrap';
+import { nanoid } from 'nanoid';
 
 const Sanpham = () => {
-  const [products, setProducts] = useState([]);
+  const [sanpham, setSanpham] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 4;
+  const productsPerPage = 5;
 
   // Phân trang
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const PageProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(products.length / productsPerPage);
+  const PageProducts = sanpham.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(sanpham.length / productsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -24,10 +25,10 @@ const Sanpham = () => {
   const [currentProduct, setCurrentProduct] = useState(null);
 
   // Lấy danh sách sản phẩm từ API Laravel
-  const fetchProducts = () => {
+  const fetchSanpham = () => {
     axios.get('http://127.0.0.1:8000/api/products')
       .then(response => {
-        setProducts(response.data);
+        setSanpham(response.data);
       })
       .catch(error => {
         console.log('Có lỗi khi lấy dữ liệu từ API ', error);
@@ -35,7 +36,7 @@ const Sanpham = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchSanpham();
   }, []);
 
   // Mở modal thêm sản phẩm mới
@@ -46,7 +47,7 @@ const Sanpham = () => {
   };
 
   // Mở modal sửa sản phẩm
-  const handleEditProduct = (product) => {
+  const handleEditProduct = (product) => {  
     setIsEdit(true);
     setCurrentProduct(product);
     setShowModal(true);
@@ -57,7 +58,7 @@ const Sanpham = () => {
     axios.delete(`http://127.0.0.1:8000/api/products/${id}`)
       .then(() => {
         window.alert('đã xóa sản phẩm thành công');
-        fetchProducts(); // Cập nhật danh sách sản phẩm
+        fetchSanpham(); // Cập nhật danh sách sản phẩm
        
       })
       .catch(error => console.log('Error deleting product:', error));
@@ -83,6 +84,7 @@ const Sanpham = () => {
             <table className="table table-bordered border-dark table-hover">
               <thead>
                 <tr>
+                  <th scope="col">ID</th>
                   <th scope="col">Hình ảnh</th>
                   <th scope="col">Tên</th>
                   <th scope="col">Nội dung</th>
@@ -91,9 +93,13 @@ const Sanpham = () => {
                 </tr>
               </thead>
               <tbody>
-                {PageProducts.map(product => (
-                  <tr key={product.id}>
-                    <th scope="row">
+                {PageProducts.map((product, index) => (
+                  <tr key={nanoid()}>
+                    {/* Tính ID sản phẩm dựa trên chỉ số trang và chỉ số sản phẩm */}
+                    <td>
+                      <p className='mb-0 mt-4'>{indexOfFirstProduct + index + 1}</p>
+                    </td>
+                    <td scope="row">
                       <div className="d-flex align-items-center">
                         <img 
                           src={`http://127.0.0.1:8000/storage/${product.image}`} 
@@ -101,7 +107,7 @@ const Sanpham = () => {
                           style={{ height: '50px', objectFit: 'cover' }} 
                         />
                       </div>
-                    </th>
+                    </td>
                     <td>
                       <p className="mb-0 mt-4">{product.title}</p>
                     </td>
@@ -146,9 +152,8 @@ const Sanpham = () => {
         handleClose={() => setShowModal(false)}
         isEdit={isEdit}
         product={currentProduct}
-        fetchProducts={fetchProducts}
+        fetchSanpham={fetchSanpham}
       />
-
       <Footer />
     </div>
   );

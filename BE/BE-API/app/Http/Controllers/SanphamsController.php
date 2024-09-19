@@ -9,9 +9,19 @@ use Illuminate\Support\Facades\Storage;
 class SanphamsController extends Controller
 {
     // Lấy danh sách tất cả sản phẩm
-    public function index()
+    public function index(Request $request)
     {
-        $products = Sanphams::all();
+        // Kiểm tra nếu có tham số `danhsachsanpham_id` được truyền vào
+        $query = Sanphams::query();
+    
+        if ($request->has('danhsachsanpham_id')) {
+            // Lọc sản phẩm theo danh mục
+            $query->where('danhsachsanpham_id', $request->danhsachsanpham_id);
+        }
+    
+        // Lấy tất cả sản phẩm hoặc sản phẩm theo danh mục
+        $products = $query->get();
+        
         return response()->json($products);
     }
 
@@ -72,6 +82,7 @@ class SanphamsController extends Controller
             'description' => 'sometimes|string',
             'price' => 'sometimes|numeric',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'danhsachsanpham_id' => 'required|exists:danhsachsanpham,id',
         ]);
 
         // Cập nhật hình ảnh
@@ -89,6 +100,7 @@ class SanphamsController extends Controller
         $product->title = $request->title ?? $product->title;
         $product->description = $request->description ?? $product->description;
         $product->price = $request->price ?? $product->price;
+        $product->danhsachsanpham_id = $request->danhsachsanpham_id;
         $product->save();
 
         return response()->json($product);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 
-const AddOrEditProductModal = ({ show, handleClose, isEdit, product, fetchProducts }) => {
+const AddOrEditProductModal = ({ show, handleClose, isEdit, product, fetchSanpham }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
@@ -53,7 +53,7 @@ const AddOrEditProductModal = ({ show, handleClose, isEdit, product, fetchProduc
                 }
             })
             .then(() => {
-                fetchProducts(); // Cập nhật danh sách sản phẩm
+                fetchSanpham(); // Cập nhật danh sách sản phẩm
                 handleClose(); // Đóng modal
             })
             .catch(error => console.log('Error updating product:', error));
@@ -65,7 +65,7 @@ const AddOrEditProductModal = ({ show, handleClose, isEdit, product, fetchProduc
                 }
             })
             .then(() => {
-                fetchProducts(); // Cập nhật danh sách sản phẩm
+                fetchSanpham(); // Cập nhật danh sách sản phẩm
                 handleClose(); // Đóng modal
             })
             .catch(error => console.log('Error adding product:', error));
@@ -84,7 +84,7 @@ const AddOrEditProductModal = ({ show, handleClose, isEdit, product, fetchProduc
                         <Form.Control
                             type="text"
                             value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            onChange={(e) => setTitle(e.target.value)} //là một thuộc tính của đối tượng sự kiện trong input api mà mình click
                         />
                     </Form.Group>
                     <Form.Group className="mb-3">

@@ -1,35 +1,9 @@
 import React, { useEffect, useState } from "react"
 import Tieude from "../HeaderUsers";
 import Footerusers from "../Footerusers";
-import axios from "axios";
+
 const Cart=() =>{
-  const [sanpham, setSanpham] = useState([]);
 
-  useEffect(() => {
-    fetchSanpham();
-  }, []);
-
-    // Fetch the list of products (GET request)
-    const fetchSanpham = async () => {
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/api/sanpham');
-        setSanpham(response.data);
-      } catch (error) {
-        console.error('Error fetching sanpham:', error);
-      }
-    };
-
-    const DeleteSanpham = async (id) =>
-    {
-      try {
-        await axios.delete(`http://127.0.0.1:8000/api/sanpham/${id}`);
-        // Refresh the product list after deletion
-        fetchSanpham();
-        alert('đã xóa sản phẩm thành công');
-      } catch (error) {
-        console.error('Error deleting product:', error);
-      }
-    }
     return(
         <>
         <div>
@@ -77,53 +51,7 @@ const Cart=() =>{
           </tr>
         </thead>
         <tbody>
-          {sanpham.map((item) => (
-            <tr key={item.id}>
-              <th scope="row">
-                <div className="d-flex align-items-center">
-                  <img
-                    src={`http://127.0.0.1:8000/${item.hinhanh}`}
-                    className="img-fluid me-5 rounded-circle"
-                    style={{ width: 80, height: 80 }}
-                    alt={item.tensp}
-                  />
-                </div>
-              </th>
-              <td>
-                <p className="mb-0 mt-4">{item.tensp}</p>
-              </td>
-              <td>
-                <p className="mb-0 mt-4">{item.gia} $</p>
-              </td>
-              <td>
-                <div className="input-group quantity mt-4" style={{ width: 100 }}>
-                  <div className="input-group-btn">
-                    <button className="btn btn-sm btn-minus rounded-circle bg-light border">
-                      <i className="fa fa-minus" />
-                    </button>
-                  </div>
-                  <input
-                    type="text"
-                    className="form-control form-control-sm text-center border-0"
-                    defaultValue={1}
-                  />
-                  <div className="input-group-btn">
-                    <button className="btn btn-sm btn-plus rounded-circle bg-light border">
-                      <i className="fa fa-plus" />
-                    </button>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <p className="mb-0 mt-4">{item.gia} $</p>
-              </td>
-              <td>
-                <button className="btn btn-md rounded-circle bg-light border mt-4" onClick={() => DeleteSanpham(item.id)}>
-                  <i className="fa fa-times text-danger" />
-                </button>
-              </td>
-            </tr>
-          ))}
+         
         </tbody>
       </table>
       </div>
@@ -139,19 +67,19 @@ const Cart=() =>{
               <h1 className="display-6 mb-4">Cart <span className="fw-normal">Total</span></h1>
               <div className="d-flex justify-content-between mb-4">
                 <h5 className="mb-0 me-4">Subtotal:</h5>
-                <p className="mb-0">$96.00</p>
+                <p className="mb-0">$0</p>
               </div>
               <div className="d-flex justify-content-between">
                 <h5 className="mb-0 me-4">Shipping</h5>
                 <div className>
-                  <p className="mb-0">Flat rate: $3.00</p>
+                  <p className="mb-0">Flat rate: $0</p>
                 </div>
               </div>
-              <p className="mb-0 text-end">Shipping to Ukraine.</p>
+              
             </div>
             <div className="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
               <h5 className="mb-0 ps-4 me-4">Total</h5>
-              <p className="mb-0 pe-4">$99.00</p>
+              <p className="mb-0 pe-4">$0</p>
             </div>
             <button className="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button">Proceed Checkout</button>
           </div>

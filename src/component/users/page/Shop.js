@@ -3,45 +3,46 @@ import Tieude from "../HeaderUsers";
 import Footerusers from "../Footerusers";
 import axios from "axios";
 
-// const products = [
-//   { id: 1, name: 'Grapes', price: 4.99, image: 'img/fruite-item-5.jpg' },
-//   { id: 2, name: 'Raspberries', price: 4.99, image: 'img/fruite-item-2.jpg' },
-//   { id: 3, name: 'Oranges', price: 4.99, image: 'img/fruite-item-1.jpg' },
-//   { id: 4, name: 'Banana', price: 4.99, image: 'img/fruite-item-3.jpg' },
-//   { id: 5, name: 'Apricots', price: 4.99, image: 'img/fruite-item-4.jpg' },
-//   { id: 6, name: 'Big Banana', price: 2.99, image: 'img/fruite-item-5.jpg' },
-//   { id: 7, name: 'Pineapple', price: 3.99, image: 'img/fruite-item-2.jpg' },
-//   { id: 8, name: 'Apples', price: 2.49, image: 'img/fruite-item-6.jpg' },
-//   { id: 9, name: 'Pumpkin', price: 5.99, image: 'img/fruite-item-2.jpg' },
-//   { id: 10, name: 'Mango', price: 3.49, image: 'img/best-product-4.jpg' },
-//   { id: 11, name: 'Pumpkin', price: 5.99, image: 'img/best-product-5.jpg' },
-//   { id: 12  , name: 'Mango', price: 3.49, image: 'img/best-product-4.jpg' },
-  
-  
-// ];
 
 const Shop = () => {
+  const [danhmuc, setDanhmuc] = useState([]); // Khởi tạo state lưu trữ danh mục
+  const [sanpham, setSanpham] = useState([]);
+  const [selectedDanhmuc, setSelectedDanhmuc] = useState(""); // Danh mục được chọn
+
   //phân trang
   const [currentPage, setCurrentPage] = useState(1);
-  const [sanpham, setSanpham] = useState([]);
   const productsPerPage = 6;
 
 
-// api get sản phẩm 
+  // Gọi API lấy danh mục và sản phẩm
+  useEffect(() => {
+    fetchSanpham();
+    fetchDanhmuc();
+  }, [selectedDanhmuc]); // Chạy lại khi thay đổi danh mục
 
-useEffect(() => {
-  fetchSanpham();
-}, []);
+
+const fetchDanhmuc = async () => {
+  try {
+    const response = await axios.get('http://127.0.0.1:8000/api/danhsachsanpham');
+    setDanhmuc(response.data);
+  } catch (error) {
+    console.error('Error fetching Danh mục:', error);
+  }
+};
 
 
 const fetchSanpham = async () => {
   try {
-    const response = await axios.get('http://127.0.0.1:8000/api/products');
+    const url = selectedDanhmuc
+      ? `http://127.0.0.1:8000/api/products?danhsachsanpham_id=${selectedDanhmuc}` // Nếu có danh mục thì lọc
+      : 'http://127.0.0.1:8000/api/products'; // Nếu không, lấy tất cả sản phẩm
+    const response = await axios.get(url);
     setSanpham(response.data);
   } catch (error) {
-    console.error('Error fetching sanpham:', error);
+    console.error('Error fetching sản phẩm:', error);
   }
 };
+
 
 // phân trang
 
@@ -100,28 +101,32 @@ const totalPages = Math.ceil(sanpham.length / productsPerPage);
                       <input
                         type="search"
                         className="form-control p-3"
-                        placeholder="keywords"
-                        aria-describedby="search-icon-1"
+                        placeholder="Search products..."
                       />
                       <span id="search-icon-1" className="input-group-text p-3">
                         <i className="fa fa-search" />
                       </span>
                     </div>
                   </div>
+
                   <div className="col-6" />
+
                   <div className="col-xl-3">
                     <div className="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
-                      <label htmlFor="fruits">Default Sorting:</label>
+                      <label htmlFor="fruits">Sort by category:</label>
                       <select
                         id="fruits"
                         name="fruitlist"
                         className="border-0 form-select-sm bg-light me-3"
-                        form="fruitform"
+                        value={selectedDanhmuc} // Giá trị danh mục được chọn
+                        onChange={(e) => setSelectedDanhmuc(e.target.value)} // Cập nhật danh mục được chọn
                       >
-                        <option value="volvo">Nothing</option>
-                        <option value="saab">Popularity</option>
-                        <option value="opel">Organic</option>
-                        <option value="audi">Fantastic</option>
+                        <option value="">All Categories</option>
+                        {danhmuc.map((danhmucs) => (
+                          <option key={danhmucs.id} value={danhmucs.id}>
+                            {danhmucs.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
@@ -183,24 +188,7 @@ const totalPages = Math.ceil(sanpham.length / productsPerPage);
                           </ul>
                         </div>
                       </div>
-                      <div className="col-lg-12">
-                        <div className="mb-3">
-                          <h4 className="mb-2">Price</h4>
-                          <input
-                            type="range"
-                            className="form-range w-100"
-                            id="rangeInput"
-                            name="rangeInput"
-                            min={0}
-                            max={500}
-                            defaultValue={0}
-                            onInput="amount.value=rangeInput.value"
-                          />
-                          <output id="amount" name="amount" htmlFor="rangeInput">
-                            0
-                          </output>
-                        </div>
-                      </div>
+                      
 
                       {/* Additional */}
                       <div className="col-lg-12">
@@ -290,13 +278,14 @@ const totalPages = Math.ceil(sanpham.length / productsPerPage);
                  <div className="col-lg-9">
                     <div className="row g-4 justify-content-center">
                       {currentProducts.map((product) => (
-                        <div key={product.id} className="col-md-6 col-lg-6 col-xl-4">
-                          <div className="rounded position-relative fruite-item">
-                            <div className="fruite-img">
+                        <div key={product.id} className="col-md-6 col-lg-6 col-xl-4 d-flex">
+                          <div className="rounded position-relative fruite-item card h-100 w-100 ">
+                            <div className="fruite-img card-img-top">
                               <img
                                   src={`http://127.0.0.1:8000/storage/${product.image}`} 
                                 className="img-fluid w-100 rounded-top"
                                 alt={product.title}
+                                style={{ height: 250, objectFit: 'cover' }}
                               />
                             </div>
                             <div
@@ -305,10 +294,10 @@ const totalPages = Math.ceil(sanpham.length / productsPerPage);
                             >
                               Fruits
                             </div>
-                            <div className="p-4 border border-secondary border-top-0 rounded-bottom">
+                            <div className="card-body d-flex flex-column rounded-bottom">
                               <h4>{product.title}</h4>
                               <p>{product.description}</p>
-                              <div className="d-flex justify-content-between flex-lg-wrap">
+                              <div className=" d-flex justify-content-between flex-lg-wrap">
                                 <p className="text-dark fs-5 fw-bold mb-0">${product.price} / kg</p>
                                 <a
                                   href="#"
