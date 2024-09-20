@@ -11,6 +11,7 @@ import ErrorPage from './component/users/page/ErrorPage';
 import ProfileAdmin from "./component/admin/page/ProfileAdmin";
 import Sanpham from './component/admin/page/Sanpham';
 import Danhsachsanpham from './component/admin/page/Danhsachsanpham';
+
 function App() {
   
   return (
@@ -23,8 +24,8 @@ function App() {
         <Routes>
           {/* start admin */}
           <Route path="/admin/Dashboard" element={<Dashboard />} />
-          <Route path="/admin/profile" element={<Sanpham />} />
-          <Route path="/admin/profile2" element={<Danhsachsanpham />} />
+          <Route path="/admin/sanpham" element={<Sanpham />} />
+          <Route path="/admin/danhmucsanpham" element={<Danhsachsanpham />} />
           <Route path="/admin/profile3" element={<Profile3 />} />
           <Route path="/admin/ProfileAdmin" element={<ProfileAdmin/>}/>
           {/* end admin */}
@@ -35,7 +36,7 @@ function App() {
           <Route path="/cart" element={<Cart/>}/>
           <Route path="/Testimonial" element={<Testimonial/>}/>
           <Route path="/page404" element={<ErrorPage/>}/>
-          
+        
         </Routes>
       </Router>
     </>

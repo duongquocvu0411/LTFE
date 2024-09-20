@@ -82,9 +82,9 @@ const Danhsachsanpham = () => {
               <table className="table table-bordered border-dark table-hover">
                 <thead>
                   <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Actions</th>
+                    <th scope="col">STT</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Chức năng</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -98,16 +98,16 @@ const Danhsachsanpham = () => {
                       </td>
                       <td>
                         <Button
-                          variant="primary"
+                          variant="primary me-2"
                           onClick={() => handleEditDanhsachsanphams(Danhsachsanphams)}
                         >
-                          Edit
+                          <i class="bi bi-pencil-square"></i>
                         </Button>{' '}
                         <Button
                           variant="danger"
                           onClick={() => handleDeleteDanhsachsanphams(Danhsachsanphams.id)}
                         >
-                          Delete
+                          <i class="bi bi-trash3-fill"></i>
                         </Button>
                       </td>
                     </tr>
