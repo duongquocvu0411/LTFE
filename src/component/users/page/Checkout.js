@@ -1,7 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Tieude from "../HeaderUsers";
 import Footerusers from "../Footerusers";
+import axios from "axios";
 const Checkout= () => {
+
+  const [thanhpho, setThanhpho] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Fetch data from API
+    const fetchCities = async () => {
+      try {
+        const response = await axios.get("https://esgoo.net/api-tinhthanh/1/0.htm");
+        
+        // Kiểm tra dữ liệu trả về
+        console.log(response.data);
+
+        // Đặt dữ liệu từ response.data.data vào state
+        if (response.data && Array.isArray(response.data.data)) {
+          setThanhpho(response.data.data);
+        } else {
+          console.error("Dữ liệu không phải là mảng.");
+        }
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+    fetchCities();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 return (
     
     <>
@@ -58,22 +90,24 @@ return (
               </div>
             </div>
             <div className="form-item">
-              <label className="form-label my-3">Company Name<sup>*</sup></label>
-              <input type="text" className="form-control" />
-            </div>
-            <div className="form-item">
               <label className="form-label my-3">Address <sup>*</sup></label>
               <input type="text" className="form-control" placeholder="House Number Street Name" />
             </div>
             <div className="form-item">
-              <label className="form-label my-3">Town/City<sup>*</sup></label>
-              <input type="text" className="form-control" />
-            </div>
-            <div className="form-item">
-              <label className="form-label my-3">Country<sup>*</sup></label>
-              <input type="text" className="form-control" />
-            </div>
-            
+      <label className="form-label my-3">Town/City<sup>*</sup></label>
+      <select className="form-control">
+        <option value="" disabled selected>Select your town/city</option>
+        {thanhpho.length > 0 ? (
+          thanhpho.map((city) => (
+            <option key={city.id} value={city.id}>
+              {city.name}
+            </option>
+          ))
+        ) : (
+          <option value="" disabled>No cities available</option>
+        )}
+      </select>
+    </div>
             <div className="form-item">
               <label className="form-label my-3">Mobile<sup>*</sup></label>
               <input type="tel" className="form-control" />
@@ -105,7 +139,7 @@ return (
                   <tr>
                     <th scope="row">
                       <div className="d-flex align-items-center mt-2">
-                        <img src="img/vegetable-item-2.jpg" className="img-fluid rounded-circle" style={{width: 90, height: 90}} alt />
+                        <img src="img/vegetable-item-2.jpg" className="img-fluid rounded-circle" style={{width: 90, height: 90}}  />
                       </div>
                     </th>
                     <td className="py-5">Awesome Brocoli</td>
@@ -116,7 +150,7 @@ return (
                   <tr>
                     <th scope="row">
                       <div className="d-flex align-items-center mt-2">
-                        <img src="img/vegetable-item-5.jpg" className="img-fluid rounded-circle" style={{width: 90, height: 90}} alt />
+                        <img src="img/vegetable-item-5.jpg" className="img-fluid rounded-circle" style={{width: 90, height: 90}}  />
                       </div>
                     </th>
                     <td className="py-5">Potatoes</td>
@@ -127,7 +161,7 @@ return (
                   <tr>
                     <th scope="row">
                       <div className="d-flex align-items-center mt-2">
-                        <img src="img/vegetable-item-3.png" className="img-fluid rounded-circle" style={{width: 90, height: 90}} alt />
+                        <img src="img/vegetable-item-3.png" className="img-fluid rounded-circle" style={{width: 90, height: 90}}  />
                       </div>
                     </th>
                     <td className="py-5">Big Banana</td>
