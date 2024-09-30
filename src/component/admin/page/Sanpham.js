@@ -11,7 +11,9 @@ const Sanpham = () => {
   const [sanpham, setSanpham] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 5;
-
+const [showModal, setShowModal] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState(null);
   // Phân trang
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -20,9 +22,7 @@ const Sanpham = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const [showModal, setShowModal] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState(null);
+  
 
   // Lấy danh sách sản phẩm từ API Laravel
   const fetchSanpham = () => {
@@ -61,6 +61,7 @@ const Sanpham = () => {
         fetchSanpham(); // Cập nhật danh sách sản phẩm
       })
       .catch(error => console.log('Error deleting product:', error));
+      console.log("đã xóa sản phẩm thành công :", id);
   };
 
   return (
@@ -80,7 +81,7 @@ const Sanpham = () => {
 
             {/* Bảng sản phẩm */}
             <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto', overflowX: 'auto' }}>
-              <table className="table table-bordered border-dark table-hover">
+              <table className="table table-bordered border-dark table-hover table-striped" >
                 <thead>
                   <tr>
                     <th scope="col">STT</th>
@@ -113,7 +114,7 @@ const Sanpham = () => {
                         <p className="mb-0 mt-4">{product.description}</p>
                       </td>
                       <td>
-                        <p className="mb-0 mt-4">{product.price} vnđ</p>
+                        <p className="mb-0 mt-4">{product.price} vnđ / kg</p>
                       </td>
                       <td>
                         <Button variant="primary me-2" onClick={() => handleEditProduct(product)}>
@@ -157,6 +158,7 @@ const Sanpham = () => {
         product={currentProduct}
         fetchSanpham={fetchSanpham}
       />
+      {/* end modal */}
       <Footer />
     </div>
   );

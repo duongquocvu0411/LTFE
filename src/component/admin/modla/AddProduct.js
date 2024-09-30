@@ -57,6 +57,7 @@ const AddOrEditProductModal = ({ show, handleClose, isEdit, product, fetchSanpha
                 handleClose(); // Đóng modal
             })
             .catch(error => console.log('Error updating product:', error));
+            console.log("sửa sản phẩm thành công:", title)
         } else {
             // Thêm sản phẩm mớis
             axios.post('http://127.0.0.1:8000/api/products', formData, {
@@ -69,6 +70,7 @@ const AddOrEditProductModal = ({ show, handleClose, isEdit, product, fetchSanpha
                 handleClose(); // Đóng modal
             })
             .catch(error => console.log('Error adding product:', error));
+            console.log("thêm sản phẩm thành công:", title)
         }
     };
 
@@ -76,6 +78,9 @@ const AddOrEditProductModal = ({ show, handleClose, isEdit, product, fetchSanpha
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>{isEdit ? 'Sửa sản phẩm' : 'Thêm sản phẩm'}</Modal.Title>
+                {/* isEdit là điều kiện (biến hoặc biểu thức Boolean).
+Sau dấu ?, nếu isEdit là true, giá trị 'Sửa sản phẩm' sẽ được hiển thị.
+Nếu isEdit là false, giá trị 'Thêm sản phẩm' sẽ được hiển thị (giá trị sau dấu hai chấm :). */}
             </Modal.Header>
             <Modal.Body>
                 <Form>

@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-
+import { CartContext } from './page/CartContext';
 const HeaderUsers = () => {
+
+  const { giohang } = useContext(CartContext);  // sử dụng CartContext để lấy dữ liệu giỏ hàng
+
+  // tính tổng số lượng sản phẩm hiện có trong giỏ hàng
+  const tongSoLuong = giohang.reduce((tong, sanPham) => tong + sanPham.soLuong, 0);
     return (
         <>
          {/* Navbar starts */}
@@ -17,7 +22,7 @@ const HeaderUsers = () => {
         <Link to="#" className="text-white text-decoration-none"><small className="text-white mx-2">Terms of Use</small>/</Link>
         <Link to="#" className="text-white text-decoration-none"><small className="text-white ms-2">Sales and Refunds</small></Link>
       </div>
-    </div>
+    </div>  
   </div>
   <div className="container px-0">
     <nav className="navbar navbar-light bg-white navbar-expand-xl">
@@ -44,12 +49,16 @@ const HeaderUsers = () => {
           <Link to="/admin/dashboard" className='nav-item nav-link'> <sup>Admin</sup></Link>
         </div>
         <div className="d-flex m-3 me-0">
-          <button className="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i className="fas fa-search text-primary" /></button>
+
           <Link to="/cart" className="position-relative me-4 my-auto">
-            <i className="fa fa-shopping-bag fa-2x" />
-            {/* <span className="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style={{top: '-5px', left: 15, height: 20, minWidth: 20}}>3</span> */}
-            <span className="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" ></span>
-          </Link>
+                  <i className="fa fa-shopping-bag fa-2x" />
+                  {/* Hiển thị số lượng sản phẩm trong giỏ hàng */}
+                  {tongSoLuong > 0 && (
+                    <span className="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark" style={{ top: '-10px', right: '-10px', width: '20px', height: '20px', fontSize: '12px' }}>
+                      {tongSoLuong}
+                    </span>
+                  )}
+           </Link>
           <Link to="#" className="my-auto">
             <i className="fas fa-user fa-2x" />
           </Link>

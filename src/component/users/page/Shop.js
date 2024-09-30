@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
-import Tieude from "../HeaderUsers";
+import React, { useContext, useEffect, useState } from "react";
 import Footerusers from "../Footerusers";
 import axios from "axios";
+import HeaderUsers from "../HeaderUsers";
+import { CartContext } from "./CartContext";
 
 
 const Shop = () => {
   const [danhmuc, setDanhmuc] = useState([]); // Khởi tạo state lưu trữ danh mục
   const [sanpham, setSanpham] = useState([]);
   const [selectedDanhmuc, setSelectedDanhmuc] = useState(""); // Danh mục được chọn
+  const {addToCart} = useContext(CartContext);
 
   //phân trang
   const [currentPage, setCurrentPage] = useState(1);
@@ -56,28 +58,10 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
 const totalPages = Math.ceil(sanpham.length / productsPerPage);
   return (
     <div>
-      <Tieude />
+      <HeaderUsers />
 
       <div>
-        {/* start seach */}
-      <div className="modal fade" id="searchModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div className="modal-dialog modal-fullscreen">
-    <div className="modal-content rounded-0">
-      <div className="modal-header">
-        <h5 className="modal-title" id="exampleModalLabel">Search by keyword</h5>
-        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-      </div>
-      <div className="modal-body d-flex align-items-center">
-        <div className="input-group w-75 mx-auto d-flex">
-          <input type="search" className="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1" />
-          <span id="search-icon-1" className="input-group-text p-3"><i className="fa fa-search" /></span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
-{/* end seach */}
         {/* Single Page Header start */}
         <div className="container-fluid page-header py-5">
           <h1 className="text-center text-white display-6">Shop</h1>
@@ -247,32 +231,11 @@ const totalPages = Math.ceil(sanpham.length / productsPerPage);
                         </div>
                       </div>
 
-                      {/* Featured products */}
-                      <div className="col-lg-12">
-                        <h4 className="mb-3">Featured products</h4>
-                        <div className="d-flex align-items-center justify-content-start">
-                          <div className="rounded me-4" style={{ width: 100, height: 100 }}>
-                            <img src="img/featur-1.jpg" className="img-fluid rounded" alt="Featured product" />
-                          </div>
-                          <div>
-                            <h6 className="mb-2">Big Banana</h6>
-                            <div className="d-flex mb-2">
-                              <i className="fa fa-star text-secondary" />
-                              <i className="fa fa-star text-secondary" />
-                              <i className="fa fa-star text-secondary" />
-                              <i className="fa fa-star text-secondary" />
-                              <i className="fa fa-star" />
-                            </div>
-                            <div className="d-flex mb-2">
-                              <h5 className="fw-bold me-2">2.99 $</h5>
-                              <h5 className="text-danger text-decoration-line-through">4.11 $</h5>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                    
+                      
                     </div>
                   </div>
-                 {/* Product Lists */}
+               
                  <div className="col-lg-9">
                     <div className="row g-4 justify-content-center">
                       {currentProducts.map((product) => (
@@ -297,12 +260,17 @@ const totalPages = Math.ceil(sanpham.length / productsPerPage);
                               <p>{product.description}</p>
                               <div className=" d-flex justify-content-between flex-lg-wrap">
                                 <p className="text-dark fs-5 fw-bold mb-0">${product.price} / kg</p>
-                                <a
+                                <button 
+                                  onClick={() => addToCart(product)} // Thêm sản phẩm
+                                  className="btn border border-secondary rounded-pill px-3 text-primary">
+                                  <i className="fa fa-shopping-bag me-2 text-primary" /> Add to cart
+                                </button>
+                                {/* <a
                                   href="#"
                                   className="btn border border-secondary rounded-pill px-3 text-primary"
                                 >
                                   <i className="fa fa-shopping-bag me-2 text-primary" /> Add to cart
-                                </a>
+                                </a> */}
                               </div>
                             </div>
                           </div>

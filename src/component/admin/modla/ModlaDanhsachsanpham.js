@@ -25,6 +25,7 @@ const ModlaAdddanhsachsanpham = ({ show, handleClose, isEdit, product, fetchProd
           handleClose(); // Close modal
         })
         .catch(error => console.log('Error updating profile:', error));
+        console.log(" sửa sản phẩm thành công :", name)
     } else {
       // Add new profile
       axios.post('http://127.0.0.1:8000/api/danhsachsanpham', { name })
@@ -33,6 +34,7 @@ const ModlaAdddanhsachsanpham = ({ show, handleClose, isEdit, product, fetchProd
           handleClose(); // Close modal
         })
         .catch(error => console.log('Error adding profile:', error));
+        console.log(" thêm sản phẩm thành công :", name)
     }
   };
 
