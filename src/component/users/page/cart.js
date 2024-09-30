@@ -40,48 +40,56 @@ const Cart = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {giohang.map((sanPham, index) => (
-                    <tr key={index}>
-                      <td>
-                        <img
-                          src={`http://127.0.0.1:8000/storage/${sanPham.image}`}
-                          className="img-fluid rounded"
-                          style={{ width: "60px", height: "60px" }}
-                          alt={sanPham.title}
-                        />
-                      </td>
-                      <td>{sanPham.title}</td>
-                      <td>${sanPham.price}</td>
-                      <td > 
-                        <div className="d-flex  ">
-                          <button 
-                            className="btn btn-warning btn-sm" 
-                            onClick={() => decreaseQuantity(sanPham.id)}
-                          >
-                            <i className="fa fa-minus"></i>
-                          </button>
-                          <input 
-                            type="number" 
-                            className="form-control text-center mx-2" 
-                            value={sanPham.soLuong || 1}  // Đảm bảo hiển thị giá trị hợp lệ
-                            min="1"
-                            onChange={(e) => updateQuantity(sanPham.id, e.target.value)}
-                            style={{ width: '60px', minWidth: '50px' }}  // Đặt chiều rộng tối thiểu
+                  {giohang && giohang.length > 0 ? (
+                    giohang.map((sanPham, index) => (
+                      <tr key={index}>
+                        <td>
+                          <img
+                            src={`http://127.0.0.1:8000/storage/${sanPham.image}`}
+                            className="img-fluid rounded"
+                            style={{ width: "60px", height: "60px" }}
+                            alt={sanPham.title}
                           />
-                          <button 
-                            className="btn btn-warning btn-sm" 
-                            onClick={() => increaseQuantity(sanPham.id)}
-                          >
-                            <i className="fa fa-plus"></i>
+                        </td>
+                        <td>{sanPham.title}</td>
+                        <td>${sanPham.price}</td>
+                        <td> 
+                          <div className="d-flex">
+                            <button 
+                              className="btn btn-warning btn-sm" 
+                              onClick={() => decreaseQuantity(sanPham.id)}
+                            >
+                              <i className="fa fa-minus"></i>
+                            </button>
+                            <input 
+                              type="number" 
+                              className="form-control text-center mx-2" 
+                              value={sanPham.soLuong || 1}  // Đảm bảo hiển thị giá trị hợp lệ
+                              min="1"
+                              onChange={(e) => updateQuantity(sanPham.id, e.target.value)}
+                              style={{ width: '60px', minWidth: '50px' }}  // Đặt chiều rộng tối thiểu
+                            />
+                            <button 
+                              className="btn btn-warning btn-sm" 
+                              onClick={() => increaseQuantity(sanPham.id)}
+                            >
+                              <i className="fa fa-plus"></i>
+                            </button>
+                          </div>
+                        </td>
+                        <td>${sanPham.price * sanPham.soLuong}</td>
+                        <td>
+                          <button className="btn btn-danger btn-sm" onClick={() => removeFromCart(sanPham.id)}>
+                            <i className="bi bi-trash3-fill"></i>
                           </button>
-                        </div>
-                      </td>
-                      <td>${sanPham.price * sanPham.soLuong}</td>
-                      <td>
-                        <button className="btn btn-danger btn-sm" onClick={() => removeFromCart(sanPham.id)}>Xóa</button>
-                      </td>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" className="text-center">Giỏ hàng của bạn trống</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

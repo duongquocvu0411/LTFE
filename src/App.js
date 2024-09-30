@@ -12,6 +12,9 @@ import Danhsachsanpham from './component/admin/page/Danhsachsanpham';
 import Testimonial from "./component/users/page/Testimonial";
 import { CartProvider } from "./component/users/page/CartContext";
 
+import ProtectedRoute from './component/routerbaove/ProtectedRoute';
+import LoginAdmin from "./component/admin/page/LoginAdmin";
+
 function App() {
   return (
     <>
@@ -21,10 +24,39 @@ function App() {
         <Router>
           <Routes>
             {/* Admin Routes */}
-            <Route path="/admin/Dashboard" element={<Dashboard />} />
-            <Route path="/admin/sanpham" element={<Sanpham />} />
-            <Route path="/admin/danhmucsanpham" element={<Danhsachsanpham />} />
-            <Route path="/admin/ProfileAdmin" element={<ProfileAdmin />} />
+            <Route path="/admin/Login" element={<LoginAdmin />} />
+            <Route 
+              path="/admin/Dashboard" 
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/sanpham" 
+              element={
+                <ProtectedRoute>
+                  <Sanpham />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/ProfileAdmin" 
+              element={
+                <ProtectedRoute>
+                  <ProfileAdmin />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/danhmucsanpham" 
+              element={
+                <ProtectedRoute>
+                  <Danhsachsanpham />
+                </ProtectedRoute>
+              } 
+            />
 
             {/* User Routes */}
             <Route path="/" element={<HomeUsers />} />
@@ -34,6 +66,9 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/Testimonial" element={<Testimonial />} />
             <Route path="/page404" element={<ErrorPage />} />
+            
+            {/* Wildcard route for 404 */}
+            <Route path="*" element={<ErrorPage />} />
           </Routes>
         </Router>
       </CartProvider>

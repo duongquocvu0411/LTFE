@@ -8,8 +8,7 @@ const Checkout= () => {
   
   const [thanhpho, setThanhpho] = useState([]);
   const { giohang } = useContext(CartContext);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+
 
   useEffect(() => {
     // Fetch data from API
@@ -26,17 +25,16 @@ const Checkout= () => {
         } else {
           console.error("Dữ liệu không phải là mảng.");
         }
-        setLoading(false);
+       
       } catch (err) {
-        setError(err.message);
-        setLoading(false);
+        console.error('Error fetching tỉnh thành:', err);
+       
       }
     };
     fetchCities();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+
 
   // Tính tổng giá trị của giỏ hàng
   const tongTienGioHang = giohang.reduce((tong, item) => tong + item.price * item.soLuong, 0);

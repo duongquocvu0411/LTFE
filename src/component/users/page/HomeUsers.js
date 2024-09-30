@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Footerusers from '../Footerusers';
 import axios from 'axios';
 import { Pagination } from 'react-bootstrap';
 import HeaderUsers from '../HeaderUsers';
+import { CartContext } from './CartContext';
 
 const HomeUsers = () => {
 
   const [danhmuc, setDanhmuc] = useState([]); // Khởi tạo state lưu trữ danh mục
   const [sanpham, setSanpham] = useState([]);
   const [selectedDanhmuc, setSelectedDanhmuc] = useState(""); // Danh mục được chọn
-  
+  const {addToCart} = useContext(CartContext);
   
   const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
   const productsPerPage = 8; // Số sản phẩm hiển thị mỗi trang
@@ -215,9 +216,11 @@ const HomeUsers = () => {
                           <p className="text-muted">{sanPham.description}</p>
                           <div className="d-flex justify-content-between flex-lg-wrap">
                             <p className="text-dark fs-5 fw-bold mb-0">${sanPham.price} / kg</p>
-                            <a href="#" className="btn border border-secondary rounded-pill px-3 text-primary">
+                            <button  
+                            onClick={() => addToCart(sanPham)}
+                            className="btn border border-secondary rounded-pill px-3 text-primary">
                               <i className="fa fa-shopping-bag me-2 text-primary" /> Add to cart
-                            </a>
+                            </button>
                           </div>
                         </div>
                       </div>

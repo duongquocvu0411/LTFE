@@ -40,6 +40,7 @@ const fetchSanpham = async () => {
       : 'http://127.0.0.1:8000/api/products'; // Nếu không, lấy tất cả sản phẩm
     const response = await axios.get(url);
     setSanpham(response.data);
+   
   } catch (error) {
     console.error('Error fetching sản phẩm:', error);
   }
@@ -56,6 +57,7 @@ const currentProducts = sanpham.slice(indexOfFirstProduct, indexOfLastProduct);
 // Pagination handler
 const paginate = (pageNumber) => setCurrentPage(pageNumber);
 const totalPages = Math.ceil(sanpham.length / productsPerPage);
+
   return (
     <div>
       <HeaderUsers />
