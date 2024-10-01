@@ -32,7 +32,9 @@ export const CartProvider = ({ children }) => {
       }
        });
   };
-  const removeFromCart = (sanPhamId) => {
+
+  
+  const XoaGioHang = (sanPhamId) => {
     // Tìm sản phẩm muốn xóa
     const sanPhamXoa = giohang.find((item) => item.id === sanPhamId);
 
@@ -47,7 +49,7 @@ export const CartProvider = ({ children }) => {
 
 
 
-  const increaseQuantity = (sanPhamId) => {
+  const TangSoLuong = (sanPhamId) => {
     setGiohang((giohanghientai) =>
       giohanghientai.map((item) =>
         item.id === sanPhamId ? { ...item, soLuong: item.soLuong + 1 } : item
@@ -55,7 +57,7 @@ export const CartProvider = ({ children }) => {
     );
   };
 
-  const decreaseQuantity = (sanPhamId) => {
+  const GiamSoLuong = (sanPhamId) => {
     setGiohang((giohanghientai) =>
       giohanghientai.map((item) =>
         item.id === sanPhamId && item.soLuong > 1
@@ -66,7 +68,7 @@ export const CartProvider = ({ children }) => {
   };
 
   // Hàm cập nhật số lượng trực tiếp từ ô nhập
-  const updateQuantity = (sanPhamId, soLuongMoi) => {
+  const CapnhatSoLuong = (sanPhamId, soLuongMoi) => {
     setGiohang((giohanghientai) =>
       giohanghientai.map((item) =>
         item.id === sanPhamId ? { ...item, soLuong: parseInt(soLuongMoi) } : item
@@ -75,7 +77,7 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ giohang, addToCart, removeFromCart, increaseQuantity, decreaseQuantity, updateQuantity }}>
+    <CartContext.Provider value={{ giohang, addToCart, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong }}>
       {children}
     </CartContext.Provider>
   );

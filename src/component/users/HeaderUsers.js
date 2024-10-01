@@ -1,12 +1,36 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from './page/CartContext';
+import  axios  from 'axios';
 const HeaderUsers = () => {
+  
+  const [diachichitiet,setDiachichitiet] = useState({diachi: ' ' ,email: ''});
 
   const { giohang } = useContext(CartContext);  // sử dụng CartContext để lấy dữ liệu giỏ hàng
 
   // tính tổng số lượng sản phẩm hiện có trong giỏ hàng
   const tongSoLuong = giohang.reduce((tong, sanPham) => tong + sanPham.soLuong, 0);
+
+  // gọi api
+  useEffect(() => {
+    fetchDiaChiChiTiet();
+  },[])
+  // khai báo api diachichitiets
+   const fetchDiaChiChiTiet = async () => {
+    try{
+      const response = await axios.get('http://127.0.0.1:8000/api/diachichitiet');
+      
+      if(response.data && response.data.length > 0){
+        setDiachichitiet({
+          diachi: response.data[0].diachi,
+          email: response.data[0].email,
+        });
+      }
+    }
+    catch(err) {
+      console.log('lỗi khi lấy thông tin từ API:', err);
+    }
+   };
     return (
         <>
          {/* Navbar starts */}
@@ -14,8 +38,14 @@ const HeaderUsers = () => {
   <div className="container topbar bg-primary d-none d-lg-block">
     <div className="d-flex justify-content-between">
       <div className="top-info ps-2">
-        <small className="me-3"><i className="fas fa-map-marker-alt me-2 text-secondary" /> <Link to="#" className="text-white text-decoration-none">123 Street, New York</Link></small>
-        <small className="me-3"><i className="fas fa-envelope me-2 text-secondary" /><Link to="#" className="text-white text-decoration-none">Email@Example.com</Link></small>
+        <small className="me-3">
+          <i className="fas fa-map-marker-alt me-2 text-secondary" /> 
+            {diachichitiet.diachi}
+        </small>
+        <small className="me-3">
+          <i className="fas fa-envelope me-2 text-secondary" />
+            {diachichitiet.email}
+        </small>
       </div>
       <div className="top-link pe-2">
         <Link to="#" className="text-white text-decoration-none"><small className="text-white mx-2 ">Privacy Policy</small>/</Link>

@@ -5,7 +5,7 @@ import { CartContext } from "./CartContext";
 import { Link } from "react-router-dom";
 
 const Cart = () => {
-  const { giohang, increaseQuantity, decreaseQuantity, removeFromCart, updateQuantity } = useContext(CartContext);
+  const { giohang, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong } = useContext(CartContext);
 
   // Tính tổng giá trị của giỏ hàng
   const tongTienGioHang = giohang.reduce((tong, item) => tong + item.price * item.soLuong, 0);
@@ -57,7 +57,7 @@ const Cart = () => {
                           <div className="d-flex">
                             <button 
                               className="btn btn-warning btn-sm" 
-                              onClick={() => decreaseQuantity(sanPham.id)}
+                              onClick={() => GiamSoLuong(sanPham.id)}
                             >
                               <i className="fa fa-minus"></i>
                             </button>
@@ -66,12 +66,12 @@ const Cart = () => {
                               className="form-control text-center mx-2" 
                               value={sanPham.soLuong || 1}  // Đảm bảo hiển thị giá trị hợp lệ
                               min="1"
-                              onChange={(e) => updateQuantity(sanPham.id, e.target.value)}
+                              onChange={(e) => CapnhatSoLuong(sanPham.id, e.target.value)}
                               style={{ width: '60px', minWidth: '50px' }}  // Đặt chiều rộng tối thiểu
                             />
                             <button 
                               className="btn btn-warning btn-sm" 
-                              onClick={() => increaseQuantity(sanPham.id)}
+                              onClick={() => TangSoLuong(sanPham.id)}
                             >
                               <i className="fa fa-plus"></i>
                             </button>
@@ -79,7 +79,7 @@ const Cart = () => {
                         </td>
                         <td>${sanPham.price * sanPham.soLuong}</td>
                         <td>
-                          <button className="btn btn-danger btn-sm" onClick={() => removeFromCart(sanPham.id)}>
+                          <button className="btn btn-danger btn-sm" onClick={() => XoaGioHang(sanPham.id)}>
                             <i className="bi bi-trash3-fill"></i>
                           </button>
                         </td>

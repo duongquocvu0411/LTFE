@@ -1,5 +1,30 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 const Footerusers = () => {
+  const[diachichitiet,setDiaChiChiTiet] =useState({diachi:'', email:'',sdt: '' })
+
+  //goi api 
+  useEffect(() => {
+    fetchDiachichitiet()
+  },[]);
+  // khai báo api diachichitiet
+
+  const fetchDiachichitiet = async () =>{
+    try{
+      const response = await axios.get('http://127.0.0.1:8000/api/diachichitiet');
+
+      if(response.data && response.data.length >0){
+        setDiaChiChiTiet({
+          diachi: response.data[0].diachi,
+          email: response.data[0].email,
+          sdt: response.data[0].sdt,
+        });
+      }
+    }
+    catch(err){
+      console.log('lỗi khi lấy thông tin từ api:',err);
+    }
+  };
     return (
 
         <>
@@ -59,8 +84,24 @@ const Footerusers = () => {
           <div className="footer-item">
             <h4 className="text-light mb-3">Contact</h4>
             <p>Address: 1429 Netus Rd, NY 48247</p>
-            <p>Email: Example@gmail.com <a className="btn border-secondary rounded-pill text-primary" href="mailto:admin@gmail.com ">gửi ngay</a>  </p>
-            <p>Phone: +0123 4567 8910  <a className="btn border-secondary rounded-pill  text-primary" href="tel:0123456789">gọi ngay</a> </p>
+            <p>
+                Email: {diachichitiet.email} 
+                <a 
+                  className="btn border-secondary rounded-pill text-primary" 
+                  href={`mailto:${diachichitiet.email}`}
+                >
+                  gửi ngay
+                </a>
+            </p>
+            <p>
+              Phone: {diachichitiet.sdt}
+              <a
+                className="btn border-secondary rounded-pill text-primary"
+                href={`tel:${diachichitiet.sdt}`}
+                >
+                  Gọi Ngay
+                </a>
+            </p>
             <p>Payment Accepted</p>
             <img src="img/payment.png" className="img-fluid" alt />
           </div>
@@ -77,9 +118,7 @@ const Footerusers = () => {
           <span className="text-light"><a href="#"className="text-decoration-none" ><i className="fas fa-copyright text-light me-2" />Khóa k22</a>, All right reserved.</span>
         </div>
         <div className="col-md-6 my-auto text-center text-md-end text-white">
-          {/*/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. *** /*/}
-          {/*/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, *** /*/}
-          {/*/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". *** /*/}
+         
           Designed By <a className="border-bottom text-decoration-none" href="https://htmlcodex.com">HTML Codex</a> Distributed By <a className="border-bottom text-decoration-none" href="https://themewagon.com">ThemeWagon</a>
         </div>
       </div>
