@@ -45,7 +45,7 @@ const HeaderUsers = () => {
               {/* <Link to="/page404" className="dropdown-item">404 Page</Link> */}
             </div>
           </div>
-          <Link to="/" className="nav-item nav-link">Contact</Link>
+          <Link to="/lienhe" className="nav-item nav-link">Contact</Link>
           {/* <Link to="/admin/dashboard" className='nav-item nav-link'> <sup>Admin</sup></Link> */}
         </div>
         <div className="d-flex m-3 me-0">

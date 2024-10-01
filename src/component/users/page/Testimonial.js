@@ -3,10 +3,7 @@ import Tieude from "../HeaderUsers";
 import Footerusers from "../Footerusers";
 
 const Testimonial = () => {
-  useEffect(() => {
-    // Toggle the modal search when the component mounts
-    document.getElementById("searchModal").classList.add("show");
-  }, []);
+
 
   return (
     <>

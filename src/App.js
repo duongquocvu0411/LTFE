@@ -14,6 +14,7 @@ import { CartProvider } from "./component/users/page/CartContext";
 
 import ProtectedRoute from './component/routerbaove/ProtectedRoute';
 import LoginAdmin from "./component/admin/page/LoginAdmin";
+import LienHe from "./component/users/page/LienHe";
 
 function App() {
   return (
@@ -63,9 +64,11 @@ function App() {
             <Route path="/shop" element={<Shop />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/shop-detail" element={<Shopdetail />} />
+            <Route path="/shop/:id" element={<Shopdetail/>} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/Testimonial" element={<Testimonial />} />
             <Route path="/page404" element={<ErrorPage />} />
+            <Route path="/lienhe" element={<LienHe/>}/>
             
             {/* Wildcard route for 404 */}
             <Route path="*" element={<ErrorPage />} />

@@ -21,6 +21,7 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (sanPham) => {
     setGiohang((giohanghientai) => {
+      
       const sanPhamTonTai = giohanghientai.find((item) => item.id === sanPham.id);
       if (sanPhamTonTai) {
         return giohanghientai.map((item) =>
@@ -29,7 +30,7 @@ export const CartProvider = ({ children }) => {
       } else {
         return [...giohanghientai, { ...sanPham, soLuong: 1 }];
       }
-    });
+       });
   };
   const removeFromCart = (sanPhamId) => {
     // Tìm sản phẩm muốn xóa

@@ -3,68 +3,60 @@ import Footerusers from "../Footerusers";
 import axios from "axios";
 import HeaderUsers from "../HeaderUsers";
 import { CartContext } from "./CartContext";
-
+import { Link } from "react-router-dom";
 
 const Shop = () => {
-  const [danhmuc, setDanhmuc] = useState([]); // Khởi tạo state lưu trữ danh mục
+  const [danhmuc, setDanhmuc] = useState([]);
   const [sanpham, setSanpham] = useState([]);
-  const [selectedDanhmuc, setSelectedDanhmuc] = useState(""); // Danh mục được chọn
-  const {addToCart} = useContext(CartContext);
+  const [selectedDanhmuc, setSelectedDanhmuc] = useState("");
+  const { addToCart } = useContext(CartContext);
 
-  //phân trang
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 6;
 
-
-  // Gọi API lấy danh mục và sản phẩm
+  // Fetch categories and products
   useEffect(() => {
-    fetchSanpham();
     fetchDanhmuc();
-  }, [selectedDanhmuc]); // Chạy lại khi thay đổi danh mục
+    fetchSanpham();
+  }, [selectedDanhmuc]); // Run again when category changes
+
+  const fetchDanhmuc = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/api/danhsachsanpham');
+      setDanhmuc(response.data);
+    } catch (error) {
+      console.error('Error fetching Danh mục:', error);
+    }
+  };
+
+  const fetchSanpham = async () => {
+    try {
+      const url = selectedDanhmuc
+        ? `http://127.0.0.1:8000/api/products?danhsachsanpham_id=${selectedDanhmuc}`
+        : 'http://127.0.0.1:8000/api/products';
+      const response = await axios.get(url);
+      setSanpham(response.data);
+    } catch (error) {
+      console.error('Error fetching sản phẩm:', error);
+    }
+  };
+
+  // Pagination logic
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = sanpham.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(sanpham.length / productsPerPage);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 
-const fetchDanhmuc = async () => {
-  try {
-    const response = await axios.get('http://127.0.0.1:8000/api/danhsachsanpham');
-    setDanhmuc(response.data);
-  } catch (error) {
-    console.error('Error fetching Danh mục:', error);
-  }
-};
-
-
-const fetchSanpham = async () => {
-  try {
-    const url = selectedDanhmuc
-      ? `http://127.0.0.1:8000/api/products?danhsachsanpham_id=${selectedDanhmuc}` // Nếu có danh mục thì lọc
-      : 'http://127.0.0.1:8000/api/products'; // Nếu không, lấy tất cả sản phẩm
-    const response = await axios.get(url);
-    setSanpham(response.data);
-   
-  } catch (error) {
-    console.error('Error fetching sản phẩm:', error);
-  }
-};
-
-
-// phân trang
-
-// Calculate indices for pagination
-const indexOfLastProduct = currentPage * productsPerPage;
-const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-const currentProducts = sanpham.slice(indexOfFirstProduct, indexOfLastProduct);
-
-// Pagination handler
-const paginate = (pageNumber) => setCurrentPage(pageNumber);
-const totalPages = Math.ceil(sanpham.length / productsPerPage);
 
   return (
     <div>
       <HeaderUsers />
 
       <div>
-
-        {/* Single Page Header start */}
+        {/* Page Header */}
         <div className="container-fluid page-header py-5">
           <h1 className="text-center text-white display-6">Shop</h1>
           <ol className="breadcrumb justify-content-center mb-0">
@@ -73,9 +65,8 @@ const totalPages = Math.ceil(sanpham.length / productsPerPage);
             <li className="breadcrumb-item active text-white">Shop</li>
           </ol>
         </div>
-        {/* Single Page Header End */}
 
-        {/* Fruits Shop Start*/}
+        {/* Fruits Shop Start */}
         <div className="container-fluid fruite py-5">
           <div className="container py-5">
             <h1 className="mb-4">Fresh fruits shop</h1>
@@ -104,8 +95,8 @@ const totalPages = Math.ceil(sanpham.length / productsPerPage);
                         id="fruits"
                         name="fruitlist"
                         className="border-0 form-select-sm bg-light me-3"
-                        value={selectedDanhmuc} // Giá trị danh mục được chọn
-                        onChange={(e) => setSelectedDanhmuc(e.target.value)} // Cập nhật danh mục được chọn
+                        value={selectedDanhmuc}
+                        onChange={(e) => setSelectedDanhmuc(e.target.value)}
                       >
                         <option value="">All Categories</option>
                         {danhmuc.map((danhmucs) => (
@@ -121,158 +112,41 @@ const totalPages = Math.ceil(sanpham.length / productsPerPage);
                 <div className="row g-4">
                   {/* Categories */}
                   <div className="col-lg-3">
-                    <div className="row g-4">
-                      <div className="col-lg-12">
-                        <div className="mb-3">
-                          <h4>Categories</h4>
-                          <ul className="list-unstyled fruite-categorie">
-                            <li>
-                              <div className="d-flex justify-content-between fruite-name">
-                                <a href="#">
-                                  <i className="fas fa-apple-alt me-2" />
-                                  Apples
-                                </a>
-                                <span>(3)</span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="d-flex justify-content-between fruite-name">
-                                <a href="#">
-                                  <i className="fas fa-apple-alt me-2" />
-                                  Oranges
-                                </a>
-                                <span>(5)</span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="d-flex justify-content-between fruite-name">
-                                <a href="#">
-                                  <i className="fas fa-apple-alt me-2" />
-                                  Strawbery
-                                </a>
-                                <span>(2)</span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="d-flex justify-content-between fruite-name">
-                                <a href="#">
-                                  <i className="fas fa-apple-alt me-2" />
-                                  Banana
-                                </a>
-                                <span>(8)</span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="d-flex justify-content-between fruite-name">
-                                <a href="#">
-                                  <i className="fas fa-apple-alt me-2" />
-                                  Pumpkin
-                                </a>
-                                <span>(5)</span>
-                              </div>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                      
-
-                      {/* Additional */}
-                      <div className="col-lg-12">
-                        <div className="mb-3">
-                          <h4>Additional</h4>
-                          <div className="mb-2">
-                            <input
-                              type="radio"
-                              className="me-2"
-                              id="Categories-1"
-                              name="Categories-1"
-                              defaultValue="Beverages"
-                            />
-                            <label htmlFor="Categories-1"> Organic</label>
-                          </div>
-                          <div className="mb-2">
-                            <input
-                              type="radio"
-                              className="me-2"
-                              id="Categories-2"
-                              name="Categories-1"
-                              defaultValue="Beverages"
-                            />
-                            <label htmlFor="Categories-2"> Fresh</label>
-                          </div>
-                          <div className="mb-2">
-                            <input
-                              type="radio"
-                              className="me-2"
-                              id="Categories-3"
-                              name="Categories-1"
-                              defaultValue="Beverages"
-                            />
-                            <label htmlFor="Categories-3"> Sales</label>
-                          </div>
-                          <div className="mb-2">
-                            <input
-                              type="radio"
-                              className="me-2"
-                              id="Categories-4"
-                              name="Categories-1"
-                              defaultValue="Beverages"
-                            />
-                            <label htmlFor="Categories-4"> Discount</label>
-                          </div>
-                          <div className="mb-2">
-                            <input
-                              type="radio"
-                              className="me-2"
-                              id="Categories-5"
-                              name="Categories-1"
-                              defaultValue="Beverages"
-                            />
-                            <label htmlFor="Categories-5"> Expired</label>
-                          </div>
-                        </div>
-                      </div>
-
-                    
-                      
-                    </div>
+                    {/* Categories List (if needed) */}
+                    {/* Your categories code */}
                   </div>
-               
-                 <div className="col-lg-9">
+
+                  {/* Product List */}
+                  <div className="col-lg-9">
                     <div className="row g-4 justify-content-center">
                       {currentProducts.map((product) => (
                         <div key={product.id} className="col-md-6 col-lg-6 col-xl-4 d-flex">
                           <div className="rounded position-relative fruite-item card h-100 w-100 ">
                             <div className="fruite-img card-img-top">
-                              <img
-                                  src={`http://127.0.0.1:8000/storage/${product.image}`} 
-                                className="img-fluid w-100 rounded-top"
-                                alt={product.title}
-                                style={{ height: 250, objectFit: 'cover' }}
-                              />
+                              <Link to={`/shop/${product.id}`}>
+                                <img
+                                  src={`http://127.0.0.1:8000/storage/${product.image}`}
+                                  className="img-fluid w-100 rounded-top"
+                                  alt={product.title}
+                                  style={{ height: 250, objectFit: 'cover' }}
+                                />
+                              </Link>
                             </div>
-                            <div
-                              className="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                              style={{ top: 10, left: 10 }}
-                            >
+                            <div className="text-white bg-secondary px-3 py-1 rounded position-absolute" style={{ top: 10, left: 10 }}>
                               Fruits
                             </div>
                             <div className="card-body d-flex flex-column rounded-bottom">
                               <h4>{product.title}</h4>
-                              <p>{product.description}</p>
-                              <div className=" d-flex justify-content-between flex-lg-wrap">
+                              
+                              <Link to={`/shop/${product.id}`} className="btn btn-link">(xem chi tiết sản phẩm)</Link>
+         
+                              <div className="d-flex justify-content-between flex-lg-wrap">
                                 <p className="text-dark fs-5 fw-bold mb-0">${product.price} / kg</p>
-                                <button 
-                                  onClick={() => addToCart(product)} // Thêm sản phẩm
+                                <button
+                                  onClick={() => addToCart(product)}
                                   className="btn border border-secondary rounded-pill px-3 text-primary">
                                   <i className="fa fa-shopping-bag me-2 text-primary" /> Add to cart
                                 </button>
-                                {/* <a
-                                  href="#"
-                                  className="btn border border-secondary rounded-pill px-3 text-primary"
-                                >
-                                  <i className="fa fa-shopping-bag me-2 text-primary" /> Add to cart
-                                </a> */}
                               </div>
                             </div>
                           </div>
@@ -303,7 +177,7 @@ const totalPages = Math.ceil(sanpham.length / productsPerPage);
             </div>
           </div>
         </div>
-        {/* Fruits Shop End*/}
+        {/* Fruits Shop End */}
       </div>
 
       <Footerusers />

@@ -63,7 +63,14 @@ const [showModal, setShowModal] = useState(false);
       .catch(error => console.log('Error deleting product:', error));
       console.log("đã xóa sản phẩm thành công :", id);
   };
-
+  const [expandedDescriptions, setExpandedDescriptions] = useState({});
+  // Hàm để toggle trạng thái mô tả
+const toggleDescription = (id) => {
+  setExpandedDescriptions((prev) => ({
+    ...prev,
+    [id]: !prev[id], // Đảo ngược trạng thái của mô tả tương ứng
+  }));
+};
   return (
     <div>
       <Header />
@@ -93,40 +100,48 @@ const [showModal, setShowModal] = useState(false);
                   </tr>
                 </thead>
                 <tbody>
-                  {PageProducts.map((product, index) => (
-                    <tr key={nanoid()}>
-                      <td>
-                        <p className="mb-0 mt-4">{indexOfFirstProduct + index + 1}</p>
-                      </td>
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <img 
-                            src={`http://127.0.0.1:8000/storage/${product.image}`} 
-                            alt={product.title} 
-                            style={{ height: '50px', objectFit: 'cover' }} 
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <p className="mb-0 mt-4">{product.title}</p>
-                      </td>
-                      <td>
-                        <p className="mb-0 mt-4">{product.description}</p>
-                      </td>
-                      <td>
-                        <p className="mb-0 mt-4">{product.price} vnđ / kg</p>
-                      </td>
-                      <td>
-                        <Button variant="primary me-2" onClick={() => handleEditProduct(product)}>
-                          <i className="bi bi-pencil-square"></i>
-                        </Button>
-                        <Button variant="danger" onClick={() => handleDeleteProduct(product.id)}>
-                          <i className="bi bi-trash3-fill"></i>
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+  {PageProducts.map((product, index) => (
+    <tr key={nanoid()}>
+      <td>
+        <p className="mb-0 mt-4">{indexOfFirstProduct + index + 1}</p>
+      </td>
+      <td>
+        <div className="d-flex align-items-center">
+          <img 
+            src={`http://127.0.0.1:8000/storage/${product.image}`} 
+            alt={product.title} 
+            style={{ height: '50px', objectFit: 'cover' }} 
+          />
+        </div>
+      </td>
+      <td>
+        <p className="mb-0 mt-4">{product.title}</p>
+      </td>
+      <td>
+        <p className="mb-0 mt-4">
+          {expandedDescriptions[product.id] ? product.description : `${product.description.slice(0, 20)}...`}
+          <button 
+            className="btn btn-link p-0" 
+            onClick={() => toggleDescription(product.id)}
+          >
+            {expandedDescriptions[product.id] ? 'Xem ít hơn' : 'Xem thêm'}
+          </button>
+        </p>
+      </td>
+      <td>
+        <p className="mb-0 mt-4">{product.price} vnđ / kg</p>
+      </td>
+      <td>
+        <Button variant="primary me-2" onClick={() => handleEditProduct(product)}>
+          <i className="bi bi-pencil-square"></i>
+        </Button>
+        <Button variant="danger" onClick={() => handleDeleteProduct(product.id)}>
+          <i className="bi bi-trash3-fill"></i>
+        </Button>
+      </td>
+    </tr>
+  ))}
+</tbody>
               </table>
             </div>
 

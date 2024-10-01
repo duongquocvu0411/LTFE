@@ -3,6 +3,7 @@ import Footerusers from "../Footerusers";
 import axios from "axios";
 import HeaderUsers from "../HeaderUsers";
 import { CartContext } from "./CartContext";
+import { Link } from "react-router-dom";
 
 const Checkout= () => {
   
@@ -33,7 +34,12 @@ const Checkout= () => {
     };
     fetchCities();
   }, []);
+ const [sdt,setSdt]= useState('');
 
+ const handleInput = (e) => {
+  const newSdt = e.target.value.replace(/[^0-9]/g,'');
+  setSdt(newSdt);
+ }
 
 
   // Tính tổng giá trị của giỏ hàng
@@ -50,8 +56,8 @@ return (
   <div className="container-fluid page-header py-5">
     <h1 className="text-center text-white display-6">Checkout</h1>
     <ol className="breadcrumb justify-content-center mb-0">
-      <li className="breadcrumb-item"><a href="#">Home</a></li>
-      <li className="breadcrumb-item"><a href="#">Pages</a></li>
+      <li className="breadcrumb-item"><Link to="/">Home</Link></li>
+      <li className="breadcrumb-item"><Link to="/">Pages</Link></li>
       <li className="breadcrumb-item active text-white">Checkout</li>
     </ol>
   </div>
@@ -60,14 +66,14 @@ return (
   <div className="container-fluid py-5">
     <div className="container py-5">
       <h1 className="mb-4">Billing details</h1>
-      <form action="#">
+      <form >
         <div className="row g-5">
           <div className="col-md-12 col-lg-6 col-xl-7">
             <div className="row">
               <div className="col-md-12 col-lg-6">
                 <div className="form-item w-100">
                   <label className="form-label my-3">First Name<sup>*</sup></label>
-                  <input type="text" className="form-control" />
+                  <input type="text" className="form-control" required />
                 </div>
               </div>
               <div className="col-md-12 col-lg-6">
@@ -98,7 +104,8 @@ return (
     </div>
             <div className="form-item">
               <label className="form-label my-3">Mobile<sup>*</sup></label>
-              <input type="tel" className="form-control" />
+              <input type="tel" class="form-control" value={sdt} onInput={handleInput} placeholder="nhap so " required />
+
             </div>
             <div className="form-item">
               <label className="form-label my-3">Email Address<sup>*</sup></label>
@@ -157,7 +164,7 @@ return (
               </table>
             </div>
             <div className="row g-4 text-center align-items-center justify-content-center pt-4">
-              <button type="button" className="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Place Order</button>
+              <button type="submit" className="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Place Order</button>
             </div>
           </div>
         </div>

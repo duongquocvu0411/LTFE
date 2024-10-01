@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Pagination } from 'react-bootstrap';
 import HeaderUsers from '../HeaderUsers';
 import { CartContext } from './CartContext';
+import { Link } from 'react-router-dom';
 
 const HomeUsers = () => {
 
@@ -198,12 +199,15 @@ const HomeUsers = () => {
                     <div className="col-md-6 col-lg-4 col-xl-3" key={sanPham.id}>
                       <div className="rounded position-relative fruite-item shadow-sm">
                         <div className="fruite-img">
-                          <img
-                            src={`http://127.0.0.1:8000/storage/${sanPham.image}`}
-                            className="img-fluid w-100 rounded-top"
-                            alt={sanPham.title}
-                            style={{ height: 250, objectFit: 'cover' }}
-                          />
+                          <Link to={`/shop/${sanPham.id}`} className="btn btn-link">
+                              <img
+                                src={`http://127.0.0.1:8000/storage/${sanPham.image}`}
+                                className="img-fluid w-100 rounded-top"
+                                alt={sanPham.title}
+                                style={{ height: 250, objectFit: 'cover' }}
+                              />
+                          </Link>
+                         
                         </div>
                         <div
                           className="text-white bg-secondary px-2 py-1 rounded position-absolute"
@@ -213,7 +217,7 @@ const HomeUsers = () => {
                         </div>
                         <div className="p-3 border border-secondary border-top-0 rounded-bottom">
                           <h5>{sanPham.title}</h5>
-                          <p className="text-muted">{sanPham.description}</p>
+                          <Link to={`/shop/${sanPham.id}`} className="btn btn-link">(xem chi tiết sản phẩm)</Link>
                           <div className="d-flex justify-content-between flex-lg-wrap">
                             <p className="text-dark fs-5 fw-bold mb-0">${sanPham.price} / kg</p>
                             <button  
