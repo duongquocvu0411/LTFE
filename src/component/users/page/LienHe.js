@@ -5,75 +5,74 @@ import HeaderUsers from '../HeaderUsers';
 import { Link } from 'react-router-dom';
 
 const LienHe = () => {
-  const [formData, setFormData] = useState({
-    ten: '',
+  const [duLieuForm, setDuLieuForm] = useState({
+    hoTen: '',
     email: '',
-    sdt: '',
-    ghichu: ''
+    soDienThoai: '',
+    ghiChu: ''
   });
-  const [submitted, setSubmitted] = useState(false);
+  const [daGui, setDaGui] = useState(false);
 
   // Cập nhật dữ liệu khi người dùng nhập vào form
-  const handleChange = (e) => {
-   const {name, value} = e.target;
+  const thayDoiDuLieu = (e) => {
+    const { name, value } = e.target;
 
-   // kiểm tra nếu trường dữ liệu đang thay đổi là sdt
-   if(name === 'sdt'){
-    // chỉ cho phép nhập số và giới hạn 11 số
-    if(/^\d*$/.test(value) && value.length <=11){
-      setFormData({
-        ...formData,
-        [name]:value,
+    // Kiểm tra nếu trường dữ liệu đang thay đổi là số điện thoại
+    if (name === 'soDienThoai') {
+      // Chỉ cho phép nhập số và giới hạn 11 số
+      if (/^\d*$/.test(value) && value.length <= 11) {
+        setDuLieuForm({
+          ...duLieuForm,
+          [name]: value,
+        });
+      }
+    } else {
+      setDuLieuForm({
+        ...duLieuForm,
+        [name]: value,
       });
     }
-   }else{
-    setFormData({
-      ...formData,
-      [name]:value,
-    });
-   }
   };
 
   // Xử lý khi người dùng nhấn nút gửi
-  const handleSubmit = (e) => {
+  const xuLyGuiForm = (e) => {
     e.preventDefault();
     
     // Gửi dữ liệu đến server
-    axios.post('http://127.0.0.1:8000/api/lienhe', formData)
+    axios.post('http://127.0.0.1:8000/api/lienhe', duLieuForm)
       .then(response => {
-        setSubmitted(true);
-        console.alter('Contact form submitted successfully:', response.data);
-        
+        setDaGui(true);
+        console.log('Đã gửi form liên hệ thành công:', response.data);
       })
       .catch(error => {
-        console.error('Error submitting contact form:', error);
+        console.error('Lỗi khi gửi form liên hệ:', error);
       });
   };
 
   return (
     <>
-      <HeaderUsers/>
+      <HeaderUsers />
       <Container className="mt-5 py-5">
         <Row className="justify-content-center">
           <Col md={8}>
             <h2 className="mb-4 text-center">Liên Hệ Với Chúng Tôi</h2>
-            {submitted ? (
+            {daGui ? (
               <div className="alert alert-success" role="alert">
                 Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất có thể.
                 <div className='text-center'>
-                  <Link to={"/"} className='btn btn-primary'>trở về</Link>
+                  <Link to={"/"} className='btn btn-primary'>Trở về</Link>
                 </div>
               </div>
             ) : (
-              <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="formTen" className="mb-3">
+              <Form onSubmit={xuLyGuiForm}>
+                <Form.Group controlId="formHoTen" className="mb-3">
                   <Form.Label>Họ Tên</Form.Label>
                   <Form.Control
                     type="text"
-                    name="ten"
+                    name="hoTen"
                     placeholder="Nhập họ tên của bạn"
-                    value={formData.ten}
-                    onChange={handleChange}
+                    value={duLieuForm.hoTen}
+                    onChange={thayDoiDuLieu}
                     required
                   />
                 </Form.Group>
@@ -84,33 +83,33 @@ const LienHe = () => {
                     type="email"
                     name="email"
                     placeholder="Nhập email của bạn"
-                    value={formData.email}
-                    onChange={handleChange}
+                    value={duLieuForm.email}
+                    onChange={thayDoiDuLieu}
                     required
                   />
                 </Form.Group>
 
-                <Form.Group controlId="formSdt" className="mb-3">
+                <Form.Group controlId="formSoDienThoai" className="mb-3">
                   <Form.Label>Số Điện Thoại</Form.Label>
                   <Form.Control
                     type="text"
-                    name="sdt"
+                    name="soDienThoai"
                     placeholder="Nhập số điện thoại của bạn"
-                    value={formData.sdt}
-                    onChange={handleChange}
+                    value={duLieuForm.soDienThoai}
+                    onChange={thayDoiDuLieu}
                     required
                   />
                 </Form.Group>
 
-                <Form.Group controlId="formGhichu" className="mb-3">
+                <Form.Group controlId="formGhiChu" className="mb-3">
                   <Form.Label>Nội Dung</Form.Label>
                   <Form.Control
                     as="textarea"
-                    name="ghichu"
+                    name="ghiChu"
                     rows={5}
                     placeholder="Nhập nội dung liên hệ"
-                    value={formData.ghichu}
-                    onChange={handleChange}
+                    value={duLieuForm.ghiChu}
+                    onChange={thayDoiDuLieu}
                     required
                   />
                 </Form.Group>

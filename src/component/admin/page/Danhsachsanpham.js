@@ -4,63 +4,63 @@ import Footer from '../Footer';
 import Header from '../Header';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
-import ModlaAdddanhsachsanpham from '../modla/ModlaDanhsachsanpham';
+import ModalThemDanhMucSanPham from '../modla/ModlaDanhsachsanpham';
 import { nanoid } from 'nanoid';
 
-const Danhsachsanpham = () => {
-  const [Danhsachsanphamss, setDanhsachsanphamss] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const DanhsachsanphamssPerPage = 4;
+const DanhSachSanPham = () => {
+  const [danhSachDanhMuc, setDanhSachDanhMuc] = useState([]);
+  const [trangHienTai, setTrangHienTai] = useState(1);
+  const danhMucMoiTrang = 4;
 
-  // Pagination logic
-  const indexOfLastDanhsachsanphams = currentPage * DanhsachsanphamssPerPage;
-  const indexOfFirstDanhsachsanphams = indexOfLastDanhsachsanphams - DanhsachsanphamssPerPage;
-  const currentDanhsachsanphamss = Danhsachsanphamss.slice(indexOfFirstDanhsachsanphams, indexOfLastDanhsachsanphams);
-  const totalPages = Math.ceil(Danhsachsanphamss.length / DanhsachsanphamssPerPage);
+  // Logic phân trang
+  const viTriDanhMucCuoi = trangHienTai * danhMucMoiTrang;
+  const viTriDanhMucDau = viTriDanhMucCuoi - danhMucMoiTrang;
+  const danhMucTheoTrang = danhSachDanhMuc.slice(viTriDanhMucDau, viTriDanhMucCuoi);
+  const tongSoTrang = Math.ceil(danhSachDanhMuc.length / danhMucMoiTrang);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const phanTrang = (soTrang) => setTrangHienTai(soTrang);
 
-  const [showModal, setShowModal] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [currentDanhsachsanphams, setCurrentDanhsachsanphams] = useState(null);
+  const [hienThiModal, setHienThiModal] = useState(false);
+  const [chinhSua, setChinhSua] = useState(false);
+  const [danhMucHienTai, setDanhMucHienTai] = useState(null);
 
-  // Fetch Danhsachsanphamss from API
-  const fetchDanhsachsanphamss = () => {
+  // Lấy danh sách danh mục từ API
+  const layDanhSachDanhMuc = () => {
     axios.get('http://127.0.0.1:8000/api/danhsachsanpham')
       .then(response => {
-        setDanhsachsanphamss(response.data);
+        setDanhSachDanhMuc(response.data);
       })
       .catch(error => {
-        console.log('Error fetching Danhsachsanphamss:', error);
+        console.log('Lỗi khi lấy danh sách danh mục:', error);
       });
   };
 
   useEffect(() => {
-    fetchDanhsachsanphamss();
+    layDanhSachDanhMuc();
   }, []);
 
-  // Open modal for adding a new Danhsachsanphams
-  const handleAddDanhsachsanphams = () => {
-    setIsEdit(false);
-    setCurrentDanhsachsanphams(null);
-    setShowModal(true);
+  // Mở modal để thêm danh mục mới
+  const moModalThemDanhMuc = () => {
+    setChinhSua(false);
+    setDanhMucHienTai(null);
+    setHienThiModal(true);
   };
 
-  // Open modal for editing a Danhsachsanphams
-  const handleEditDanhsachsanphams = (Danhsachsanphams) => {
-    setIsEdit(true);
-    setCurrentDanhsachsanphams(Danhsachsanphams);
-    setShowModal(true);
+  // Mở modal để chỉnh sửa danh mục
+  const moModalSuaDanhMuc = (danhMuc) => {
+    setChinhSua(true);
+    setDanhMucHienTai(danhMuc);
+    setHienThiModal(true);
   };
 
-  // Delete a Danhsachsanphamss
-  const handleDeleteDanhsachsanphams = (id) => {
+  // Xóa danh mục
+  const xoaDanhMuc = (id) => {
     axios.delete(`http://127.0.0.1:8000/api/danhsachsanpham/${id}`)
       .then(() => {
-        window.alert('Danhsachsanphams deleted successfully');
-        fetchDanhsachsanphamss();
+        window.alert('Đã xóa danh mục thành công');
+        layDanhSachDanhMuc();
       })
-      .catch(error => console.log('Error deleting Danhsachsanphams:', error));
+      .catch(error => console.log('Lỗi khi xóa danh mục:', error));
   };
 
   return (
@@ -72,12 +72,12 @@ const Danhsachsanpham = () => {
           <div className="container">
             <h1 className="mb-4">Danh mục sản phẩm</h1>
             <div className="text-end mb-3">
-              <Button variant="primary" onClick={handleAddDanhsachsanphams}>
-                <i className="bi bi-file-plus-fill">Add Danhsachsanphams</i>
+              <Button variant="primary" onClick={moModalThemDanhMuc}>
+                <i className="bi bi-file-plus-fill"> Thêm danh mục</i>
               </Button>
             </div>
 
-            {/* Danhsachsanphams Table */}
+            {/* Bảng danh mục sản phẩm */}
             <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
               <table className="table table-bordered border-dark table-hover">
                 <thead>
@@ -88,26 +88,26 @@ const Danhsachsanpham = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentDanhsachsanphamss.map((Danhsachsanphams, index) => (
+                  {danhMucTheoTrang.map((danhMuc, index) => (
                     <tr key={nanoid()}>
                       <td>
-                      <p className='mb-0 mt-4'>{indexOfFirstDanhsachsanphams + index + 1}</p>
+                        <p className='mb-0 mt-4'>{viTriDanhMucDau + index + 1}</p>
                       </td>
                       <td>
-                      <p className="mb-0 mt-4">{Danhsachsanphams.name}</p>
+                        <p className="mb-0 mt-4">{danhMuc.name}</p>
                       </td>
                       <td>
                         <Button
                           variant="primary me-2"
-                          onClick={() => handleEditDanhsachsanphams(Danhsachsanphams)}
+                          onClick={() => moModalSuaDanhMuc(danhMuc)}
                         >
-                          <i class="bi bi-pencil-square"></i>
+                          <i className="bi bi-pencil-square"></i>
                         </Button>{' '}
                         <Button
                           variant="danger"
-                          onClick={() => handleDeleteDanhsachsanphams(Danhsachsanphams.id)}
+                          onClick={() => xoaDanhMuc(danhMuc.id)}
                         >
-                          <i class="bi bi-trash3-fill"></i>
+                          <i className="bi bi-trash3-fill"></i>
                         </Button>
                       </td>
                     </tr>
@@ -116,19 +116,19 @@ const Danhsachsanpham = () => {
               </table>
             </div>
 
-            {/* Pagination */}
+            {/* Phân trang */}
             <div className="d-flex justify-content-center mt-5">
               <ul className="pagination">
-                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                  <button className="page-link" onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}>«</button>
+                <li className={`page-item ${trangHienTai === 1 ? 'disabled' : ''}`}>
+                  <button className="page-link" onClick={() => phanTrang(trangHienTai > 1 ? trangHienTai - 1 : 1)}>«</button>
                 </li>
-                {[...Array(totalPages)].map((_, i) => (
-                  <li key={i + 1} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
-                    <button className="page-link" onClick={() => paginate(i + 1)}>{i + 1}</button>
+                {[...Array(tongSoTrang)].map((_, i) => (
+                  <li key={i + 1} className={`page-item ${trangHienTai === i + 1 ? 'active' : ''}`}>
+                    <button className="page-link" onClick={() => phanTrang(i + 1)}>{i + 1}</button>
                   </li>
                 ))}
-                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                  <button className="page-link" onClick={() => paginate(currentPage < totalPages ? currentPage + 1 : totalPages)}>»</button>
+                <li className={`page-item ${trangHienTai === tongSoTrang ? 'disabled' : ''}`}>
+                  <button className="page-link" onClick={() => phanTrang(trangHienTai < tongSoTrang ? trangHienTai + 1 : tongSoTrang)}>»</button>
                 </li>
               </ul>
             </div>
@@ -136,13 +136,13 @@ const Danhsachsanpham = () => {
         </div>
       </div>
 
-      {/* Modal for Adding/Editing Danhsachsanphams */}
-      <ModlaAdddanhsachsanpham
-        show={showModal}
-        handleClose={() => setShowModal(false)}
-        isEdit={isEdit}
-        product={currentDanhsachsanphams}
-        fetchProducts={fetchDanhsachsanphamss}
+      {/* Modal Thêm/Sửa danh mục */}
+      <ModalThemDanhMucSanPham
+        show={hienThiModal}
+        handleClose={() => setHienThiModal(false)}
+        isEdit={chinhSua}
+        product={danhMucHienTai}
+        fetchProducts={layDanhSachDanhMuc}
       />
 
       <Footer />
@@ -150,4 +150,4 @@ const Danhsachsanpham = () => {
   );
 };
 
-export default Danhsachsanpham;
+export default DanhSachSanPham

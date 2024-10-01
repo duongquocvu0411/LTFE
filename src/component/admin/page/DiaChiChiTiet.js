@@ -7,62 +7,52 @@ import { Button } from 'react-bootstrap';
 import { nanoid } from 'nanoid';
 import ModalDiaChiChiTiet from '../modla/ModlaDiachichitiet';
 
-
 const DiaChiChiTiet = () => {
-  const [diaChiDetails, setDiaChiDetails] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const detailsPerPage = 4;
-  
-  // Pagination logic
-  const indexOfLastDetail = currentPage * detailsPerPage;
-  const indexOfFirstDetail = indexOfLastDetail - detailsPerPage;
-  const currentDetails = diaChiDetails.slice(indexOfFirstDetail, indexOfLastDetail);
-  const totalPages = Math.ceil(diaChiDetails.length / detailsPerPage);
-  
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  
-  const [showModal, setShowModal] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [currentDetail, setCurrentDetail] = useState(null);
-  
-  // Fetch details from API
-  const fetchDiaChiDetails = () => {
+  const [danhSachDiaChi, setDanhSachDiaChi] = useState([]); // State lưu trữ danh sách địa chỉ
+  const [hienThiModal, setHienThiModal] = useState(false); // State để điều khiển hiển thị Modal
+  const [chinhSua, setChinhSua] = useState(false); // State xác định chế độ chỉnh sửa hay thêm mới
+  const [diaChiHienTai, setDiaChiHienTai] = useState(null); // State lưu trữ thông tin địa chỉ đang được chỉnh sửa
+
+  // Gọi API lấy danh sách địa chỉ khi component được mount
+  useEffect(() => {
+    layDanhSachDiaChi();
+  }, []);
+
+  // Hàm lấy danh sách địa chỉ từ API
+  const layDanhSachDiaChi = () => {
     axios.get('http://127.0.0.1:8000/api/diachichitiet')
       .then(response => {
-        setDiaChiDetails(response.data);
+        setDanhSachDiaChi(response.data); // Lưu dữ liệu vào state
       })
       .catch(error => {
-        console.log('Error fetching details:', error);
+        console.log('Lỗi khi lấy danh sách địa chỉ:', error);
       });
   };
-  // hàm xóa diachi
-  const handleXoaDiaChiChiTiet = (id) =>{
-    
-    axios.delete(`http://127.0.0.1:8000/api/diachichitiet/${id}`)
-    .then(() => {
-      window.alert('đã xóa địa chỉ và email thành công');
-      fetchDiaChiDetails();
-    })
-    .catch(error => console.log('có lỗi khi xóa ',error));
-  }
-  useEffect(() => {
-    fetchDiaChiDetails();
-  }, []);
-  
-  // Open modal for adding new detail
-  const handleAddDetail = () => {
-    setIsEdit(false);
-    setCurrentDetail(null);
-    setShowModal(true);
+
+  // Hàm xóa địa chỉ
+  // const xoaDiaChi = (id) => {
+  //   axios.delete(`http://127.0.0.1:8000/api/diachichitiet/${id}`)
+  //   .then(() => {
+  //     window.alert('Đã xóa địa chỉ và email thành công');
+  //     layDanhSachDiaChi();
+  //   })
+  //   .catch(error => console.log('Lỗi khi xóa:', error));
+  // }
+
+  // Hàm mở modal để thêm địa chỉ mới
+  // const themDiaChi = () => {
+  //   setChinhSua(false);
+  //   setDiaChiHienTai(null);
+  //   setHienThiModal(true);
+  // };
+
+  // Hàm mở modal để chỉnh sửa địa chỉ
+  const chinhSuaDiaChi = (diaChi) => {
+    setChinhSua(true);
+    setDiaChiHienTai(diaChi);
+    setHienThiModal(true);
   };
-  
-  // Open modal for editing detail
-  const handleEditDetail = (detail) => {
-    setIsEdit(true);
-    setCurrentDetail(detail);
-    setShowModal(true);
-  };
-  
+
   return (
     <div>
       <Header />
@@ -71,13 +61,13 @@ const DiaChiChiTiet = () => {
         <div className="flex-grow-1">
           <div className="container">
             <h1 className="mb-4">Danh Sách Địa Chỉ Chi Tiết</h1>
-            <div className="text-end mb-3">
-              <Button variant="primary" onClick={handleAddDetail}>
-                <i className="bi bi-file-plus-fill"> Add Detail</i>
+            {/* <div className="text-end mb-3">
+              <Button variant="primary" onClick={themDiaChi}>
+                <i className="bi bi-file-plus-fill"> Thêm Địa Chỉ</i>
               </Button>
-            </div>
+            </div> */}
 
-            {/* Table for DiaChiChiTiet */}
+            {/* Bảng hiển thị danh sách địa chỉ */}
             <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
               <table className="table table-bordered border-dark table-hover">
                 <thead>
@@ -90,67 +80,50 @@ const DiaChiChiTiet = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentDetails.map((detail, index) => (
+                  {danhSachDiaChi.map((diaChi) => (
                     <tr key={nanoid()}>
                       <td>
-                        <p className='mb-0 mt-4'>{indexOfFirstDetail + index + 1}</p>
+                        <p className='mb-0 mt-4'>{diaChi.id}</p>
                       </td>
                       <td>
-                        <p className="mb-0 mt-4">{detail.diachi}</p>
+                        <p className="mb-0 mt-4">{diaChi.diachi}</p>
                       </td>
                       <td>
-                        <p className="mb-0 mt-4">{detail.email}</p>
+                        <p className="mb-0 mt-4">{diaChi.email}</p>
                       </td>
                       <td>
-                        <p className="mb-0 mt-4">{detail.sdt}</p>
+                        <p className="mb-0 mt-4">{diaChi.sdt}</p>
                       </td>
                       <td>
                         <Button
                           variant="primary me-2"
-                          onClick={() => handleEditDetail(detail)}
+                          onClick={() => chinhSuaDiaChi(diaChi)}
                         >
                           <i className="bi bi-pencil-square"></i>
                         </Button>{' '}
-                        <Button
+                        {/* <Button
                           variant="primary me-2"
-                          onClick={() => handleXoaDiaChiChiTiet(detail.id)}
+                          onClick={() => xoaDiaChi(diaChi.id)}
                         >
                            <i class="bi bi-trash3-fill"></i>
-                        </Button>{' '}
+                        </Button>{' '} */}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-
-            {/* Pagination */}
-            <div className="d-flex justify-content-center mt-5">
-              <ul className="pagination">
-                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                  <button className="page-link" onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}>«</button>
-                </li>
-                {[...Array(totalPages)].map((_, i) => (
-                  <li key={i + 1} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
-                    <button className="page-link" onClick={() => paginate(i + 1)}>{i + 1}</button>
-                  </li>
-                ))}
-                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                  <button className="page-link" onClick={() => paginate(currentPage < totalPages ? currentPage + 1 : totalPages)}>»</button>
-                </li>
-              </ul>
-            </div>
           </div>
         </div>
       </div>
 
-      {/* Modal for Adding/Editing Details */}
+      {/* Modal thêm/sửa địa chỉ */}
       <ModalDiaChiChiTiet
-        show={showModal}
-        handleClose={() => setShowModal(false)}
-        isEdit={isEdit}
-        detail={currentDetail}
-        fetchDetails={fetchDiaChiDetails}
+        show={hienThiModal}
+        handleClose={() => setHienThiModal(false)}
+        isEdit={chinhSua}
+        detail={diaChiHienTai}
+        fetchDetails={layDanhSachDiaChi}
       />
 
       <Footer />

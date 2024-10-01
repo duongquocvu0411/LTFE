@@ -63,7 +63,7 @@ const handleSdtChange = (e) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>{isEdit ? 'Edit Detail' : 'Add Detail'}</Modal.Title>
+        <Modal.Title>{isEdit ? 'Chỉnh sửa Địa chỉ' : 'Add Detail'}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
@@ -86,7 +86,7 @@ const handleSdtChange = (e) => {
             />
           </Form.Group>
           <Form.Group controlId="formSdt" className="mt-3">
-            <Form.Label>Email</Form.Label>
+            <Form.Label>Số Điện Thoại</Form.Label>
             <Form.Control
               type="tel"
               placeholder="Nhập số điện thoại"
