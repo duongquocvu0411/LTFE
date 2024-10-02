@@ -12,7 +12,11 @@ const Testimonial = () => {
 
         {/* Giới thiệu Section Start */}
         <div className="container-fluid py-5">
-          <div className="container">
+          <div className="container  py-5">
+            <br></br>
+            <br></br>
+            <br></br>
+
             <h1 className="text-center text-primary mb-4">
               Câu chuyện thương hiệu
             </h1>
@@ -37,7 +41,7 @@ const Testimonial = () => {
               <div className="col-lg-6">
                 <img
                   src={`${process.env.PUBLIC_URL}/img/best-product-1.jpg`}
-className="img-fluid rounded mb-4"
+                  className="img-fluid rounded mb-4"
                   alt="Trái cây tươi"
                 />
                 <h4>Cam kết của chúng tôi</h4>

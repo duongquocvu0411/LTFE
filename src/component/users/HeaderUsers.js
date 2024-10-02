@@ -65,7 +65,7 @@ const HeaderUsers = () => {
           <Link to="/" className="nav-item nav-link active">Home</Link>
           <Link to="/shop" className="nav-item nav-link">Shop</Link>
 
-          <Link to="/Shop-detail" className="nav-item nav-link">Shop Detail</Link>
+          {/* <Link to="/Shop-detail" className="nav-item nav-link">Shop Detail</Link> */}
           <div className="nav-item dropdown">
             <Link to="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</Link>
             <div className="dropdown-menu m-0 bg-secondary rounded-0">

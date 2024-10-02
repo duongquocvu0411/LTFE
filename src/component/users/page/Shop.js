@@ -6,178 +6,141 @@ import { CartContext } from "./CartContext";
 import { Link } from "react-router-dom";
 
 const Shop = () => {
-  const [danhmuc, setDanhmuc] = useState([]);
-  const [sanpham, setSanpham] = useState([]);
-  const [selectedDanhmuc, setSelectedDanhmuc] = useState("");
+  const [danhMuc, setDanhMuc] = useState([]);
+  const [sanPham, setSanPham] = useState([]);
+  const [danhMucDuocChon, setDanhMucDuocChon] = useState("");
   const { addToCart } = useContext(CartContext);
 
   // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 6;
+  const [trangHienTai, setTrangHienTai] = useState(1);
+  const sanPhamMoiTrang = 8;
 
   // Fetch categories and products
   useEffect(() => {
-    fetchDanhmuc();
-    fetchSanpham();
-  }, [selectedDanhmuc]); // Run again when category changes
+    fetchDanhMuc();
+    fetchSanPham();
+  }, [danhMucDuocChon]);
 
-  const fetchDanhmuc = async () => {
+  const fetchDanhMuc = async () => {
     try {
       const response = await axios.get('http://127.0.0.1:8000/api/danhsachsanpham');
-      setDanhmuc(response.data);
+      setDanhMuc(response.data);
     } catch (error) {
-      console.error('Error fetching Danh mục:', error);
+      console.error('Error fetching categories:', error);
     }
   };
 
-  const fetchSanpham = async () => {
+  const fetchSanPham = async () => {
     try {
-      const url = selectedDanhmuc
-        ? `http://127.0.0.1:8000/api/products?danhsachsanpham_id=${selectedDanhmuc}`
+      const url = danhMucDuocChon
+        ? `http://127.0.0.1:8000/api/products?danhsachsanpham_id=${danhMucDuocChon}`
         : 'http://127.0.0.1:8000/api/products';
       const response = await axios.get(url);
-      setSanpham(response.data);
+      setSanPham(response.data);
     } catch (error) {
-      console.error('Error fetching sản phẩm:', error);
+      console.error('Error fetching products:', error);
     }
   };
 
   // Pagination logic
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = sanpham.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(sanpham.length / productsPerPage);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-
+  const indexOfLastProduct = trangHienTai * sanPhamMoiTrang;
+  const indexOfFirstProduct = indexOfLastProduct - sanPhamMoiTrang;
+  const sanPhamHienTai = sanPham.slice(indexOfFirstProduct, indexOfLastProduct);
+  const tongSoTrang = Math.ceil(sanPham.length / sanPhamMoiTrang);
+  const thayDoiTrang = (soTrang) => setTrangHienTai(soTrang);
 
   return (
     <div>
       <HeaderUsers />
 
-      <div>
-        {/* Page Header */}
-        <div className="container-fluid page-header py-5">
-          <h1 className="text-center text-white display-6">Shop</h1>
-          <ol className="breadcrumb justify-content-center mb-0">
-            <li className="breadcrumb-item"><a href="#">Home</a></li>
-            <li className="breadcrumb-item"><a href="#">Pages</a></li>
-            <li className="breadcrumb-item active text-white">Shop</li>
-          </ol>
-        </div>
+      {/* Page Header */}
+      <div className="container-fluid page-header py-5">
+        <h1 className="text-center text-white display-6">Shop</h1>
+        <ol className="breadcrumb justify-content-center mb-0">
+          <li className="breadcrumb-item"><Link to="/">Home</Link></li>
+          <li className="breadcrumb-item active text-white">Shop</li>
+        </ol>
+      </div>
 
-        {/* Fruits Shop Start */}
-        <div className="container-fluid fruite py-5">
-          <div className="container py-5">
-            <h1 className="mb-4">Fresh fruits shop</h1>
-            <div className="row g-4">
-              <div className="col-lg-12">
-                <div className="row g-4">
-                  <div className="col-xl-3">
-                    <div className="input-group w-100 mx-auto d-flex">
-                      <input
-                        type="search"
-                        className="form-control p-3"
-                        placeholder="Search products..."
+      {/* Shop Section */}
+      <div className="container-fluid fruite py-5">
+        <div className="container py-5">
+          <h1 className="mb-4">Fresh Fruits Shop</h1>
+          <div className="d-flex justify-content-end mb-4">
+            <div className="bg-light ps-3 py-3 rounded d-flex align-items-center">
+              <label htmlFor="fruits" className="me-2">Sort by category:</label>
+              <select
+                id="fruits"
+                className="border-0 form-select-sm bg-light"
+                value={danhMucDuocChon}
+                onChange={(e) => setDanhMucDuocChon(e.target.value)}
+              >
+                <option value="">All Categories</option>
+                {danhMuc.map((dm) => (
+                  <option key={dm.id} value={dm.id}>
+                    {dm.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Product List */}
+          <div className="row g-4">
+            {sanPhamHienTai.map((sp) => (
+              <div key={sp.id} className="col-md-6 col-lg-4 col-xl-3 d-flex">
+                <div className="rounded position-relative fruite-item card h-100 w-100">
+                  <div className="fruite-img card-img-top">
+                    <Link to={`/shop/${sp.id}`}>
+                      <img
+                        src={`http://127.0.0.1:8000/storage/${sp.image}`}
+                        className="img-fluid w-100 rounded-top"
+                        alt={sp.title}
+                        style={{ height: 250, objectFit: 'cover' }}
                       />
-                      <span id="search-icon-1" className="input-group-text p-3">
-                        <i className="fa fa-search" />
-                      </span>
-                    </div>
+                    </Link>
                   </div>
-
-                  <div className="col-6" />
-
-                  <div className="col-xl-3">
-                    <div className="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
-                      <label htmlFor="fruits">Sort by category:</label>
-                      <select
-                        id="fruits"
-                        name="fruitlist"
-                        className="border-0 form-select-sm bg-light me-3"
-                        value={selectedDanhmuc}
-                        onChange={(e) => setSelectedDanhmuc(e.target.value)}
+                  <div className="text-white bg-secondary px-3 py-1 rounded position-absolute" style={{ top: 10, left: 10 }}>
+                    Fruits
+                  </div>
+                  <div className="card-body d-flex flex-column rounded-bottom">
+                    <h4>{sp.title}</h4>
+                    <div className="d-flex justify-content-between">
+                      <p className="text-dark fs-5 fw-bold mb-0">{sp.price} vnđ / kg</p>
+                      <button
+                        onClick={() => addToCart(sp)}
+                        className="btn border border-secondary rounded-pill px-3 text-primary"
                       >
-                        <option value="">All Categories</option>
-                        {danhmuc.map((danhmucs) => (
-                          <option key={danhmucs.id} value={danhmucs.id}>
-                            {danhmucs.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="row g-4">
-                  {/* Categories */}
-                  <div className="col-lg-3">
-                    {/* Categories List (if needed) */}
-                    {/* Your categories code */}
-                  </div>
-
-                  {/* Product List */}
-                  <div className="col-lg-9">
-                    <div className="row g-4 justify-content-center">
-                      {currentProducts.map((product) => (
-                        <div key={product.id} className="col-md-6 col-lg-6 col-xl-4 d-flex">
-                          <div className="rounded position-relative fruite-item card h-100 w-100 ">
-                            <div className="fruite-img card-img-top">
-                              <Link to={`/shop/${product.id}`}>
-                                <img
-                                  src={`http://127.0.0.1:8000/storage/${product.image}`}
-                                  className="img-fluid w-100 rounded-top"
-                                  alt={product.title}
-                                  style={{ height: 250, objectFit: 'cover' }}
-                                />
-                              </Link>
-                            </div>
-                            <div className="text-white bg-secondary px-3 py-1 rounded position-absolute" style={{ top: 10, left: 10 }}>
-                              Fruits
-                            </div>
-                            <div className="card-body d-flex flex-column rounded-bottom">
-                              <h4>{product.title}</h4>
-                              
-                              <Link to={`/shop/${product.id}`} className="btn btn-link">(xem chi tiết sản phẩm)</Link>
-         
-                              <div className="d-flex justify-content-between flex-lg-wrap">
-                                <p className="text-dark fs-5 fw-bold mb-0">{product.price} vnđ / kg</p>
-                                <button
-                                  onClick={() => addToCart(product)}
-                                  className="btn border border-secondary rounded-pill px-3 text-primary">
-                                  <i className="fa fa-shopping-bag me-2 text-primary" /> Add to cart
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Pagination */}
-                    <div className="col-12">
-                      <div className="pagination d-flex justify-content-center mt-5">
-                        <a href="#" className="rounded" onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}>«</a>
-                        {[...Array(totalPages)].map((_, i) => (
-                          <a
-                            href="#"
-                            key={i + 1}
-                            onClick={() => paginate(i + 1)}
-                            className={`rounded ${currentPage === i + 1 ? 'active' : ''}`}
-                          >
-                            {i + 1}
-                          </a>
-                        ))}
-                        <a href="#" className="rounded" onClick={() => paginate(currentPage < totalPages ? currentPage + 1 : totalPages)}>»</a>
-                      </div>
+                        <i className="fa fa-shopping-bag me-2 text-primary" /> Thêm vào giỏ hàng
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
+          </div>
+
+          {/* Pagination */}
+          <div className="d-flex justify-content-center mt-5">
+            <nav aria-label="Page navigation">
+              <ul className="pagination">
+                <li className={`page-item ${trangHienTai === 1 ? 'disabled' : ''}`}>
+                  <button className="page-link" onClick={() => thayDoiTrang(trangHienTai - 1)}>«</button>
+                </li>
+                {[...Array(tongSoTrang)].map((_, i) => (
+                  <li key={i} className={`page-item ${trangHienTai === i + 1 ? 'active' : ''}`}>
+                    <button className="page-link" onClick={() => thayDoiTrang(i + 1)}>
+                      {i + 1}
+                    </button>
+                  </li>
+                ))}
+                <li className={`page-item ${trangHienTai === tongSoTrang ? 'disabled' : ''}`}>
+                  <button className="page-link" onClick={() => thayDoiTrang(trangHienTai + 1)}>»</button>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
-        {/* Fruits Shop End */}
       </div>
 
       <Footerusers />

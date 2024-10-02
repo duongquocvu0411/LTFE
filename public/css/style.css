@@ -1,6 +1,11 @@
 
 
-
+/* CSS cho hình ảnh vuông */
+.square-image {
+  width: 100%; /* Chiều rộng chiếm toàn bộ vùng chứa */
+  height: 300px; /* Đặt chiều cao cố định cho hình ảnh */
+  object-fit: cover; /* Giữ tỷ lệ và cắt hình ảnh cho vừa vùng chứa */
+}
 
 /*** Spinner Start ***/
 #spinner {
