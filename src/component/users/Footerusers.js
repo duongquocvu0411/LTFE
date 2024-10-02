@@ -87,10 +87,10 @@ const Footerusers = () => {
                   Address:
                   <Link
                     to="#"
-                    onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(chiTietDiaChi.diaChi)}`, '_blank')}
+                    onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(chiTietDiaChi.diachi)}`, '_blank')}
                     className="text-decoration-none "
                   >
-                    {chiTietDiaChi.diaChi}
+                    {chiTietDiaChi.diachi}
                   </Link>
                 </p>
                 <p>

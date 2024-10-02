@@ -11,14 +11,11 @@ import Sanpham from './component/admin/page/Sanpham';
 import Danhsachsanpham from './component/admin/page/Danhsachsanpham';
 import Testimonial from "./component/users/page/Testimonial";
 import { CartProvider } from "./component/users/page/CartContext";
-
 import ProtectedRoute from './component/routerbaove/ProtectedRoute';
 import LoginAdmin from "./component/admin/page/LoginAdmin";
 import DiaChiChiTiet from "./component/admin/page/DiaChiChiTiet";
 import LienHe from "./component/users/page/LienHe";
 import LienHeAdmin from "./component/admin/page/LienHeAdmin";
-
-
 function App() {
   return (
     <>
@@ -77,7 +74,6 @@ function App() {
                 </ProtectedRoute>
               } 
             />
-
             {/* User Routes */}
             <Route path="/" element={<HomeUsers />} />
             <Route path="/shop" element={<Shop />} />

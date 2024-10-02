@@ -218,12 +218,12 @@ const HomeUsers = () => {
                         <div className="p-3 border border-secondary border-top-0 rounded-bottom">
                           <h5>{sanPham.title}</h5>
                           <Link to={`/shop/${sanPham.id}`} className="btn btn-link">(xem chi tiết sản phẩm)</Link>
-                          <div className="d-flex justify-content-between flex-lg-wrap">
-                            <p className="text-dark fs-5 fw-bold mb-0">${sanPham.price} / kg</p>
+                          <div className=" justify-content-between flex-lg-wrap">
+                            <p className="text-dark fs-5 fw-bold mb-0">{sanPham.price} vnđ/kg</p>
                             <button  
                             onClick={() => addToCart(sanPham)}
-                            className="btn border border-secondary rounded-pill px-3 text-primary">
-                              <i className="fa fa-shopping-bag me-2 text-primary" /> Add to cart
+                            className="btn border border-secondary rounded-pill px-3 text-primary ">
+                              <i className="fa fa-shopping-bag me-2 text-primary  " /> Add to cart
                             </button>
                           </div>
                         </div>

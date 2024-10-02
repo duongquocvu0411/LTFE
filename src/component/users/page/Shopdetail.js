@@ -60,13 +60,9 @@ const ChiTietSanPham = () => {
                   <div className="col-lg-6">
                     <h4 className="fw-bold mb-3">{sanPham.name}</h4>
                     <p className="mb-3">Danh Mục: {sanPham.category}</p>
-                    <h5 className="fw-bold mb-3">{sanPham.price} $</h5>
-                    <div className="d-flex mb-4">
-                      {[...Array(5)].map((_, index) => (
-                        <i key={index} className={`fa fa-star ${index < sanPham.rating ? 'text-secondary' : ''}`} />
-                      ))}
-                    </div>
-                    <p className="mb-4">{sanPham.description}</p>
+                    <h5 className="fw-bold mb-3">{sanPham.price} vnđ / kg</h5>
+                   
+                    <p className="mb-4"> {sanPham.description}</p>
                     
                     <button
                       onClick={() => addToCart(sanPham)}

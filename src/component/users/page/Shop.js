@@ -141,7 +141,7 @@ const Shop = () => {
                               <Link to={`/shop/${product.id}`} className="btn btn-link">(xem chi tiết sản phẩm)</Link>
          
                               <div className="d-flex justify-content-between flex-lg-wrap">
-                                <p className="text-dark fs-5 fw-bold mb-0">${product.price} / kg</p>
+                                <p className="text-dark fs-5 fw-bold mb-0">{product.price} vnđ / kg</p>
                                 <button
                                   onClick={() => addToCart(product)}
                                   className="btn border border-secondary rounded-pill px-3 text-primary">
