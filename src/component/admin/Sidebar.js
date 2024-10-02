@@ -42,6 +42,12 @@ const Sidebar = () => {
                     <span className="ms-2 d-none d-sm-inline">Liên Hệ</span>
                   </Link>
                 </li>
+                <li className="nav-item">
+                  <Link to="/admin/khachhang" className="nav-link align-middle px-0 d-flex align-items-center">
+                    <i className="bi bi-telephone-fill" />
+                    <span className="ms-2 d-none d-sm-inline">Khách hàng</span>
+                  </Link>
+                </li>
               </ul>
               <hr />
             </div>

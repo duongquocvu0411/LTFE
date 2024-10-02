@@ -16,6 +16,7 @@ import LoginAdmin from "./component/admin/page/LoginAdmin";
 import DiaChiChiTiet from "./component/admin/page/DiaChiChiTiet";
 import LienHe from "./component/users/page/LienHe";
 import LienHeAdmin from "./component/admin/page/LienHeAdmin";
+import Khachhangs from "./component/admin/page/Khachhang";
 function App() {
   return (
     <>
@@ -71,6 +72,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LienHeAdmin />
+                </ProtectedRoute>
+              } 
+            />
+             <Route 
+              path="/admin/khachhang" 
+              element={
+                <ProtectedRoute>
+                  <Khachhangs />
                 </ProtectedRoute>
               } 
             />

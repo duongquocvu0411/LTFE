@@ -88,8 +88,13 @@ export const CartProvider = ({ children }) => {
     );
   };
 
+   // Hàm clearCart để xóa sạch giỏ hàng
+   const clearCart = () => {
+    setGiohang([]); // Đặt giỏ hàng về mảng rỗng
+    localStorage.removeItem('giohang'); // Xóa giỏ hàng khỏi localStorage
+  };
   return (
-    <CartContext.Provider value={{ giohang, addToCart, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong }}>
+    <CartContext.Provider value={{ giohang, addToCart, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong,clearCart  }}>
       {children}
     </CartContext.Provider>
   );
