@@ -83,15 +83,24 @@ const ChiTietSanPham = () => {
                     <p className="mb-3">Danh Mục: {sanPham.category}</p>
                     <h5 className="fw-bold mb-3">{sanPham.price} vnđ / kg</h5>
 
-                    <p className="mb-4"> {sanPham.description}</p>
+                    <p className="mb-4">{sanPham.description} <Link to="/shop" className="btn btn-primary btn-lg rounded-pill shadow">
+  <i className="fa fa-arrow-left me-2"></i>
 
-                    <button
-                      onClick={() => addToCart(sanPham)}
-                      className="btn border border-secondary rounded-pill px-3 text-primary">
-                      <i className="fa fa-shopping-bag me-2 text-primary" /> Thêm vào giỏ hàng
-                    </button>
+</Link>
+</p>
+
+                    {/* Kiểm tra trạng thái Hết hàng */}
+                    {sanPham.status === 'Hết hàng' ? (
+                      <p className="text-danger fw-bold">Sản phẩm hiện đang hết hàng</p>
+                    ) : (
+                      <button
+                        onClick={() => addToCart(sanPham)}
+                        className="btn border border-secondary rounded-pill px-3 text-primary">
+                        <i className="fa fa-shopping-bag me-2 text-primary" /> Thêm vào giỏ hàng
+                      </button>
+                    )}
                   </div>
-                  <Link to="/shop" className="btn btn-primary">Trở về</Link>
+                  
                   {/* Thêm phần còn lại của code cho đánh giá và thông tin khác ở đây... */}
                 </div>
               </div>

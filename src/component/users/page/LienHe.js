@@ -39,6 +39,11 @@ const LienHe = () => {
   const xuLyGuiForm = (e) => {
     e.preventDefault();
 
+    // Kiểm tra độ dài của số điện thoại
+    if (duLieuForm.sdt.length < 10) {
+      setError({ message: 'Số điện thoại phải có ít nhất 10 số.' });
+      return;
+    }
     // Log dữ liệu chuẩn bị gửi
     console.log('Dữ liệu chuẩn bị gửi:', duLieuForm);
     
@@ -68,6 +73,7 @@ const LienHe = () => {
     <>
       <HeaderUsers />
       <Container className="mt-5 py-5">
+       <br/> <br/> <br/>
         <Row className="justify-content-center">
           <Col md={8}>
             <h2 className="mb-4 text-center">Liên Hệ Với Chúng Tôi</h2>

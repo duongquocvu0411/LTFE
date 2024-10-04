@@ -17,6 +17,7 @@ import DiaChiChiTiet from "./component/admin/page/DiaChiChiTiet";
 import LienHe from "./component/users/page/LienHe";
 import LienHeAdmin from "./component/admin/page/LienHeAdmin";
 import Khachhangs from "./component/admin/page/Khachhang";
+import Tracuu from "./component/users/page/Tracuu";
 function App() {
   return (
     <>
@@ -93,7 +94,7 @@ function App() {
             <Route path="/Testimonial" element={<Testimonial />} />
             <Route path="/page404" element={<ErrorPage />} />
             <Route path="/lienhe" element={<LienHe/>}/>
-            
+            <Route path="/tracuu" element={<Tracuu />} />
             {/* Wildcard route for 404 */}
             <Route path="*" element={<ErrorPage />} />
           </Routes>

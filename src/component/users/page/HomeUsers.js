@@ -96,92 +96,121 @@ const HomeUsers = () => {
       </div>
       {/* Hero End */}
 
-      {/* Sản phẩm của chúng tôi */}
-      <div className="container-fluid fruite py-5 OurProduct">
-        <div className="container py-5">
-          <div className="tab-class text-center">
-            <div className="row g-4 align-items-center">
-              <div className="col-lg-4 text-start">
-                <h1>Sản phẩm của chúng tôi</h1>
-              </div>
-              <div className="col-lg-8 text-end">
-                <div className="form-group">
-                  <select
-                    className="form-select form-select-sm mb-3 w-50 d-inline-block"
-                    value={danhMucDuocChon}
-                    onChange={(e) => datDanhMucDuocChon(e.target.value)}
-                  >
-                    <option value="">Tất cả sản phẩm</option>
-                    {danhMuc.map((dm) => (
-                      <option key={dm.id} value={dm.id}>
-                        {dm.name}
-                      </option>
-                    ))}
-                  </select>
+  {/* Sản phẩm của chúng tôi */}
+<div className="container-fluid fruite py-5 OurProduct">
+  <div className="container py-5">
+    <div className="tab-class text-center">
+      <div className="row g-4 align-items-center">
+        {/* Tiêu đề sản phẩm */}
+        <div className="col-lg-4 text-start">
+          <h1 className="text-uppercase fw-bold">Sản phẩm của chúng tôi</h1>
+        </div>
+        {/* Bộ lọc danh mục sản phẩm */}
+        <div className="col-lg-8 text-end">
+          <div className="form-group">
+            <select
+              className="form-select form-select-sm mb-3 w-50 d-inline-block"
+              value={danhMucDuocChon}
+              onChange={(e) => datDanhMucDuocChon(e.target.value)}
+            >
+              <option value="">Tất cả sản phẩm</option>
+              {danhMuc.map((dm) => (
+                <option key={dm.id} value={dm.id}>
+                  {dm.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
+{/* Hiển thị sản phẩm */}
+<div className="tab-content mt-4">
+  <div className="tab-pane fade show p-0 active">
+    <div className="row g-4">
+      {sanPhamHienTai.map((sanPham) => (
+        <div className="col-md-6 col-lg-4 col-xl-3" key={sanPham.id}>
+          <div className="rounded position-relative fruite-item shadow-sm">
+            {/* Ảnh sản phẩm */}
+            <div className="fruite-img position-relative">
+              <Link to={`/shop/${sanPham.id}`} className="btn btn-link">
+                <img
+                  src={`http://127.0.0.1:8000/storage/${sanPham.image}`}
+                  className="img-fluid w-100 rounded-top"
+                  alt={sanPham.title}
+                  style={{ height: 250, objectFit: 'cover' }}
+                />
+              </Link>
+              {/* Kiểm tra trạng thái Hết hàng */}
+              {sanPham.status === 'Hết hàng' && (
+                <div
+                  className="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center bg-dark bg-opacity-50"
+                  style={{ zIndex: 1, padding: '5px 10px', borderRadius: '5px' }}
+                >
+                  <span className="text-white small fw-bold">Hết hàng</span>
                 </div>
-              </div>
+              )}
             </div>
-            <div className="tab-content mt-4">
-              <div className="tab-pane fade show p-0 active">
-                <div className="row g-4">
-                  {sanPhamHienTai.map((sanPham) => (
-                    <div className="col-md-6 col-lg-4 col-xl-3" key={sanPham.id}>
-                      <div className="rounded position-relative fruite-item shadow-sm">
-                        <div className="fruite-img">
-                          <Link to={`/shop/${sanPham.id}`} className="btn btn-link">
-                            <img
-                              src={`http://127.0.0.1:8000/storage/${sanPham.image}`}
-                              className="img-fluid w-100 rounded-top"
-                              alt={sanPham.title}
-                              style={{ height: 250, objectFit: 'cover' }}
-                            />
-                          </Link>
-                        </div>
-                        <div
-                          className="text-white bg-secondary px-2 py-1 rounded position-absolute"
-                          style={{ top: 10, left: 10 }}
-                        >
-                          {layTenDanhMuc(sanPham.danhsachsanpham_id)}
-                        </div>
-                        <div className="p-3 border border-secondary border-top-0 rounded-bottom">
-                          <p className='h5 fw-bold'>{sanPham.title}</p>
-                          <div className=" justify-content-between flex-lg-wrap">
-                            <p className="text-dark fs-5 fst-italic mb-0">{sanPham.price} vnđ/kg</p>
-                            <button  
-                              onClick={() => addToCart(sanPham)}
-                              className="btn border border-secondary rounded-pill px-3 text-primary ">
-                              <i className="fa fa-shopping-bag me-2 text-primary  " /> Thêm vào giỏ hàng
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                {/* Phân trang */}
-                <Pagination className="mt-4 justify-content-center">
-                  <Pagination.First onClick={() => xuLyThayDoiTrang(1)} disabled={trangHienTai === 1} />
-                  <Pagination.Prev onClick={() => xuLyThayDoiTrang(trangHienTai - 1)} disabled={trangHienTai === 1} />
-                  {[...Array(tongSoTrang)].map((_, i) => (
-                    <Pagination.Item
-                      key={i + 1}
-                      active={i + 1 === trangHienTai}
-                      onClick={() => xuLyThayDoiTrang(i + 1)}
-                    >
-                      {i + 1}
-                    </Pagination.Item>
-                  ))}
-                  <Pagination.Next
-                    onClick={() => xuLyThayDoiTrang(trangHienTai + 1)}
-                    disabled={trangHienTai === tongSoTrang}
-                  />
-                  <Pagination.Last onClick={() => xuLyThayDoiTrang(tongSoTrang)} disabled={trangHienTai === tongSoTrang} />
-                </Pagination>
+
+            {/* Danh mục sản phẩm */}
+            <div
+              className="text-white bg-secondary px-2 py-1 rounded position-absolute"
+              style={{ top: 10, left: 10 }}
+            >
+              {layTenDanhMuc(sanPham.danhsachsanpham_id)}
+            </div>
+
+            {/* Thông tin sản phẩm */}
+            <div className="p-3 border border-secondary border-top-0 rounded-bottom">
+              <p className="h5 fw-bold">{sanPham.title}</p>
+              <div className="d-flex justify-content-between align-items-center">
+                <p className="text-dark fs-5 fst-italic mb-0">{sanPham.price} vnđ/kg</p>
+                {/* Ẩn nút Thêm vào giỏ nếu sản phẩm hết hàng */}
+                {sanPham.status !== 'Hết hàng' && (
+                  <button
+                    onClick={() => addToCart(sanPham)}
+                    className="btn border border-secondary rounded-pill px-3 text-primary"
+                  >
+                    <i className="fa fa-shopping-bag me-2 text-primary" />
+                    Thêm vào giỏ
+                  </button>
+                )}
               </div>
             </div>
           </div>
         </div>
+      ))}
+    </div>
+
+
+  
+
+
+
+          {/* Phân trang */}
+          <Pagination className="mt-4 justify-content-center">
+            <Pagination.First onClick={() => xuLyThayDoiTrang(1)} disabled={trangHienTai === 1} />
+            <Pagination.Prev onClick={() => xuLyThayDoiTrang(trangHienTai - 1)} disabled={trangHienTai === 1} />
+            {[...Array(tongSoTrang)].map((_, i) => (
+              <Pagination.Item
+                key={i + 1}
+                active={i + 1 === trangHienTai}
+                onClick={() => xuLyThayDoiTrang(i + 1)}
+              >
+                {i + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next onClick={() => xuLyThayDoiTrang(trangHienTai + 1)} disabled={trangHienTai === tongSoTrang} />
+            <Pagination.Last onClick={() => xuLyThayDoiTrang(tongSoTrang)} disabled={trangHienTai === tongSoTrang} />
+          </Pagination>
+        </div>
       </div>
+    </div>
+  </div>
+</div>
+
+
+
       {/* Banner Section Start*/}
         <div className="container-fluid banner bg-secondary my-5">
           <div className="container py-5">

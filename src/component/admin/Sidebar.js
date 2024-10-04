@@ -1,7 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
+
+  const vitriRoute = useLocation();
   return (
     <>
       <div className="d-flex siderbar flex-column bg-dark">
@@ -13,38 +15,38 @@ const Sidebar = () => {
               </a>
               <ul className="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
                 <li className="nav-item">
-                  <Link to="/admin/Dashboard" className="nav-link align-middle px-0 d-flex align-items-center">
+                  <Link to="/admin/Dashboard" className={`nav-link align-middle px-0 d-flex align-items-center ${vitriRoute.pathname === '/admin/Dashboard' ? 'active' : ''}`}>
                     <i className="fs-4 bi bi-house" />
                     <span className="ms-2 d-none d-sm-inline">Home</span>
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to="/admin/diachichitiet" className="nav-link align-middle px-0 d-flex align-items-center">
+                  <Link to="/admin/diachichitiet" className={`nav-link align-middle px-0 d-flex align-items-center ${vitriRoute.pathname === '/admin/diachichitiet' ? 'active' : ''}`} >
                     <i className="bi bi-geo-alt-fill" />
-                    <span className="ms-2 d-none d-sm-inline">Địa Chỉ Admin</span>
+                    <span className="ms-2 d-none d-sm-inline " >Địa Chỉ Admin</span>
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to="/admin/sanpham" className="nav-link align-middle px-0 d-flex align-items-center">
+                  <Link to="/admin/sanpham" className={`nav-link align-middle px-0 d-flex align-items-center ${vitriRoute.pathname === '/admin/sanpham' ? 'active' : ''}`}>
                     <i className="bi bi-bag fs-4" />
                     <span className="ms-2 d-none d-sm-inline">Sản Phẩm</span>
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to="/admin/danhmucsanpham" className="nav-link align-middle px-0 d-flex align-items-center">
+                  <Link to="/admin/danhmucsanpham" className={`nav-link align-middle px-0 d-flex align-items-center ${vitriRoute.pathname === '/admin/danhmucsanpham' ? 'active' : ''}`}>
                     <i className="bi bi-list fs-4" />
                     <span className="ms-2 d-none d-sm-inline">Danh mục</span>
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to="/admin/lienhe" className="nav-link align-middle px-0 d-flex align-items-center">
+                  <Link to="/admin/lienhe" className={`nav-link align-middle px-0 d-flex align-items-center ${vitriRoute.pathname === '/admin/lienhe' ? 'active' : ''}`}>
                     <i className="bi bi-telephone-fill" />
                     <span className="ms-2 d-none d-sm-inline">Liên Hệ</span>
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to="/admin/khachhang" className="nav-link align-middle px-0 d-flex align-items-center">
-                    <i className="bi bi-telephone-fill" />
+                  <Link to="/admin/khachhang" className={`nav-link align-middle px-0 d-flex align-items-center ${vitriRoute.pathname === '/admin/khachhang' ? 'active' : ''}`}>
+                  <i className="bi bi-people me-2"/>
                     <span className="ms-2 d-none d-sm-inline">Khách hàng</span>
                   </Link>
                 </li>

@@ -12,20 +12,21 @@ const Khachhangs = () => {
   const soPhanTuMotTrang = 4;
   const [hienThiModal, setHienThiModal] = useState(false);
   const [chiTietKhachHang, setChiTietKhachHang] = useState(null);
+  const [timKiem, setTimKiem] = useState('');
+  const [khachHangHienThi, setKhachHangHienThi] = useState([]);
 
-  // Logic phân trang
   const chiSoPhanTuCuoi = trangHienTai * soPhanTuMotTrang;
   const chiSoPhanTuDau = chiSoPhanTuCuoi - soPhanTuMotTrang;
-  const cacPhanTuHienTai = danhSachKhachHang.slice(chiSoPhanTuDau, chiSoPhanTuCuoi);
-  const tongSoTrang = Math.ceil(danhSachKhachHang.length / soPhanTuMotTrang);
+  const cacPhanTuHienTai = khachHangHienThi.slice(chiSoPhanTuDau, chiSoPhanTuCuoi);
+  const tongSoTrang = Math.ceil(khachHangHienThi.length / soPhanTuMotTrang);
 
   const thayDoiTrang = (soTrang) => setTrangHienTai(soTrang);
 
-  // Lấy danh sách khách hàng từ API
   const layDanhSachKhachHang = () => {
     axios.get('http://127.0.0.1:8000/api/khachhangs')
       .then(response => {
         setDanhSachKhachHang(response.data);
+        setKhachHangHienThi(response.data);
       })
       .catch(error => {
         console.error('Lỗi khi lấy danh sách khách hàng:', error);
@@ -36,7 +37,20 @@ const Khachhangs = () => {
     layDanhSachKhachHang();
   }, []);
 
-  // Xóa khách hàng
+  const xuLyTimKiem = (e) => {
+    const giaTriTimKiem = e.target.value.toLowerCase();
+    setTimKiem(giaTriTimKiem);
+
+    if (giaTriTimKiem) {
+      const ketQuaLoc = danhSachKhachHang.filter(khachHang =>
+        (khachHang.ho + ' ' + khachHang.ten).toLowerCase().includes(giaTriTimKiem)
+      );
+      setKhachHangHienThi(ketQuaLoc);
+    } else {
+      setKhachHangHienThi(danhSachKhachHang);
+    }
+  };
+
   const xoaKhachHang = (id) => {
     axios.delete(`http://127.0.0.1:8000/api/khachhangs/${id}`)
       .then(() => {
@@ -46,7 +60,6 @@ const Khachhangs = () => {
       .catch(error => console.error('Lỗi khi xóa khách hàng:', error));
   };
 
-  // Hiển thị chi tiết khách hàng
   const hienThiChiTiet = (id) => {
     axios.get(`http://127.0.0.1:8000/api/khachhangs/${id}`)
       .then(response => {
@@ -58,17 +71,36 @@ const Khachhangs = () => {
       });
   };
 
+  const capNhatTrangThai = (billId, newStatus) => {
+    axios.put(`http://127.0.0.1:8000/api/orders/${billId}/status`, { status: newStatus })
+      .then(() => {
+        window.alert('Trạng thái đơn hàng đã được cập nhật');
+        hienThiChiTiet(chiTietKhachHang.id);
+      })
+      .catch(error => {
+        console.error('Lỗi khi cập nhật trạng thái đơn hàng:', error);
+      });
+  };
+
   return (
     <>
       <Header />
-      <div className='d-flex'>
+      <div className='d-flex '>
         <Sidebar />
-        <div className='flex-grow-1'>
-
+        <div className='flex-grow-1 '>
           <div className="container">
             <h1 className="mb-4">Danh Sách Khách Hàng</h1>
 
-            {/* Bảng hiển thị khách hàng */}
+            <div className="mb-4">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Tìm kiếm theo tên khách hàng"
+                value={timKiem}
+                onChange={xuLyTimKiem}
+              />
+            </div>
+
             <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
               <table className="table table-bordered border-dark table-hover">
                 <thead>
@@ -83,28 +115,34 @@ const Khachhangs = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {cacPhanTuHienTai.map((item, index) => (
-                    <tr key={nanoid()}>
-                      <td>{chiSoPhanTuDau + index + 1}</td>
-                      <td>{item.ho} {item.ten}</td>
-                      <td>{item.Emaildiachi}</td>
-                      <td>{item.sdt}</td>
-                      <td>{item.diachicuthe}</td>
-                      <td>{item.thanhpho}</td>
-                      <td>
-                        <Button variant="info" onClick={() => hienThiChiTiet(item.id)}>
-                          Xem chi tiết
-                        </Button>{' '}
-                        <Button variant="danger" onClick={() => xoaKhachHang(item.id)}>
-                          Xóa
-                        </Button>
-                      </td>
+                  {cacPhanTuHienTai.length > 0 ? (
+                    cacPhanTuHienTai.map((item, index) => (
+                      <tr key={nanoid()}>
+                        <td>{chiSoPhanTuDau + index + 1}</td>
+                        <td>{item.ho} {item.ten}</td>
+                        <td>{item.Emaildiachi}</td>
+                        <td>{item.sdt}</td>
+                        <td>{item.diachicuthe}</td>
+                        <td>{item.thanhpho}</td>
+                        <td>
+                          <Button variant="info" onClick={() => hienThiChiTiet(item.id)}>
+                            Xem chi tiết
+                          </Button>{' '}
+                          <Button variant="danger" onClick={() => xoaKhachHang(item.id)}>
+                            Xóa
+                          </Button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="7" className="text-center">Không tìm thấy khách hàng</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
-            {/* Phân trang */}
+
             <div className="d-flex justify-content-center mt-5">
               <ul className="pagination">
                 <li className={`page-item ${trangHienTai === 1 ? 'disabled' : ''}`}>
@@ -123,9 +161,6 @@ const Khachhangs = () => {
           </div>
         </div>
 
-
-
-        {/* Modal để hiển thị chi tiết khách hàng */}
         <Modal show={hienThiModal} onHide={() => setHienThiModal(false)}>
           <Modal.Header closeButton>
             <Modal.Title>Chi Tiết Khách Hàng</Modal.Title>
@@ -140,14 +175,37 @@ const Khachhangs = () => {
                 {chiTietKhachHang.bills.map((bill, index) => (
                   <div key={index}>
                     <p>Hóa đơn #{index + 1}: Tổng tiền - {bill.total_price}</p>
+                    <p><strong>Trạng thái:</strong> {bill.status}</p>
+                    <p><strong>Mã đơn hàng:</strong> {bill.order_code}</p>
                     <p>Chi tiết:</p>
                     <ul>
                       {bill.billchitiets.map((chitiet, idx) => (
                         <li key={idx}>
-                          Sản phẩm: {chitiet.sanpham_names}, Giá: {chitiet.price}
+                          Sản phẩm: {chitiet.sanpham_names} x {chitiet.quantity}, Giá: {chitiet.price} (VND)
                         </li>
                       ))}
                     </ul>
+                    {/* Hiển thị nút xóa nếu trạng thái là "Hủy đơn" */}
+                    {bill.status === 'Hủy đơn' && (
+                      <Button variant="danger" onClick={() => xoaKhachHang(chiTietKhachHang.id)}>Xóa đơn hàng</Button>
+                    )}
+                    {/* Chỉ hiển thị Form.Group nếu trạng thái không phải là "Hủy đơn" hoặc "Đã giao thành công" */}
+                    {bill.status !== 'Hủy đơn' && bill.status !== 'Đã giao thành công' && (
+                      <Form.Group controlId="formTrangThai">
+                        <Form.Label>Trạng thái đơn hàng:</Form.Label>
+                        <Form.Control
+                          as="select"
+                          value={bill.status}
+                          onChange={(e) => capNhatTrangThai(bill.id, e.target.value)}
+                        >
+                          <option value="Chờ xử lý">Chờ xử lý</option>
+                          <option value="Đang giao">Đang giao</option>
+                          <option value="Đã giao thành công">Đã giao thành công</option>
+                          <option value="Hủy đơn">Hủy đơn</option>
+                          <option value="Giao không thành công">Giao không thành công</option>
+                        </Form.Control>
+                      </Form.Group>
+                    )}
                   </div>
                 ))}
               </div>

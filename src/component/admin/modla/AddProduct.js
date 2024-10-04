@@ -73,6 +73,14 @@ const AddOrEditProductModal = ({
           fetchSanpham(); // Cập nhật danh sách sản phẩm
           
           handleClose(); // Đóng modal
+
+           // Làm sạch dữ liệu trong form
+           setTitle("");
+           setDescription("");
+           setStatus("");
+           setPrice("");
+           setImage(null);
+           setCategoryId("");
         })
         .catch((error) => console.log("Error updating product:", error));
       console.log("sửa sản phẩm thành công:", title);
@@ -87,6 +95,14 @@ const AddOrEditProductModal = ({
         .then(() => {
           fetchSanpham(); // Cập nhật danh sách sản phẩm
           handleClose(); // Đóng modal
+          
+           // Làm sạch dữ liệu trong form
+           setTitle("");
+           setDescription("");
+           setStatus("");
+           setPrice("");
+           setImage(null);
+           setCategoryId("");
         })
         .catch((error) => console.log("Error adding product:", error));
       console.log("thêm sản phẩm thành công:", title);

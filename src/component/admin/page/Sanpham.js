@@ -97,6 +97,7 @@ const SanPham = () => {
                     <th scope="col">Tên</th>
                     <th scope="col">Nội dung</th>
                     <th scope="col">Giá</th>
+                    <th scope='col'>Trạng thái</th>
                     <th scope="col">Chức năng</th>
                   </tr>
                 </thead>
@@ -133,6 +134,7 @@ const SanPham = () => {
                       <td>
                         <p className="mb-0 mt-4">{sanPham.price} vnđ / kg</p>
                       </td>
+                      <td className='mb-0 mt-4'>{sanPham.status}</td>
                       <td>
                         <Button variant="primary me-2" onClick={() => moModalSuaSanPham(sanPham)}>
                           <i className="bi bi-pencil-square"></i>

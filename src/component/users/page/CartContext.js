@@ -20,7 +20,7 @@ export const CartProvider = ({ children }) => {
       console.error('Error parsing JSON from localStorage:', error);
       return [];
     }
-  });
+  });    
 
   // Lưu giỏ hàng vào localStorage mỗi khi giỏ hàng thay đổi
   useEffect(() => {
@@ -42,7 +42,7 @@ export const CartProvider = ({ children }) => {
       } else {
         return [...giohanghientai, { ...sanPham, soLuong: 1 }];
       }
-       });
+       });    
   };
 
   

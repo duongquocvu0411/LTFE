@@ -99,6 +99,15 @@ const Shop = () => {
                         style={{ height: 250, objectFit: 'cover' }}
                       />
                     </Link>
+                    {/* Kiểm tra trạng thái Hết hàng */}
+                      {sp.status === 'Hết hàng' && (
+                        <div
+                          className="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center bg-dark bg-opacity-50"
+                          style={{ zIndex: 1, padding: '5px 10px', borderRadius: '5px' }}
+                        >
+                          <span className="text-white small fw-bold">Hết hàng</span>
+                        </div>
+                      )}
                   </div>
                   <div className="text-white bg-secondary px-3 py-1 rounded position-absolute" style={{ top: 10, left: 10 }}>
                     Fruits
@@ -107,12 +116,16 @@ const Shop = () => {
                     <h4>{sp.title}</h4>
                     <div className="d-flex justify-content-between">
                       <p className="text-dark fs-5 fw-bold mb-0">{sp.price} vnđ / kg</p>
-                      <button
-                        onClick={() => addToCart(sp)}
-                        className="btn border border-secondary rounded-pill px-3 text-primary"
-                      >
-                        <i className="fa fa-shopping-bag me-2 text-primary" /> Thêm vào giỏ hàng
-                      </button>
+                      {/* Ẩn nút Thêm vào giỏ nếu sản phẩm hết hàng */}
+                {sp.status !== 'Hết hàng' && (
+                  <button
+                    onClick={() => addToCart(sp)}
+                    className="btn border border-secondary rounded-pill px-3 text-primary"
+                  >
+                    <i className="fa fa-shopping-bag me-2 text-primary" />
+                    Thêm vào giỏ
+                  </button>
+                )}
                     </div>
                   </div>
                 </div>

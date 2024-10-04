@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import Footerusers from "../Footerusers";
 import HeaderUsers from "../HeaderUsers";
-import { CartContext } from "./CartContext";
 import { Link } from "react-router-dom";
+import { CartContext } from "./CartContext";
 
 const Cart = () => {
   const { giohang, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong } = useContext(CartContext);
@@ -52,7 +52,7 @@ const Cart = () => {
                           />
                         </td>
                         <td>{sanPham.title}</td>
-                        <td>${sanPham.price}</td>
+                        <td>{sanPham.price} vnđ / kg</td>
                         <td> 
                           <div className="d-flex">
                             <button 
@@ -77,7 +77,7 @@ const Cart = () => {
                             </button>
                           </div>
                         </td>
-                        <td>${sanPham.price * sanPham.soLuong}</td>
+                        <td>{sanPham.price * sanPham.soLuong} vnđ</td>
                         <td>
                           <button className="btn btn-danger btn-sm" onClick={() => XoaGioHang(sanPham.id)}>
                             <i className="bi bi-trash3-fill"></i>
@@ -100,14 +100,11 @@ const Cart = () => {
                     <h1 className="display-6 mb-4">
                       Tổng <span className="fw-normal">Giỏ hàng</span>
                     </h1>
-                    <div className="d-flex justify-content-between mb-4">
-                      <h5 className="mb-0 me-4">Tổng cộng:</h5>
-                      <p className="mb-0">${tongTienGioHang}</p>
-                    </div>
+                    
                   </div>
                   <div className="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                     <h5 className="mb-0 ps-4 me-4">Tổng</h5>
-                    <p className="mb-0 pe-4">${tongTienGioHang}</p>
+                    <p className="mb-0 pe-4">{tongTienGioHang} vnđ</p>
                   </div>
                   <Link to="/checkout" className="btn btn-primary btn-sm w-100 text-uppercase mb-4" >
                     Thanh toán

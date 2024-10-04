@@ -14,6 +14,7 @@ const Checkout = () => {
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
   const [ghichu, setGhichu] = useState("");
+  const [orderCode, setOrderCode] = useState(""); 
 
   // Hàm xử lý khi nhập số điện thoại
   const handleInput = (e) => {
@@ -67,9 +68,17 @@ const Checkout = () => {
         khachhang_id: khachhangId,
         total_price: tongTienGioHang,
         sanpham_ids: giohang.map((sanpham) => sanpham.id),
+        quantity: giohang.map((sanpham) => sanpham.soLuong),
       };
 
-      await axios.post("http://127.0.0.1:8000/api/bills", billData);
+      const billResponse = await axios.post(
+        "http://127.0.0.1:8000/api/bills",
+        billData
+      );
+
+      // Lưu mã đơn hàng vào state sau khi đặt hàng thành công
+      const newOrderCode = billResponse.data.order_code;
+      setOrderCode(newOrderCode);
 
       // Sau khi thành công
       alert("Đặt hàng thành công!");
@@ -107,6 +116,13 @@ const Checkout = () => {
         <div className="container-fluid py-5">
           <div className="container py-5">
             <h1 className="mb-4">Billing details</h1>
+             {/* Thông báo mã đơn hàng */}
+          {orderCode && (
+            <div className="alert alert-success" role="alert">
+              Đặt hàng thành công! Mã đơn hàng của bạn: <strong>{orderCode}</strong> vui lòng ghi nhớ mã đơn hàng giúp shop
+            </div>
+          )}
+            {/* from post api */}
             <form onSubmit={handlePlaceOrder}>
               <div className="row g-5">
                 <div className="col-md-12 col-lg-6 col-xl-7">
@@ -237,10 +253,10 @@ const Checkout = () => {
                                 </div>
                               </th>
                               <td className="py-5">{sanPham.title}</td>
-                              <td className="py-5">${sanPham.price}</td>
+                              <td className="py-5">{sanPham.price}VND</td>
                               <td className="py-5">{sanPham.soLuong}</td>
                               <td className="py-5">
-                                ${sanPham.price * sanPham.soLuong}
+                                {sanPham.price * sanPham.soLuong}VND
                               </td>
                             </tr>
                           ))
@@ -255,7 +271,7 @@ const Checkout = () => {
                           <td colSpan="4" className="text-right fw-bold">
                             Tổng cộng:
                           </td>
-                          <td className="py-5">$ {tongTienGioHang}</td>
+                          <td className="py-5"> {tongTienGioHang}VND</td>
                         </tr>
                       </tbody>
                     </table>
