@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 export const CartContext = createContext();
 
@@ -36,10 +37,18 @@ export const CartProvider = ({ children }) => {
       
       const sanPhamTonTai = giohanghientai.find((item) => item.id === sanPham.id);
       if (sanPhamTonTai) {
+        toast.success(`${sanPham.title} đã được thêm vào giỏ hàng!`,{
+          position: "top-right",
+          autoClose: 3000,
+        })
         return giohanghientai.map((item) =>
           item.id === sanPham.id ? { ...item, soLuong: item.soLuong + 1 } : item
         );
       } else {
+        toast.success(`${sanPham.title} đã được thêm vào giỏ hàng!`,{
+          position: "top-right",
+          autoClose:3000,
+        })
         return [...giohanghientai, { ...sanPham, soLuong: 1 }];
       }
        });    
@@ -55,7 +64,11 @@ export const CartProvider = ({ children }) => {
     
     // Hiển thị thông báo sau khi cập nhật giỏ hàng
     if (sanPhamXoa) {
-        alert(`Xóa sản phẩm "${sanPhamXoa.title}" khỏi giỏ hàng thành công!`);
+      toast.success(`Xóa sản phẩm ${sanPhamXoa.title} khỏi giỏ hàng thành công`,{
+        position: "top-right",
+        autoClose: 3000,
+      })
+       
     }
 };
 

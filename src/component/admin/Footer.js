@@ -2,16 +2,15 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="bg-dark">
-      <div className='text-center'>
-        
-          <strong>Copyright © 2024 <a href="#">AdminLTE</a>.</strong>
-      All rights reserved.
-     
-         
-      </div>
-     
-    </footer>
+    
+   <footer className="sticky-footer bg-white">
+  <div className="container my-auto">
+    <div className="copyright text-center my-auto">
+      <span>Copyright © Your Website 2021</span>
+    </div>
+  </div>
+</footer>
+
   );
 };
 

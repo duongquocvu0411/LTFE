@@ -19,7 +19,7 @@ const LoginAdmin = () => {
       // Lưu trạng thái đăng nhập vào localStorage
       localStorage.setItem('isAdminLoggedIn', 'true'); // Lưu giá trị 'true' dưới dạng chuỗi
       // Chuyển hướng đến trang Dashboard
-      dieuHuong('/admin/Dashboard');
+      dieuHuong('/admin/Trangchu');
     } else {
       alert('Thông tin đăng nhập không đúng!');
     }

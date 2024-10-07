@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; 
-import Dashboard from './component/admin/page/Dashboard';
+
 import HomeUsers from './component/users/page/HomeUsers';
 import Shop from './component/users/page/Shop';
 import Checkout from './component/users/page/Checkout';
@@ -18,9 +18,11 @@ import LienHe from "./component/users/page/LienHe";
 import LienHeAdmin from "./component/admin/page/LienHeAdmin";
 import Khachhangs from "./component/admin/page/Khachhang";
 import Tracuu from "./component/users/page/Tracuu";
+import Danhthu from './component/admin/page/DanhThu';
 function App() {
   return (
-    <>
+   
+    <div >
       {/* Wrap your app with CartProvider */}
       <CartProvider>
         {/* Wrap your app with BrowserRouter */}
@@ -28,14 +30,7 @@ function App() {
           <Routes>
             {/* Admin Routes */}
             <Route path="/admin/Login" element={<LoginAdmin />} />
-            <Route 
-              path="/admin/Dashboard" 
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } 
-            />
+           
             <Route
               path="/admin/diachichitiet"
               element={
@@ -84,6 +79,14 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+             <Route 
+              path="/admin/Trangchu" 
+              element={
+                <ProtectedRoute>
+                  <Danhthu />
+                </ProtectedRoute>
+              } 
+            />
             {/* User Routes */}
             <Route path="/" element={<HomeUsers />} />
             <Route path="/shop" element={<Shop />} />
@@ -100,7 +103,7 @@ function App() {
           </Routes>
         </Router>
       </CartProvider>
-    </>
+   </div>
   );
 }
 

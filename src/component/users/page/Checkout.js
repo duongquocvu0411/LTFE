@@ -4,6 +4,7 @@ import HeaderUsers from "../HeaderUsers";
 import { CartContext } from "./CartContext";
 import { Link } from "react-router-dom";
 import axios from "axios"; // Import axios
+import { toast, ToastContainer } from 'react-toastify';
 
 const Checkout = () => {
   const [thanhpho, setThanhpho] = useState("");
@@ -16,11 +17,18 @@ const Checkout = () => {
   const [ghichu, setGhichu] = useState("");
   const [orderCode, setOrderCode] = useState(""); 
 
-  // Hàm xử lý khi nhập số điện thoại
-  const handleInput = (e) => {
-    const newSdt = e.target.value.replace(/[^0-9]/g, "");
-    setSdt(newSdt);
-  };
+ // Hàm xử lý khi nhập số điện thoại
+const handleInput = (e) => {
+  let newSdt = e.target.value.replace(/[^0-9]/g, "");
+
+  // Giới hạn số điện thoại tối đa 11 chữ số
+  if (newSdt.length > 11) {
+      newSdt = newSdt.slice(0, 11);
+  }
+
+  setSdt(newSdt);
+};
+
 
   // Hàm xử lý khi chọn thành phố
   const handleChonthanhpho = (e) => {
@@ -28,19 +36,74 @@ const Checkout = () => {
   };
 
   // Tính tổng giá trị của giỏ hàng
-  const tongTienGioHang = giohang.reduce(
-    (tong, item) => tong + item.price * item.soLuong,
-    0
-  );
+  // const tongTienGioHang = giohang.reduce(
+  //   (tong, item) => tong + item.price * item.soLuong,
+  //   0
+  // );
+  const tongTienGioHang = giohang.reduce((tong, item) => tong + parseFloat(item.price) * item.soLuong, 0);
 
   // Hàm xử lý khi nhấn "Place Order"
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
+
     // Kiểm tra giỏ hàng có trống không
     if (giohang.length === 0) {
-      alert("Giỏ hàng của bạn đang trống. Không thể thanh toán!");
+      toast.error("Giỏ hàng của bạn đang trống. Không thể thanh toán!", {
+        position: "top-right",
+        autoClose: 5000,
+      });
       return; // Dừng hàm nếu giỏ hàng trống
     }
+    // Kiểm tra các trường dữ liệu
+    if (!firstName) {
+      toast.error("Vui lòng không bỏ trống Tên!", {
+          position: "top-right",
+          autoClose: 5000,
+      });
+      return; // Dừng hàm nếu trường firstName bị bỏ trống
+  }
+  
+  if (!lastName) {
+      toast.error("Vui lòng không bỏ trống Họ!", {
+          position: "top-right",
+          autoClose: 5000,
+      });
+      return; // Dừng hàm nếu trường lastName bị bỏ trống
+  }
+  
+  if (!address) {
+      toast.error("Vui lòng không bỏ trống Địa chỉ!", {
+          position: "top-right",
+          autoClose: 5000,
+      });
+      return; // Dừng hàm nếu trường address bị bỏ trống
+  }
+
+      // Kiểm tra số điện thoại
+      if (sdt.length < 10 || sdt.length > 11) {
+        toast.error("Số điện thoại phải từ 10 đến 11 chữ số!", {
+            position: "top-right",
+            autoClose: 5000,
+        });
+        return; // Dừng hàm nếu số điện thoại không hợp lệ
+      }
+
+  if (!thanhpho) {
+      toast.error("Vui lòng chọn Thành phố!", {
+          position: "top-right",
+          autoClose: 5000,
+      });
+      return; // Dừng hàm nếu trường thành phố bị bỏ trống
+  }
+
+  if (!email) {
+      toast.error("Vui lòng không bỏ trống Email!", {
+          position: "top-right",
+          autoClose: 5000,
+      });
+      return; // Dừng hàm nếu trường email bị bỏ trống
+  }
+
 
     // Thu thập dữ liệu từ form
     const khachhangData = {
@@ -56,14 +119,14 @@ const Checkout = () => {
     try {
       // Bước 1: Gửi thông tin khách hàng đến API khachhangs
       const khachhangResponse = await axios.post(
-        "http://127.0.0.1:8000/api/khachhangs",
+        `${process.env.REACT_APP_BASEURL}/api/khachhangs`,
         khachhangData
       );
 
       // Lấy ID của khách hàng mới được tạo
       const khachhangId = khachhangResponse.data.id;
 
-      // Bước 2: Gửi thông tin bill đến API bills, bao gồm danh sách sanpham_ids
+      // Bước 2: Gửi thông tin bill đến API bills, bao gồm danh sách sanpham_ids và số lượng
       const billData = {
         khachhang_id: khachhangId,
         total_price: tongTienGioHang,
@@ -72,7 +135,7 @@ const Checkout = () => {
       };
 
       const billResponse = await axios.post(
-        "http://127.0.0.1:8000/api/bills",
+        `${process.env.REACT_APP_BASEURL}/api/bills`,
         billData
       );
 
@@ -81,7 +144,10 @@ const Checkout = () => {
       setOrderCode(newOrderCode);
 
       // Sau khi thành công
-      alert("Đặt hàng thành công!");
+      toast.success(`đặt hàng thành công! Mã đơn hàng của bạn: ${newOrderCode}`,{
+        position:"top-right",
+        autoClose:10000,
+      })
       clearCart(); // Xóa giỏ hàng sau khi đặt hàng thành công
       // Làm sạch dữ liệu trong form
       setFirstName("");
@@ -93,7 +159,10 @@ const Checkout = () => {
       setGhichu("");
     } catch (error) {
       console.error("Lỗi khi gửi đơn hàng:", error);
-      alert("Đã xảy ra lỗi khi gửi đơn hàng.");
+      toast.error("Đã xảy ra lỗi khi gữi đơn hàng vui lòng thử lại sau.",{
+        position: "top-right",
+        autoClose:10000,
+      })
     }
   };
 
@@ -103,7 +172,7 @@ const Checkout = () => {
         <HeaderUsers />
         <div className="container-fluid page-header py-5">
           <h1 className="text-center text-white display-6">Checkout</h1>
-          <ol className="breadcrumb justify-content-center mb-0">
+          {/* <ol className="breadcrumb justify-content-center mb-0">
             <li className="breadcrumb-item">
               <Link to="/">Home</Link>
             </li>
@@ -111,17 +180,13 @@ const Checkout = () => {
               <Link to="/">Pages</Link>
             </li>
             <li className="breadcrumb-item active text-white">Checkout</li>
-          </ol>
+          </ol> */}
         </div>
         <div className="container-fluid py-5">
           <div className="container py-5">
-            <h1 className="mb-4">Billing details</h1>
+            <h1 className="mb-4">Chi tiết thanh toán</h1>
              {/* Thông báo mã đơn hàng */}
-          {orderCode && (
-            <div className="alert alert-success" role="alert">
-              Đặt hàng thành công! Mã đơn hàng của bạn: <strong>{orderCode}</strong> vui lòng ghi nhớ mã đơn hàng giúp shop
-            </div>
-          )}
+         
             {/* from post api */}
             <form onSubmit={handlePlaceOrder}>
               <div className="row g-5">
@@ -130,12 +195,12 @@ const Checkout = () => {
                     <div className="col-md-12 col-lg-6">
                       <div className="form-item w-100">
                         <label className="form-label my-3">
-                          First Name<sup>*</sup>
+                          Tên<sup>*</sup>
                         </label>
                         <input
                           type="text"
                           className="form-control"
-                          required
+                          
                           value={firstName}
                           onChange={(e) => setFirstName(e.target.value)}
                         />
@@ -144,12 +209,12 @@ const Checkout = () => {
                     <div className="col-md-12 col-lg-6">
                       <div className="form-item w-100">
                         <label className="form-label my-3">
-                          Last Name<sup>*</sup>
+                          Họ<sup>*</sup>
                         </label>
                         <input
                           type="text"
                           className="form-control"
-                          required
+                          
                           value={lastName}
                           onChange={(e) => setLastName(e.target.value)}
                         />
@@ -158,26 +223,26 @@ const Checkout = () => {
                   </div>
                   <div className="form-item">
                     <label className="form-label my-3">
-                      Address <sup>*</sup>
+                      Địa chỉ <sup>*</sup>
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       placeholder="House Number Street Name"
-                      required
+                      
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                     />
                   </div>
                   <div className="form-item">
                     <label className="form-label my-3">
-                      Town/City<sup>*</sup>
+                      Thị xã/Thành phố<sup>*</sup>
                     </label>
                     <select
                       className="form-control"
                       value={thanhpho}
                       onChange={handleChonthanhpho}
-                      required
+                      
                     >
                       <option value="" disabled>
                         Select your town/city
@@ -189,7 +254,7 @@ const Checkout = () => {
                   </div>
                   <div className="form-item">
                     <label className="form-label my-3">
-                      Mobile<sup>*</sup>
+                      Số điện thoại<sup>*</sup>
                     </label>
                     <input
                       type="tel"
@@ -197,31 +262,31 @@ const Checkout = () => {
                       value={sdt}
                       onInput={handleInput}
                       placeholder="nhập số điện thoại của bạn vào đây"
-                      required
+                      
                     />
                   </div>
                   <div className="form-item">
                     <label className="form-label my-3">
-                      Email Address<sup>*</sup>
+                      Địa chỉ Email<sup>*</sup>
                     </label>
                     <input
                       type="email"
                       className="form-control"
-                      required
+                      
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
                   <div className="form-item">
                     <label className="form-label my-3">
-                      Order Notes (Optional)
+                      Ghi chú đặt hàng (tùy chọn)
                     </label>
                     <textarea
                       className="form-control"
                       rows="4"
                       value={ghichu}
                       onChange={(e) => setGhichu(e.target.value)}
-                      placeholder="Any additional notes..."
+                      placeholder="nhập ghi chú của bạn vào đây..."
                     />
                   </div>
                 </div>
@@ -231,11 +296,11 @@ const Checkout = () => {
                     <table className="table">
                       <thead>
                         <tr>
-                          <th scope="col">Products</th>
-                          <th scope="col">Name</th>
-                          <th scope="col">Price</th>
-                          <th scope="col">Quantity</th>
-                          <th scope="col">Total</th>
+                          <th scope="col">Hình ảnh</th>
+                          <th scope="col">Tên</th>
+                          <th scope="col">Gía</th>
+                          <th scope="col">Số lượng</th>
+                          <th scope="col">Tổng tiền</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -245,7 +310,7 @@ const Checkout = () => {
                               <th scope="row">
                                 <div className="d-flex align-items-center mt-2">
                                   <img
-                                    src={`http://127.0.0.1:8000/storage/${sanPham.image}`}
+                                    src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.image}`}
                                     className="img-fluid rounded-circle"
                                     style={{ width: 90, height: 90 }}
                                     alt={sanPham.title}
@@ -253,11 +318,9 @@ const Checkout = () => {
                                 </div>
                               </th>
                               <td className="py-5">{sanPham.title}</td>
-                              <td className="py-5">{sanPham.price}VND</td>
+                              <td className="py-5">{sanPham.price} VND</td>
                               <td className="py-5">{sanPham.soLuong}</td>
-                              <td className="py-5">
-                                {sanPham.price * sanPham.soLuong}VND
-                              </td>
+                              <td className="py-5">{(parseFloat(sanPham.price) * sanPham.soLuong).toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ</td>
                             </tr>
                           ))
                         ) : (
@@ -271,7 +334,7 @@ const Checkout = () => {
                           <td colSpan="4" className="text-right fw-bold">
                             Tổng cộng:
                           </td>
-                          <td className="py-5"> {tongTienGioHang}VND</td>
+                          <td className="py-5"> {tongTienGioHang.toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ</td>
                         </tr>
                       </tbody>
                     </table>
@@ -279,16 +342,16 @@ const Checkout = () => {
                       type="submit"
                       className="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary"
                     >
-                      Place Order
+                       Đặt hàng
                     </button>
                   </div>
                 </div>
               </div>
-
             </form>
           </div>
         </div>
         <Footerusers />
+        <ToastContainer />
       </div>
     </>
   );

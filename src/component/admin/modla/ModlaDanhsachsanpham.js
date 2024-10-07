@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const ModlaAdddanhsachsanpham = ({ show, handleClose, isEdit, product, fetchProducts }) => {
   const [name, setName] = useState('');
@@ -19,22 +20,43 @@ const ModlaAdddanhsachsanpham = ({ show, handleClose, isEdit, product, fetchProd
   const handleSubmit = async () => {
     if (isEdit) {
       // Update existing profiles
-      axios.put(`http://127.0.0.1:8000/api/danhsachsanpham/${product.id}`, { name })
+      axios.put(`${process.env.REACT_APP_BASEURL}/api/danhsachsanpham/${product.id}`, { name })
         .then(() => {
+          toast.success(`Danh mục ${name} đã được cập nhật thành công!`,{
+            position: 'top-right',
+            autoClose:3000,
+          })
           fetchProducts(); // Refresh profile list
           handleClose(); // Close modal
         })
-        .catch(error => console.log('Error updating profile:', error));
-        console.log(" sửa sản phẩm thành công :", name)
+        .catch(error => {
+          console.log("có lỗi khi sửa danh muc!", error);
+          //hiển thị thông báo
+          toast.error("có lỗi xảy ra khi cập nhật danh muc. Vui lòng thử lại.",{
+            position: 'top-right',
+            autoClose:3000,
+          })
+        })
     } else {
       // Add new profile
-      axios.post('http://127.0.0.1:8000/api/danhsachsanpham', { name })
+      axios.post(`${process.env.REACT_APP_BASEURL}/api/danhsachsanpham`, { name })
         .then(() => {
+          // hiển thị thông báo
+          toast.success(`Danh muc ${name} đã được thêm thành công!`,{
+            position: 'top-right',
+            autoClose:3000,
+          })
           fetchProducts(); // Refresh profile list
           handleClose(); // Close modal
         })
-        .catch(error => console.log('Error adding profile:', error));
-        console.log(" thêm sản phẩm thành công :", name)
+        .catch(error => {
+          console.log('có lỗi xảy ra khi thêm mới danh muc.', error);
+          // hiển thị thông báo
+          toast.error(`Có lỗi xãy ra khi thêm mới danh mục ${name}`,{
+            position: 'top-right',
+            autoClose:3000,
+          })
+        })
     }
   };
 

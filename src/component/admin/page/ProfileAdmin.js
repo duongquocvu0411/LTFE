@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Container, Row, Col } from 'react-bootstrap';
-import Header from './../Header';
+
 import { Link } from 'react-router-dom';
 
 
@@ -17,7 +17,7 @@ const ProfileAdmin = () => {
 
   return (
     <>
-    <Header/>
+    
     <Container className="mt-5 backround">
       <Row className="justify-content-center">
         <Col md={8}>
@@ -39,7 +39,7 @@ const ProfileAdmin = () => {
               <p>{userData.bio}</p>
             </Card.Body>
           </Card> 
-          <Link className='btn btn-primary' to={'/admin/Dashboard'}>trở về</Link>
+          <Link className='btn btn-primary' to={'/admin/Trangchu'}>trở về</Link>
         </Col>
        
       </Row>

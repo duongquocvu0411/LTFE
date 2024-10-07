@@ -13,7 +13,7 @@ const ChiTietSanPham = () => {
     // Hàm gọi API lấy thông tin sản phẩm
     const layThongTinSanPham = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/products/${id}`); 
+        const response = await fetch(`${process.env.REACT_APP_BASEURL}/api/products/${id}`); 
         const data = await response.json();
         setSanPham(data); // Lưu thông tin sản phẩm vào state
       } catch (error) {
@@ -36,11 +36,11 @@ const ChiTietSanPham = () => {
         {/* Single Page Header start */}
         <div className="container-fluid page-header py-5">
           <h1 className="text-center text-white display-6">Chi Tiết Sản Phẩm</h1>
-          <ol className="breadcrumb justify-content-center mb-0">
+          {/* <ol className="breadcrumb justify-content-center mb-0">
             <li className="breadcrumb-item"><a href="#">Trang Chủ</a></li>
             <li className="breadcrumb-item"><a href="#">Trang</a></li>
             <li className="breadcrumb-item active text-white">Chi Tiết Sản Phẩm</li>
-          </ol>
+          </ol> */}
         </div>
         {/* Single Page Header End */}
 
@@ -54,7 +54,7 @@ const ChiTietSanPham = () => {
                     <div className="border rounded">
 
                       <img
-                        src={`http://127.0.0.1:8000/storage/${sanPham.image}`}
+                        src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.image}`}
                         className="img-fluid rounded square-image" /* Thêm lớp 'square-image' */
                         alt={sanPham.title}
                         data-bs-toggle="modal"
@@ -66,7 +66,7 @@ const ChiTietSanPham = () => {
                           <div className="modal-content">
                             <div className="modal-body">
                               <img
-                                src={`http://127.0.0.1:8000/storage/${sanPham.image}`}
+                                src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.image}`}
                                 className="img-fluid square-image" /* Thêm lớp 'square-image' */
                                 alt={sanPham.title}
                               />
@@ -80,7 +80,7 @@ const ChiTietSanPham = () => {
                   </div>
                   <div className="col-lg-6">
                     <h4 className="fw-bold mb-3">{sanPham.name}</h4>
-                    <p className="mb-3">Danh Mục: {sanPham.category}</p>
+                    <p className="mb-3">Danh Mục: {sanPham.danhsachsanpham ?.name}</p>
                     <h5 className="fw-bold mb-3">{sanPham.price} vnđ / kg</h5>
 
                     <p className="mb-4">{sanPham.description} <Link to="/shop" className="btn btn-primary btn-lg rounded-pill shadow">

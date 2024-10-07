@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../Sidebar';
 import Footer from '../Footer';
-import Header from '../Header';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import { nanoid } from 'nanoid';
 import ModalDiaChiChiTiet from '../modla/ModlaDiachichitiet';
+import { ToastContainer } from 'react-toastify';
+import HeaderAdmin from '../HeaderAdmin';
 
 const DiaChiChiTiet = () => {
   const [danhSachDiaChi, setDanhSachDiaChi] = useState([]); // State lưu trữ danh sách địa chỉ
@@ -20,7 +21,7 @@ const DiaChiChiTiet = () => {
 
   // Hàm lấy danh sách địa chỉ từ API
   const layDanhSachDiaChi = () => {
-    axios.get('http://127.0.0.1:8000/api/diachichitiet')
+    axios.get(`${process.env.REACT_APP_BASEURL}/api/diachichitiet`)
       .then(response => {
         setDanhSachDiaChi(response.data); // Lưu dữ liệu vào state
       })
@@ -29,9 +30,16 @@ const DiaChiChiTiet = () => {
       });
   };
 
-  // Hàm xóa địa chỉ
+  // Hàm mở modal để chỉnh sửa địa chỉ
+  const chinhSuaDiaChi = (diaChi) => {
+    setChinhSua(true);
+    setDiaChiHienTai(diaChi);
+    setHienThiModal(true);
+  };
+  
+// Hàm xóa địa chỉ
   // const xoaDiaChi = (id) => {
-  //   axios.delete(`http://127.0.0.1:8000/api/diachichitiet/${id}`)
+  //   axios.delete(`${process.env.REACT_APP_BASEURL}/api/diachichitiet/${id}`)
   //   .then(() => {
   //     window.alert('Đã xóa địa chỉ và email thành công');
   //     layDanhSachDiaChi();
@@ -46,87 +54,89 @@ const DiaChiChiTiet = () => {
   //   setHienThiModal(true);
   // };
 
-  // Hàm mở modal để chỉnh sửa địa chỉ
-  const chinhSuaDiaChi = (diaChi) => {
-    setChinhSua(true);
-    setDiaChiHienTai(diaChi);
-    setHienThiModal(true);
-  };
-
   return (
-    <div>
-      <Header />
-      <div className="d-flex">
-        <Sidebar />
-        <div className="flex-grow-1">
-          <div className="container">
-            <h1 className="mb-4">Danh Sách Địa Chỉ Chi Tiết</h1>
-            {/* <div className="text-end mb-3">
-              <Button variant="primary" onClick={themDiaChi}>
-                <i className="bi bi-file-plus-fill"> Thêm Địa Chỉ</i>
-              </Button>
-            </div> */}
+    <div id="wrapper">
+      <Sidebar />
 
-            {/* Bảng hiển thị danh sách địa chỉ */}
-            <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-              <table className="table table-bordered border-dark table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">STT</th>
-                    <th scope="col">Địa Chỉ</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">SĐT</th>
-                    <th scope="col">Chức Năng</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {danhSachDiaChi.map((diaChi) => (
-                    <tr key={nanoid()}>
-                      <td>
-                        <p className='mb-0 mt-4'>{diaChi.id}</p>
-                      </td>
-                      <td>
-                        <p className="mb-0 mt-4">{diaChi.diachi}</p>
-                      </td>
-                      <td>
-                        <p className="mb-0 mt-4">{diaChi.email}</p>
-                      </td>
-                      <td>
-                        <p className="mb-0 mt-4">{diaChi.sdt}</p>
-                      </td>
-                      <td>
-                        <Button
-                          variant="primary me-2"
-                          onClick={() => chinhSuaDiaChi(diaChi)}
-                        >
-                          <i className="bi bi-pencil-square"></i>
-                        </Button>{' '}
-                        {/* <Button
-                          variant="primary me-2"
-                          onClick={() => xoaDiaChi(diaChi.id)}
-                        >
-                           <i class="bi bi-trash3-fill"></i>
-                        </Button>{' '} */}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+      <div id="content-wrapper" className="d-flex flex-column">
+        {/* Main Content */}
+        <div id="content">
+        <HeaderAdmin />
+        <div id="content">
+          {/* Content Header (Page header) */}
+          <div className="content-header">
+            <div className="container-fluid">
+              <div className="row mb-2">
+                <div className="col-sm-6">
+                  <h1 className="h3 mb-0 text-gray-800">Danh Sách Địa Chỉ Chi Tiết</h1>
+                </div>
+              </div>
             </div>
           </div>
+          {/* /.content-header */}
+
+          {/* Main content */}
+          <div className="container-fluid">
+            <div className="card shadow mb-4">
+              <div className="card-header py-3">
+                <h3 className="m-0 font-weight-bold text-primary">Danh Sách Địa Chỉ</h3>
+              </div>
+              {/* /.card-header */}
+              <div className="card-body table-responsive" style={{ maxHeight: '400px' }}>
+                <table className="table table-hover table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">STT</th>
+                      <th scope="col">Địa Chỉ</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">SĐT</th>
+                      <th scope="col">Chức Năng</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {danhSachDiaChi.map((diaChi, index) => (
+                      <tr key={nanoid()}>
+                        <td>{index + 1}</td>
+                        <td>{diaChi.diachi}</td>
+                        <td>{diaChi.email}</td>
+                        <td>{diaChi.sdt}</td>
+                        <td>
+                          <Button
+                            variant="primary me-2"
+                            onClick={() => chinhSuaDiaChi(diaChi)}
+                            className="btn btn-sm btn-primary"
+                          >
+                            <i className="fas fa-edit"></i>
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {/* /.card-body */}
+            </div>
+            {/* /.card */}
+          </div>
+          {/* /.container-fluid */}
         </div>
+        </div>
+        {/* /.content */}
+
+        {/* Modal thêm/sửa địa chỉ */}
+        <ModalDiaChiChiTiet
+          show={hienThiModal}
+          handleClose={() => setHienThiModal(false)}
+          isEdit={chinhSua}
+          detail={diaChiHienTai}
+          fetchDetails={layDanhSachDiaChi}
+        />
+
+        <Footer />
       </div>
+      {/* /.content-wrapper */}
 
-      {/* Modal thêm/sửa địa chỉ */}
-      <ModalDiaChiChiTiet
-        show={hienThiModal}
-        handleClose={() => setHienThiModal(false)}
-        isEdit={chinhSua}
-        detail={diaChiHienTai}
-        fetchDetails={layDanhSachDiaChi}
-      />
-
-      <Footer />
+      <ToastContainer />
     </div>
   );
 };

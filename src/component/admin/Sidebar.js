@@ -1,62 +1,79 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Sidebar = () => {
-
   const vitriRoute = useLocation();
+
   return (
-    <>
-      <div className="d-flex siderbar flex-column bg-dark">
-        <div className="row flex-nowrap">
-          <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
-            <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-              <a href="/" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                <span className="fs-5 d-none d-sm-inline">Menu</span>
-              </a>
-              <ul className="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                <li className="nav-item">
-                  <Link to="/admin/Dashboard" className={`nav-link align-middle px-0 d-flex align-items-center ${vitriRoute.pathname === '/admin/Dashboard' ? 'active' : ''}`}>
-                    <i className="fs-4 bi bi-house" />
-                    <span className="ms-2 d-none d-sm-inline">Home</span>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/admin/diachichitiet" className={`nav-link align-middle px-0 d-flex align-items-center ${vitriRoute.pathname === '/admin/diachichitiet' ? 'active' : ''}`} >
-                    <i className="bi bi-geo-alt-fill" />
-                    <span className="ms-2 d-none d-sm-inline " >Địa Chỉ Admin</span>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/admin/sanpham" className={`nav-link align-middle px-0 d-flex align-items-center ${vitriRoute.pathname === '/admin/sanpham' ? 'active' : ''}`}>
-                    <i className="bi bi-bag fs-4" />
-                    <span className="ms-2 d-none d-sm-inline">Sản Phẩm</span>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/admin/danhmucsanpham" className={`nav-link align-middle px-0 d-flex align-items-center ${vitriRoute.pathname === '/admin/danhmucsanpham' ? 'active' : ''}`}>
-                    <i className="bi bi-list fs-4" />
-                    <span className="ms-2 d-none d-sm-inline">Danh mục</span>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/admin/lienhe" className={`nav-link align-middle px-0 d-flex align-items-center ${vitriRoute.pathname === '/admin/lienhe' ? 'active' : ''}`}>
-                    <i className="bi bi-telephone-fill" />
-                    <span className="ms-2 d-none d-sm-inline">Liên Hệ</span>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/admin/khachhang" className={`nav-link align-middle px-0 d-flex align-items-center ${vitriRoute.pathname === '/admin/khachhang' ? 'active' : ''}`}>
-                  <i className="bi bi-people me-2"/>
-                    <span className="ms-2 d-none d-sm-inline">Khách hàng</span>
-                  </Link>
-                </li>
-              </ul>
-              <hr />
-            </div>
+    // Sử dụng class `collapse` để sidebar có thể bật/tắt
+    <aside className="main-sidebar sidebar-dark-primary elevation-4 collapse d-md-block" id="sidebar">
+      <ul className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion">
+        {/* Sidebar - Brand */}
+        <Link to="/admin/Trangchu" className="sidebar-brand d-flex align-items-center justify-content-center">
+          <div className="sidebar-brand-icon rotate-n-15">
+            <i className="fas fa-laugh-wink"></i>
           </div>
-        </div>
-      </div>
-    </>
+          <div className="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+        </Link>
+
+        {/* Divider */}
+        <hr className="sidebar-divider my-0" />
+
+        {/* Dashboard */}
+        <li className={`nav-item ${vitriRoute.pathname === '/admin/Trangchu' ? 'active' : ''}`}>
+          <Link className="nav-link" to="/admin/Trangchu">
+            <i className="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </Link>
+        </li>
+
+        {/* Divider */}
+        <hr className="sidebar-divider" />
+
+        {/* Sản Phẩm */}
+        <li className={`nav-item ${vitriRoute.pathname === '/admin/sanpham' ? 'active' : ''}`}>
+          <Link className="nav-link" to="/admin/sanpham">
+            <i className="fas fa-fw fa-box"></i>
+            <span>Sản Phẩm</span>
+          </Link>
+        </li>
+
+        {/* Danh Mục */}
+        <li className={`nav-item ${vitriRoute.pathname === '/admin/danhmucsanpham' ? 'active' : ''}`}>
+          <Link className="nav-link" to="/admin/danhmucsanpham">
+            <i className="fas fa-fw fa-list"></i>
+            <span>Danh mục</span>
+          </Link>
+        </li>
+
+        {/* Địa Chỉ Admin */}
+        <li className={`nav-item ${vitriRoute.pathname === '/admin/diachichitiet' ? 'active' : ''}`}>
+          <Link className="nav-link" to="/admin/diachichitiet">
+            <i className="fas fa-fw fa-map-marker-alt"></i>
+            <span>Địa Chỉ Admin</span>
+          </Link>
+        </li>
+
+        {/* Liên Hệ */}
+        <li className={`nav-item ${vitriRoute.pathname === '/admin/lienhe' ? 'active' : ''}`}>
+          <Link className="nav-link" to="/admin/lienhe">
+            <i className="fas fa-fw fa-envelope"></i>
+            <span>Liên Hệ</span>
+          </Link>
+        </li>
+
+        {/* Khách hàng */}
+        <li className={`nav-item ${vitriRoute.pathname === '/admin/khachhang' ? 'active' : ''}`}>
+          <Link className="nav-link" to="/admin/khachhang">
+            <i className="fas fa-fw fa-users"></i>
+            <span>Khách hàng</span>
+          </Link>
+        </li>
+
+        {/* Divider */}
+        <hr className="sidebar-divider" />
+      </ul>
+    </aside>
   );
 };
 

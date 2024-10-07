@@ -3,13 +3,16 @@ import Footerusers from "../Footerusers";
 import HeaderUsers from "../HeaderUsers";
 import { Link } from "react-router-dom";
 import { CartContext } from "./CartContext";
+import { ToastContainer } from "react-toastify";
 
 const Cart = () => {
   const { giohang, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong } = useContext(CartContext);
 
-  // Tính tổng giá trị của giỏ hàng
-  const tongTienGioHang = giohang.reduce((tong, item) => tong + item.price * item.soLuong, 0);
-
+  // Tính tổng giá trị của giỏ hàng và định dạng theo kiểu tiền tệ Việt Nam
+  const tongTienGioHang = giohang.reduce((tong, item) => tong + parseFloat(item.price) * item.soLuong, 0);
+  
+// reduce là một phương thức (method) của mảng trong JavaScript, cho phép lặp qua tất cả các phần tử của mảng và "rút gọn" chúng lại thành một giá trị duy nhất.
+// parseFloat là một hàm trong JavaScript dùng để chuyển đổi một chuỗi ký tự (string) thành một số thập phân (floating-point number).
   return (
     <>
       <div>
@@ -17,11 +20,11 @@ const Cart = () => {
         {/* Single Page Header start */}
         <div className="container-fluid page-header py-5">
           <h1 className="text-center text-white display-6">Cart</h1>
-          <ol className="breadcrumb justify-content-center mb-0">
+          {/* <ol className="breadcrumb justify-content-center mb-0">
             <li className="breadcrumb-item"><a href="#">Home</a></li>
             <li className="breadcrumb-item"><a href="#">Pages</a></li>
             <li className="breadcrumb-item active text-white">Cart</li>
-          </ol>
+          </ol> */}
         </div>
         {/* Single Page Header End */}
         {/* Cart Page Start */}
@@ -31,12 +34,12 @@ const Cart = () => {
               <table className="table align-middle">
                 <thead>
                   <tr>
-                    <th scope="col">Products</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Total</th>
-                    <th scope="col">Handle</th>
+                    <th scope="col">Hình ảnh</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Gía</th>
+                    <th scope="col">Số lượng</th>
+                    <th scope="col">Tổng tiền </th>
+                    <th scope="col">Chức năng</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -45,14 +48,14 @@ const Cart = () => {
                       <tr key={index}>
                         <td>
                           <img
-                            src={`http://127.0.0.1:8000/storage/${sanPham.image}`}
+                            src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.image}`}
                             className="img-fluid rounded"
                             style={{ width: "60px", height: "60px" }}
                             alt={sanPham.title}
                           />
                         </td>
                         <td>{sanPham.title}</td>
-                        <td>{sanPham.price} vnđ / kg</td>
+                        <td>{parseFloat(sanPham.price).toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ / kg</td>
                         <td> 
                           <div className="d-flex">
                             <button 
@@ -77,7 +80,7 @@ const Cart = () => {
                             </button>
                           </div>
                         </td>
-                        <td>{sanPham.price * sanPham.soLuong} vnđ</td>
+                        <td>{(parseFloat(sanPham.price) * sanPham.soLuong).toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ</td>
                         <td>
                           <button className="btn btn-danger btn-sm" onClick={() => XoaGioHang(sanPham.id)}>
                             <i className="bi bi-trash3-fill"></i>
@@ -100,11 +103,10 @@ const Cart = () => {
                     <h1 className="display-6 mb-4">
                       Tổng <span className="fw-normal">Giỏ hàng</span>
                     </h1>
-                    
                   </div>
                   <div className="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                     <h5 className="mb-0 ps-4 me-4">Tổng</h5>
-                    <p className="mb-0 pe-4">{tongTienGioHang} vnđ</p>
+                    <p className="mb-0 pe-4">{tongTienGioHang.toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ</p>
                   </div>
                   <Link to="/checkout" className="btn btn-primary btn-sm w-100 text-uppercase mb-4" >
                     Thanh toán
@@ -116,6 +118,7 @@ const Cart = () => {
         </div>
       </div>
       <Footerusers />
+      <ToastContainer/>
     </>
   );
 };

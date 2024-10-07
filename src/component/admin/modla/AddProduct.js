@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const AddOrEditProductModal = ({
   show,
@@ -20,9 +21,9 @@ const AddOrEditProductModal = ({
   // Lấy danh sách các danh mục sản phẩm từ API
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/danhsachsanpham")
+      .get(`${process.env.REACT_APP_BASEURL}/api/danhsachsanpham`)
       .then((response) => {
-        setCategories(response.data); // Lưu danh sách danh mục
+        setCategories(response.data);
       })
       .catch((error) => {
         console.log("Có lỗi khi lấy dữ liệu từ API ", error);
@@ -34,14 +35,14 @@ const AddOrEditProductModal = ({
       setStatus(product.status);
       setPrice(product.price);
       setImage(product.image);
-      setCategoryId(product.danhsachsanpham_id); // Set danh mục sản phẩm nếu đang chỉnh sửa
+      setCategoryId(product.danhsachsanpham_id);
     } else {
       setTitle("");
       setDescription("");
       setStatus("");
       setPrice("");
       setImage(null);
-      setCategoryId(""); // Xóa danh mục nếu không phải chỉnh sửa
+      setCategoryId("");
     }
   }, [isEdit, product]);
 
@@ -51,7 +52,7 @@ const AddOrEditProductModal = ({
     formData.append("description", description);
     formData.append("status", status);
     formData.append("price", price);
-    formData.append("danhsachsanpham_id", categoryId); // Thêm danh mục sản phẩm
+    formData.append("danhsachsanpham_id", categoryId);
     if (image instanceof File) {
       formData.append("image", image);
     }
@@ -60,7 +61,7 @@ const AddOrEditProductModal = ({
       // Sửa sản phẩm
       axios
         .post(
-          `http://127.0.0.1:8000/api/products/${product.id}?_method=PUT`,
+          `${process.env.REACT_APP_BASEURL}/api/products/${product.id}?_method=PUT`,
           formData,
           {
             headers: {
@@ -69,43 +70,59 @@ const AddOrEditProductModal = ({
           }
         )
         .then(() => {
-          
+          toast.success("Sản phẩm đã được cập nhật thành công!", {
+            position: "top-right",
+            autoClose: 3000,
+          });
           fetchSanpham(); // Cập nhật danh sách sản phẩm
-          
           handleClose(); // Đóng modal
 
-           // Làm sạch dữ liệu trong form
-           setTitle("");
-           setDescription("");
-           setStatus("");
-           setPrice("");
-           setImage(null);
-           setCategoryId("");
+          // Làm sạch dữ liệu trong form
+          setTitle("");
+          setDescription("");
+          setStatus("");
+          setPrice("");
+          setImage(null);
+          setCategoryId("");
         })
-        .catch((error) => console.log("Error updating product:", error));
-      console.log("sửa sản phẩm thành công:", title);
+        .catch((error) => {
+          console.log("Error updating product:", error);
+          toast.error("Có lỗi xảy ra khi cập nhật sản phẩm. Vui lòng thử lại.", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        });
     } else {
-      // Thêm sản phẩm mớis
+      // Thêm sản phẩm mới
       axios
-        .post("http://127.0.0.1:8000/api/products", formData, {
+        .post(`${process.env.REACT_APP_BASEURL}/api/products`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         })
         .then(() => {
+          toast.success("Sản phẩm đã được thêm thành công!", {
+            position: "top-right",
+            autoClose: 3000,
+          });
           fetchSanpham(); // Cập nhật danh sách sản phẩm
           handleClose(); // Đóng modal
-          
-           // Làm sạch dữ liệu trong form
-           setTitle("");
-           setDescription("");
-           setStatus("");
-           setPrice("");
-           setImage(null);
-           setCategoryId("");
+
+          // Làm sạch dữ liệu trong form
+          setTitle("");
+          setDescription("");
+          setStatus("");
+          setPrice("");
+          setImage(null);
+          setCategoryId("");
         })
-        .catch((error) => console.log("Error adding product:", error));
-      console.log("thêm sản phẩm thành công:", title);
+        .catch((error) => {
+          console.log("Error adding product:", error);
+          toast.error("Có lỗi xảy ra khi thêm sản phẩm. Vui lòng thử lại.", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        });
     }
   };
 
