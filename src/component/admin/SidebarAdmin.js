@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-const Sidebar = () => {
+const SiderbarAdmin = () => {
   const vitriRoute = useLocation();
 
   return (
@@ -77,4 +77,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default SiderbarAdmin;

@@ -32,29 +32,53 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('giohang', JSON.stringify(giohang));
   }, [giohang]);
 
+  // const addToCart = (sanPham) => {
+  //   setGiohang((giohanghientai) => {
+      
+  //     const sanPhamTonTai = giohanghientai.find((item) => item.id === sanPham.id);
+  //     if (sanPhamTonTai) {
+  //       toast.success(`${sanPham.title} đã được thêm vào giỏ hàng!`,{
+  //         position: "top-right",
+  //         autoClose: 3000,
+  //       })
+  //       return giohanghientai.map((item) =>
+  //         item.id === sanPham.id ? { ...item, soLuong: item.soLuong + 1 } : item
+  //       );
+  //     } 
+  //     else {
+  //       toast.success(`${sanPham.title} đã được thêm vào giỏ hàng!`,{
+  //         position: "top-right",
+  //         autoClose:3000,
+  //       })
+  //       return [...giohanghientai, { ...sanPham, soLuong: 1 }];
+  //     }
+  //      });    
+  // };
+
   const addToCart = (sanPham) => {
     setGiohang((giohanghientai) => {
-      
       const sanPhamTonTai = giohanghientai.find((item) => item.id === sanPham.id);
+      let newCart;
+  
       if (sanPhamTonTai) {
-        toast.success(`${sanPham.title} đã được thêm vào giỏ hàng!`,{
-          position: "top-right",
-          autoClose: 3000,
-        })
-        return giohanghientai.map((item) =>
+        // Cập nhật số lượng nếu sản phẩm đã tồn tại
+        newCart = giohanghientai.map((item) =>
           item.id === sanPham.id ? { ...item, soLuong: item.soLuong + 1 } : item
         );
-      } 
-      else {
-        toast.success(`${sanPham.title} đã được thêm vào giỏ hàng!`,{
-          position: "top-right",
-          autoClose:3000,
-        })
-        return [...giohanghientai, { ...sanPham, soLuong: 1 }];
+      } else {
+        // Thêm sản phẩm mới nếu chưa có trong giỏ hàng
+        newCart = [...giohanghientai, { ...sanPham, soLuong: 1 }];
       }
-       });    
+  
+      return newCart;
+    });
+  
+    // Thông báo sau khi giỏ hàng đã được cập nhật
+    toast.success(`${sanPham.title} đã được thêm vào giỏ hàng!`, {
+      position: "top-right",
+      autoClose: 3000,
+    });
   };
-
   
   const XoaGioHang = (sanPhamId) => {
     // Tìm sản phẩm muốn xóa

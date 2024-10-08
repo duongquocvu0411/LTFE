@@ -13,19 +13,20 @@ const HeaderUsers = () => {
 
   // gọi api
   useEffect(() => {
-    fetchDiaChiChiTiet();
+    fetchCurrentDiaChi();
   }, []);
 
   // khai báo api diachichitiets
-  const fetchDiaChiChiTiet = async () => {
+  const fetchCurrentDiaChi = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/diachichitiet`);
-
-      if (response.data && response.data.length > 0) {
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/diachichitiet/hiendiachi`);
+      if (response.data) {
         setDiachichitiet({
-          diachi: response.data[0].diachi,
-          email: response.data[0].email,
+          diachi: response.data.diachi,
+          email: response.data.email,
         });
+      } else {
+        console.log('Không có địa chỉ đang sử dụng');
       }
     } catch (err) {
       console.log('lỗi khi lấy thông tin từ API:', err);

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from '../Sidebar';
+
 import Footer from '../Footer';
 import axios from 'axios';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { nanoid } from 'nanoid';
 import { toast, ToastContainer } from 'react-toastify';
 import HeaderAdmin from '../HeaderAdmin';
+import SiderbarAdmin from '../SidebarAdmin';
 
 const LienHeAdmin = () => {
   const [danhSachLienHe, setDanhSachLienHe] = useState([]);
@@ -78,7 +79,7 @@ const LienHeAdmin = () => {
 
   return (
     <div id="wrapper">
-      <Sidebar />
+      <SiderbarAdmin />
 
       {/* Content Wrapper */}
       <div id="content-wrapper" className="d-flex flex-column">

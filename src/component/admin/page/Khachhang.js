@@ -3,11 +3,12 @@ import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import { nanoid } from 'nanoid';
 
-import Sidebar from './../Sidebar';
+
 import Footer from '../Footer';
 import { toast, ToastContainer } from 'react-toastify';
 import ModalChiTietKhachHang from '../modla/ModaChiTietKhachHang';
 import HeaderAdmin from '../HeaderAdmin';
+import SiderbarAdmin from '../SidebarAdmin';
 
 const Khachhangs = () => {
   // Khai báo các state cần thiết
@@ -122,7 +123,7 @@ const Khachhangs = () => {
 
   return (
     <div id="wrapper">
-      <Sidebar />
+      <SiderbarAdmin />
 
       <div id="content-wrapper" className="d-flex flex-column">
         {/* Main Content */}
@@ -182,7 +183,7 @@ const Khachhangs = () => {
                       {/* Kiểm tra nếu không có dữ liệu */}
                       {danhSachKhachHang.length === 0 ? (
                         <tr>
-                          <td colSpan="7" className="text-center">Hiện tại chưa có khách hàng</td>
+                          <td colSpan="8" className="text-center">Hiện tại chưa có khách hàng</td>
                         </tr>
                       ) : cacPhanTuHienTai.length > 0 ? (
                         cacPhanTuHienTai.map((item, index) => (
@@ -206,7 +207,7 @@ const Khachhangs = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="7" className="text-center">Không tìm thấy khách hàng</td>
+                          <td colSpan="8" className="text-center">Không tìm thấy khách hàng</td>
                         </tr>
                       )}
                     </tbody>
@@ -247,6 +248,6 @@ const Khachhangs = () => {
       </div>
     </div>
   );
-};  
+};
 
 export default Khachhangs;

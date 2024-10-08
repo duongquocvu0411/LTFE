@@ -25,54 +25,73 @@ const ModalDiaChiChiTiet = ({ show, handleClose, isEdit, detail, fetchDetails })
   const handleSave = () => {
     if (isEdit) {
         // Chỉnh sửa chi tiết địa chỉ
-        axios.put(`${process.env.REACT_APP_BASEURL}/api/diachichitiet/${detail.id}`, { diachi, email,sdt })
+        axios.put(`${process.env.REACT_APP_BASEURL}/api/diachichitiet/${detail.id}`, { diachi, email, sdt })
             .then(() => {
-              toast.success("địa chỉ đã dược sửa thành công",{
-                position:"top-right",
-                autoClose:3000,
-              })
+                toast.success("Địa chỉ đã được sửa thành công", {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
                 fetchDetails(); // Cập nhật danh sách sau khi chỉnh sửa
                 handleClose();
             })
             .catch(error => {
-              console.error('Error updating detail:', error);
-              toast.error("Có lỗi xảy ra khi sửa địa chỉ. Vui lòng thử lại.", {
-                  position: "top-right",
-                  autoClose: 3000,
-              });
-          });
+                if (error.response && error.response.status === 422) {
+                    const validationErrors = error.response.data.errors;
+                    if (validationErrors.email) {
+                        toast.error("Email đã tồn tại. Vui lòng sử dụng email khác.", {
+                            position: "top-right",
+                            autoClose: 3000,
+                        });
+                    } else {
+                        toast.error("Có lỗi xảy ra khi sửa địa chỉ. Vui lòng thử lại.", {
+                            position: "top-right",
+                            autoClose: 3000,
+                        });
+                    }
+                } else {
+                    console.error('Error updating detail:', error);
+                    toast.error("Có lỗi xảy ra khi sửa địa chỉ. Vui lòng thử lại.", {
+                        position: "top-right",
+                        autoClose: 3000,
+                    });
+                }
+            });
     } else {
         // Thêm mới chi tiết địa chỉ
-        axios.post(`${process.env.REACT_APP_BASEURL}/api/diachichitiet`, {
-            diachi: diachi,
-            email: email,
-            sdt: sdt
-        })
-        .then(() => {
-          toast.success("địa chỉ đã dược sửa thành công",{
-            position:"top-right",
-            autoClose:3000,
-          })
-            fetchDetails(); // Cập nhật danh sách sau khi thêm mới
-            handleClose();
-        })
-        .catch(error => {
-          if (error.response && error.response.status === 422) {
-              console.error('Validation error:', error.response.data.errors);
-              toast.error("Lỗi xác thực dữ liệu. Vui lòng kiểm tra thông tin.", {
-                  position: "top-right",
-                  autoClose: 3000,
-              });
-          } else {
-              console.error('Error adding detail:', error);
-              toast.error("Có lỗi xảy ra khi thêm địa chỉ. Vui lòng thử lại.", {
-                  position: "top-right",
-                  autoClose: 3000,
-              });
-          }
-      });
-  }
+        axios.post(`${process.env.REACT_APP_BASEURL}/api/diachichitiet`, { diachi, email, sdt })
+            .then(() => {
+                toast.success("Địa chỉ đã được thêm thành công", {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+                fetchDetails(); // Cập nhật danh sách sau khi thêm mới
+                handleClose();
+            })
+            .catch(error => {
+                if (error.response && error.response.status === 422) {
+                    const validationErrors = error.response.data.errors;
+                    if (validationErrors.email) {
+                        toast.error("Email đã tồn tại. Vui lòng sử dụng email khác.", {
+                            position: "top-right",
+                            autoClose: 3000,
+                        });
+                    } else {
+                        toast.error("Lỗi xác thực dữ liệu. Vui lòng kiểm tra thông tin.", {
+                            position: "top-right",
+                            autoClose: 3000,
+                        });
+                    }
+                } else {
+                    console.error('Error adding detail:', error);
+                    toast.error("Có lỗi xảy ra khi thêm địa chỉ. Vui lòng thử lại.", {
+                        position: "top-right",
+                        autoClose: 3000,
+                    });
+                }
+            });
+    }
 };
+
 // Xử lý nhập số điện thoại, chỉ cho phép số và giới hạn 11 ký tự
 const handleSdtChange = (e) => {
   const value = e.target.value;

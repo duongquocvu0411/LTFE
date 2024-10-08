@@ -5,9 +5,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ChiTietDoanhThuModal from "../modla/ChiTietDoanhThuModal";
 
-import Sidebar from "../Sidebar";
+
 import Footer from "../Footer";
 import HeaderAdmin from "../HeaderAdmin";
+import SiderbarAdmin from "../SidebarAdmin";
 
 // Register chart components, including the Filler plugin
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Tooltip, Legend, Filler);
@@ -74,7 +75,7 @@ const BieuDoDoanhThu = () => {
 
   return (
     <div id="wrapper">
-      <Sidebar />
+      <SiderbarAdmin />
 
       <div id="content-wrapper" className="d-flex flex-column">
         {/* Main Content */}

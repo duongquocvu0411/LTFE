@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from '../Sidebar';
+
 import Footer from '../Footer';
 import axios from 'axios';
 import { Button, Modal } from 'react-bootstrap';
@@ -7,52 +7,89 @@ import { nanoid } from 'nanoid';
 import { toast, ToastContainer } from 'react-toastify';
 import HeaderAdmin from '../HeaderAdmin';
 import ModlaSanpham from './../modla/ModlaSanpham';
+import SiderbarAdmin from '../SidebarAdmin';
 
 const SanPham = () => {
+  // State lưu trữ danh mục sản phẩm
+  const [danhMuc, setDanhMuc] = useState([]);
+
+
+  // State lưu trữ danh mục được chọn
+  const [danhMucDuocChon, setDanhMucDuocChon] = useState("");
+  // State lưu trữ danh sách sản phẩm
   const [danhSachSanPham, setDanhSachSanPham] = useState([]);
+
+  // State quản lý trang hiện tại của phân trang
   const [trangHienTai, setTrangHienTai] = useState(1);
+
+  // Số sản phẩm hiển thị mỗi trang
   const sanPhamMoiTrang = 5;
+
+  // State hiển thị modal và chỉnh sửa sản phẩm
   const [hienThiModal, setHienThiModal] = useState(false);
   const [chinhSua, setChinhSua] = useState(false);
   const [sanPhamHienTai, setSanPhamHienTai] = useState(null);
 
+  // Tính toán vị trí sản phẩm để phân trang
   const viTriSanPhamCuoi = trangHienTai * sanPhamMoiTrang;
   const viTriSanPhamDau = viTriSanPhamCuoi - sanPhamMoiTrang;
   const sanPhamTheoTrang = danhSachSanPham.slice(viTriSanPhamDau, viTriSanPhamCuoi);
   const tongSoTrang = Math.ceil(danhSachSanPham.length / sanPhamMoiTrang);
 
+  // Hàm thay đổi trang hiện tại khi người dùng bấm nút phân trang
   const phanTrang = (soTrang) => setTrangHienTai(soTrang);
 
-  const layDanhSachSanPham = () => {
-    axios.get(`${process.env.REACT_APP_BASEURL}/api/products`)
-      .then(response => {
-        setDanhSachSanPham(response.data);
-      })
-      .catch(error => {
-        console.log('Có lỗi khi lấy API:', error);
-        toast.error('Có lỗi khi lấy danh sách sản phẩm', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
-      });
-  };
-
+  // Gọi API lấy danh sách sản phẩm khi component được render lần đầu
   useEffect(() => {
     layDanhSachSanPham();
-  }, []);
+    layDanhMuc();
+  }, [danhMucDuocChon]);
 
+  // Hàm gọi API để lấy danh sách sản phẩm
+  const layDanhSachSanPham = async () => {
+    try {
+      const url = danhMucDuocChon
+        ? `${process.env.REACT_APP_BASEURL}/api/products?danhsachsanpham_id=${danhMucDuocChon}`
+        : `${process.env.REACT_APP_BASEURL}/api/products`;
+
+      const response = await axios.get(url);
+      setDanhSachSanPham(response.data); // Lưu danh sách sản phẩm vào state
+      setTrangHienTai(1); // Đặt lại trang hiện tại về 1 khi thay đổi danh mục
+    } catch (error) {
+      console.log('Có lỗi khi lấy API:', error);
+      toast.error('Có lỗi khi lấy danh sách sản phẩm', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+    }
+  };
+  // Hàm gọi API để lấy danh sách danh mục sản phẩm
+  const layDanhMuc = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhsachsanpham`);
+      setDanhMuc(response.data); // Lưu danh mục sản phẩm vào state
+    } catch (error) {
+      console.error('Lỗi khi lấy danh mục sản phẩm:', error);
+    }
+  };
+
+
+
+  // Hàm mở modal để thêm sản phẩm
   const moModalThemSanPham = () => {
-    setChinhSua(false);
-    setSanPhamHienTai(null);
-    setHienThiModal(true);
+    setChinhSua(false); // Đặt trạng thái không phải chỉnh sửa
+    setSanPhamHienTai(null); // Đặt sản phẩm hiện tại về null
+    setHienThiModal(true); // Hiển thị modal
   };
 
-  const moModalSuaSanPham = (sanPham) => {  
-    setChinhSua(true);
-    setSanPhamHienTai(sanPham);
-    setHienThiModal(true);
+  // Hàm mở modal để chỉnh sửa sản phẩm
+  const moModalSuaSanPham = (sanPham) => {
+    setChinhSua(true); // Đặt trạng thái chỉnh sửa
+    setSanPhamHienTai(sanPham); // Lưu sản phẩm hiện tại
+    setHienThiModal(true); // Hiển thị modal
   };
 
+  // Hàm xóa sản phẩm
   const xoaSanPham = (id) => {
     const SanphamXoa = danhSachSanPham.find((sanpham) => sanpham.id === id);
     axios.delete(`${process.env.REACT_APP_BASEURL}/api/products/${id}`)
@@ -61,7 +98,7 @@ const SanPham = () => {
           position: 'top-right',
           autoClose: 3000,
         });
-        layDanhSachSanPham();
+        layDanhSachSanPham(); // Cập nhật danh sách sản phẩm sau khi xóa
       })
       .catch(error => {
         console.log('Lỗi khi xóa sản phẩm:', error);
@@ -72,16 +109,16 @@ const SanPham = () => {
       });
   };
 
-  // Hiển thị modal với thông tin chi tiết sản phẩm
+  // State hiển thị modal chi tiết sản phẩm
   const [hienThiModalChiTiet, setHienThiModalChiTiet] = useState(false);
   const [noiDungChiTiet, setNoiDungChiTiet] = useState({});
 
-  // Gọi API để lấy chi tiết sản phẩm từ bảng chitiets
+  // Hàm mở modal để xem chi tiết sản phẩm (gọi API lấy dữ liệu chi tiết)
   const moModalChiTiet = (sanphams_id) => {
     axios.get(`${process.env.REACT_APP_BASEURL}/api/chitiets/${sanphams_id}`)
       .then((response) => {
-        setNoiDungChiTiet(response.data);  // Lưu dữ liệu chi tiết sản phẩm từ bảng chitiets
-        setHienThiModalChiTiet(true);  // Hiển thị modal
+        setNoiDungChiTiet(response.data); // Lưu dữ liệu chi tiết sản phẩm
+        setHienThiModalChiTiet(true); // Hiển thị modal chi tiết
       })
       .catch(error => {
         console.log('Lỗi khi lấy chi tiết sản phẩm:', error);
@@ -94,11 +131,16 @@ const SanPham = () => {
 
   return (
     <div id="wrapper">
-      <Sidebar />
+      {/* Sidebar */}
+      <SiderbarAdmin />
 
+      {/* Phần nội dung chính */}
       <div id="content-wrapper" className="d-flex flex-column">
         <div id="content">
-          <HeaderAdmin/>
+          {/* Header Admin */}
+          <HeaderAdmin />
+
+          {/* Tiêu đề trang */}
           <div className="content-header">
             <div className="container-fluid">
               <div className="row mb-2">
@@ -115,65 +157,88 @@ const SanPham = () => {
             </div>
           </div>
 
-          <div className="container-fluid">
-            <div className="card shadow mb-4">
-              <div className="card-header py-3 d-flex justify-content-between align-items-center">
-                <h3 className="m-0 font-weight-bold text-primary">Danh sách sản phẩm</h3>
-                <button className="btn btn-primary" onClick={moModalThemSanPham}>
+          {/* Bộ lọc danh mục sản phẩm */}
+          <div className="container-fluid mb-3">
+            <div className="row">
+              <div className="col-lg-8">
+                <label htmlFor="categoryFilter" className="form-label">Chọn danh mục sản phẩm:</label>
+                <select
+                  id="categoryFilter"
+                  className="form-control"
+                  value={danhMucDuocChon}
+                  onChange={(e) => setDanhMucDuocChon(e.target.value)}
+                >
+                  <option value="">Tất cả sản phẩm</option>
+                  {danhMuc.map((dm) => (
+                    <option key={dm.id} value={dm.id}>
+                      {dm.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-lg-4 d-flex align-items-end">
+                <button className="btn btn-primary w-100" onClick={moModalThemSanPham}>
                   <i className="fas fa-plus"></i> Thêm sản phẩm
                 </button>
               </div>
-              <div className="card-body table-responsive" style={{ maxHeight: '400px' }}>
-              <table className="table table-bordered table-hover table-striped">
-  <thead>
-    <tr>
-      <th scope="col">STT</th>
-      <th scope="col">Hình ảnh</th>
-      <th scope="col">Tên</th> 
-      <th scope="col">Giá</th>
-      <th scope='col'>Đơn vị tính</th> {/* Thêm cột Đơn vị tính */}
-      <th scope='col'>Chi tiết sản phẩm</th>
-      <th scope="col">Trạng thái</th>
-      <th scope="col">Chức năng</th>
-    </tr>
-  </thead>
-  <tbody>
-    {sanPhamTheoTrang.map((sanPham, index) => (
-      <tr key={nanoid()}>
-        <td>{viTriSanPhamDau + index + 1}</td>
-        <td>
-          <div className="d-flex align-items-center">
-            <img 
-              src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.image}`} 
-              alt={sanPham.title} 
-              style={{ height: '50px', objectFit: 'cover' }} 
-            />
+            </div>
           </div>
-        </td>
-        <td>{sanPham.title}</td>
-        <td>{sanPham.price} vnđ</td> {/* Cập nhật để chỉ hiển thị giá */}
-        <td>{sanPham.don_vi_tinh}</td> {/* Hiển thị giá trị đơn vị tính */}
-        <td>
-          <Button variant="btn btn-primary" onClick={() => moModalChiTiet(sanPham.id)}>
-            Xem chi tiết
-          </Button>
-        </td>
-        <td>{sanPham.status}</td>
-        <td>
-          <Button variant="primary me-2" onClick={() => moModalSuaSanPham(sanPham)}>
-            <i className="fas fa-edit"></i>
-          </Button>
-          <Button variant="danger" onClick={() => xoaSanPham(sanPham.id)}>
-            <i className="fas fa-trash"></i>
-          </Button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
 
+          {/* Bảng danh sách sản phẩm */}
+          <div className="container-fluid">
+            <div className="card shadow mb-4">
+              <div className="card-body table-responsive" style={{ maxHeight: '400px' }}>
+                <table className="table table-bordered table-hover table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">STT</th>
+                      <th scope="col">Hình ảnh</th>
+                      <th scope="col">Tên</th>
+                      <th scope="col">Giá</th>
+                      <th scope='col'>Đơn vị tính</th>
+                      <th scope='col'>Chi tiết sản phẩm</th>
+                      <th scope="col">Trạng thái</th>
+                      <th scope="col">Chức năng</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sanPhamTheoTrang.map((sanPham, index) => (
+                      <tr key={nanoid()}>
+                        <td>{viTriSanPhamDau + index + 1}</td>
+                        <td>
+                          <div className="d-flex align-items-center">
+                            <img
+                              src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.image}`}
+                              alt={sanPham.title}
+                              style={{ height: '50px', objectFit: 'cover' }}
+                            />
+                          </div>
+                        </td>
+                        <td>{sanPham.title}</td>
+                        <td>{sanPham.price} vnđ</td>
+                        <td>{sanPham.don_vi_tinh}</td>
+                        <td>
+                          {/* chi tiết sản phẩm */}
+                          <Button variant="btn btn-primary" onClick={() => moModalChiTiet(sanPham.id)}>
+                            Xem chi tiết
+                          </Button>
+                        </td>
+                        <td>{sanPham.status}</td>
+                        <td>
+                          <Button variant="primary me-2" onClick={() => moModalSuaSanPham(sanPham)}>
+                            <i className="fas fa-edit"></i>
+                          </Button>
+                          <Button variant="danger" onClick={() => xoaSanPham(sanPham.id)}>
+                            <i className="fas fa-trash"></i>
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
 
+              {/* Phân trang */}
               <div className="card-footer clearfix">
                 <ul className="pagination pagination-sm m-0 float-right">
                   <li className={`page-item ${trangHienTai === 1 ? 'disabled' : ''}`}>
@@ -193,17 +258,20 @@ const SanPham = () => {
           </div>
         </div>
 
+        {/* Modal thêm/sửa sản phẩm */}
         <ModlaSanpham
           show={hienThiModal}
           handleClose={() => setHienThiModal(false)}
           isEdit={chinhSua}
           product={sanPhamHienTai}
-          fetchSanpham={layDanhSachSanPham}    
+          fetchSanpham={layDanhSachSanPham}
         />
 
+        {/* Footer */}
         <Footer />
         <ToastContainer />
 
+        {/* Modal chi tiết sản phẩm */}
         <Modal show={hienThiModalChiTiet} onHide={() => setHienThiModalChiTiet(false)}>
           <Modal.Header closeButton>
             <Modal.Title>Chi Tiết Sản Phẩm</Modal.Title>
@@ -228,6 +296,7 @@ const SanPham = () => {
         </Modal>
       </div>
     </div>
+
   );
 };
 

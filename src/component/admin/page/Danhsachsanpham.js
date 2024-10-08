@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from '../Sidebar';
+import Sidebar from '../SidebarAdmin';
 import Footer from '../Footer';
 import HeaderAdmin from '../HeaderAdmin'; // Import HeaderAdmin component
 
@@ -8,6 +8,7 @@ import { Button } from 'react-bootstrap';
 import ModalThemDanhMucSanPham from '../modla/ModlaDanhsachsanpham';
 import { nanoid } from 'nanoid';
 import { toast, ToastContainer } from 'react-toastify';
+import SiderbarAdmin from '../SidebarAdmin';
 
 const DanhSachSanPham = () => {
   const [danhSachDanhMuc, setDanhSachDanhMuc] = useState([]);
@@ -52,7 +53,7 @@ const DanhSachSanPham = () => {
     setHienThiModal(true);
   };
 
-  // Mở modal để chỉnh sửa danh mục
+  // Mở modal để chỉnh sửa danh mục (tham số)
   const moModalSuaDanhMuc = (danhMuc) => {
     setChinhSua(true);
     setDanhMucHienTai(danhMuc);
@@ -80,7 +81,7 @@ const DanhSachSanPham = () => {
 
   return (
     <div id="wrapper">
-      <Sidebar />
+      <SiderbarAdmin />
 
       <div id="content-wrapper" className="d-flex flex-column">
         {/* Main Content */}
@@ -170,11 +171,11 @@ const DanhSachSanPham = () => {
 
       {/* Modal Thêm/Sửa danh mục */}
       <ModalThemDanhMucSanPham
-        show={hienThiModal}
-        handleClose={() => setHienThiModal(false)}
-        isEdit={chinhSua}
-        product={danhMucHienTai}
-        fetchProducts={layDanhSachDanhMuc}
+        show={hienThiModal} // Hiển thị hoặc ẩn modal dựa trên trạng thái hienThiModal
+        handleClose={() => setHienThiModal(false)} // Hàm đóng modal
+        isEdit={chinhSua}  // Truyền trạng thái chỉnh sửa hay không
+        product={danhMucHienTai}  // Truyền danh mục hiện tại cần chỉnh sửa
+        fetchProducts={layDanhSachDanhMuc} // Hàm để lấy lại danh sách sản phẩm sau khi chỉnh sửa
       />
 
       <ToastContainer />

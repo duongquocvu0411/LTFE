@@ -63,7 +63,7 @@ const ModlaAdddanhsachsanpham = ({ show, handleClose, isEdit, product, fetchProd
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>{isEdit ? 'Chỉnh sửa danh muc5 Profile' : 'Thêm mới Danh mục'}</Modal.Title>
+        <Modal.Title>{isEdit ? 'Chỉnh sửa danh mục ' : 'Thêm mới Danh mục'}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
