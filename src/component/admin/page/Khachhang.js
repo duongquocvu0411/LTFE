@@ -174,6 +174,7 @@ const Khachhangs = () => {
                         <th scope="col">Số Điện Thoại</th>
                         <th scope='col'>Địa chỉ chi tiết</th>
                         <th scope='col'>Thành phố</th>
+                        <th scope='col'>Ghi chú</th>
                         <th scope="col">Chức Năng</th>
                       </tr>
                     </thead>
@@ -192,6 +193,7 @@ const Khachhangs = () => {
                             <td>{item.sdt}</td>
                             <td>{item.diachicuthe}</td>
                             <td>{item.thanhpho}</td>
+                            <td>{item.ghichu}</td>
                             <td>
                               <Button variant="info" onClick={() => hienThiChiTiet(item.id)}>
                                 Xem chi tiết

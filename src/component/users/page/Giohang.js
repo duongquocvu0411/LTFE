@@ -55,7 +55,7 @@ const Giohang = () => {
                           />
                         </td>
                         <td>{sanPham.title}</td>
-                        <td>{parseFloat(sanPham.price).toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ / kg</td>
+                        <td>{parseFloat(sanPham.price).toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ / {sanPham.don_vi_tinh}</td>
                         <td> 
                           <div className="d-flex">
                             <button 

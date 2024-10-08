@@ -137,7 +137,7 @@ const Cuahang = () => {
                   <div className="card-body d-flex flex-column rounded-bottom">
                     <h4 className="card-title">{sp.title}</h4>
                     <div className="d-flex justify-content-between mt-auto">
-                       <p className="text-dark fs-5 fw-bold mb-0">{sp.price} vnđ / kg</p>
+                       <p className="text-dark fs-5 fw-bold mb-0">{sp.price} vnđ /{sp.don_vi_tinh}</p>
                       {/* Ẩn nút Thêm vào giỏ nếu sản phẩm hết hàng */}
                       {sp.status !== 'Hết hàng' && (
                         <button

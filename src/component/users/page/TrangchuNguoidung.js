@@ -156,7 +156,7 @@ const TrangchuNguoidung = () => {
                         <div className="p-3 border border-secondary border-top-0 rounded-bottom">
                           <p className="h5 fw-bold">{sanPham.title}</p>
                           <div className="d-flex justify-content-between align-items-center">
-                            <p className="text-dark fs-5 fst-italic mb-0">{sanPham.price} vnđ/kg</p>
+                            <p className="text-dark fs-5 fst-italic mb-0">{sanPham.price} vnđ/ {sanPham.don_vi_tinh}</p>
                             {sanPham.status !== 'Hết hàng' && (
                               <button
                                 onClick={() => addToCart(sanPham)}

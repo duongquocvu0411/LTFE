@@ -23,7 +23,9 @@ const ModalChiTietKhachHang = ({ show, handleClose, chiTietKhachHang, capNhatTra
                 <ul>
                   {bill.hoadonchitiets.map((chitiet, idx) => (
                     <li key={idx}>
-                      Sản phẩm: {chitiet.sanpham_names} x {chitiet.quantity} kg, Giá: {chitiet.price} (VND)
+                     <li key={idx}>
+                          Sản phẩm: {chitiet.sanpham_names} x {chitiet.quantity}, Giá: {chitiet.price} (VND)
+                      </li>
                     </li>
                   ))}
                 </ul>
