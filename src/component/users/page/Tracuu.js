@@ -51,7 +51,7 @@ const Tracuu = () => {
       }
      )
     }
-  };
+  };   
 
   return (
     <>
@@ -98,7 +98,7 @@ const Tracuu = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {orderDetails.billchitiets.map((item, index) => (
+                    {orderDetails.hoadonchitiets.map((item, index) => (
                       <tr key={index}>
                         <td>{item.sanpham_names}</td>
                         <td>{item.quantity}</td>
@@ -111,7 +111,7 @@ const Tracuu = () => {
 
               <p className="card-text"><strong>Tổng giá trị đơn hàng:</strong> {orderDetails.total_price} VND</p>
 
-              {/* Nút hủy đơn hàng */}
+              {/* Nút hủy đơn hàng và kiểm trả status nếu là Chờ xử lý thì hiện nút  */}
               {orderDetails.status === "Chờ xử lý" && (
                 <button className="btn btn-danger mt-3" onClick={handleCancelOrder}>
                   Hủy đơn hàng

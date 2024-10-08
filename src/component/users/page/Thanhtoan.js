@@ -2,11 +2,10 @@ import React, { useContext, useState } from "react";
 import Footerusers from "../Footerusers";
 import HeaderUsers from "../HeaderUsers";
 import { CartContext } from "./CartContext";
-import { Link } from "react-router-dom";
 import axios from "axios"; // Import axios
 import { toast, ToastContainer } from 'react-toastify';
 
-const Checkout = () => {
+const Thanhtoan = () => {
   const [thanhpho, setThanhpho] = useState("");
   const { giohang, clearCart } = useContext(CartContext);
   const [sdt, setSdt] = useState("");
@@ -357,4 +356,4 @@ const handleInput = (e) => {
   );
 };
 
-export default Checkout;
+export default Thanhtoan;

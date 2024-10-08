@@ -20,7 +20,8 @@ const LienHe = () => {
     const { name, value } = e.target;
 
     if (name === 'sdt') {
-      if (/^\d*$/.test(value) && value.length <= 11) {
+      if (/^\d*$/.test(value) && value.length <= 11) { 
+    //kiểm tra xem chuỗi nhập vào có phải là số hay không: ^: Bắt đầu chuỗi. \d: Đại diện cho một chữ số (0-9).*: Cho phép lặp lại ký tự trước nó (các chữ số) 0 hoặc nhiều lần.$: Kết thúc chuỗi.
         setDuLieuForm({
           ...duLieuForm,
           [name]: value,
@@ -38,12 +39,27 @@ const LienHe = () => {
   const xuLyGuiForm = (e) => {
     e.preventDefault();
 
-    if (duLieuForm.sdt.length < 10) {
-      setError({ message: 'Số điện thoại phải có ít nhất 10 số.' });
-      toast.error('Số điện thoại phải có ít nhất 10 số.');
-      return;
-    }
-
+  // Kiểm tra các trường bắt buộc
+  if (!duLieuForm.ten) {
+    toast.error('Họ tên không được bỏ trống.');
+    return;
+  }
+  if (!duLieuForm.email) {
+    toast.error('Email không được bỏ trống.');
+    return;
+  }
+  if (!duLieuForm.sdt) {
+    toast.error('Số điện thoại không được bỏ trống.');
+    return;
+  }
+  if (duLieuForm.sdt.length < 10) {
+    toast.error('Số điện thoại phải có ít nhất 10 số.');
+    return;
+  }
+  if (!duLieuForm.ghichu) {
+    toast.error('Nội dung liên hệ không được bỏ trống.');
+    return;
+  }
     axios.post(`${process.env.REACT_APP_BASEURL}/api/lienhe`, duLieuForm, {
       headers: {
         'Content-Type': 'application/json'
@@ -76,70 +92,74 @@ const LienHe = () => {
 
   return (
     <>
-      <HeaderUsers />
-      <Container className="mt-5 py-5">
+     <HeaderUsers />
+      <div className="container mt-5 py-5">
         <br /> <br /> <br />
-        <Row className="justify-content-center">
-          <Col md={8}>
+        <div className="row justify-content-center">
+          <div className="col-md-8">
             <h2 className="mb-4 text-center">Liên Hệ Với Chúng Tôi</h2>
-            <Form onSubmit={xuLyGuiForm}>
-              <Form.Group controlId="formHoTen" className="mb-3">
-                <Form.Label>Họ Tên</Form.Label>
-                <Form.Control
+            <form onSubmit={xuLyGuiForm}>
+              <div className="form-floating mb-3">
+                <input
                   type="text"
                   name="ten"
-                  placeholder="Nhập họ tên của bạn"
+                  id="formHoTen"
+                  className="form-control"
+                  placeholder="Họ tên"
                   value={duLieuForm.ten}
                   onChange={thayDoiDuLieu}
-                  required
                 />
-              </Form.Group>
+                <label htmlFor="formHoTen">Họ Tên</label>
+              </div>
 
-              <Form.Group controlId="formEmail" className="mb-3">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
+              <div className="form-floating mb-3">
+                <input
                   type="email"
                   name="email"
-                  placeholder="Nhập email của bạn"
+                  id="formEmail"
+                  className="form-control"
+                  placeholder="Email"
                   value={duLieuForm.email}
                   onChange={thayDoiDuLieu}
-                  required
                 />
-              </Form.Group>
+                <label htmlFor="formEmail">Email</label>
+              </div>
 
-              <Form.Group controlId="formSoDienThoai" className="mb-3">
-                <Form.Label>Số Điện Thoại</Form.Label>
-                <Form.Control
+              <div className="form-floating mb-3">
+                <input
                   type="text"
                   name="sdt"
-                  placeholder="Nhập số điện thoại của bạn"
+                  id="formSoDienThoai"
+                  className="form-control"
+                  placeholder="Số điện thoại"
                   value={duLieuForm.sdt}
                   onChange={thayDoiDuLieu}
-                  required
                 />
-              </Form.Group>
+                <label htmlFor="formSoDienThoai">Số Điện Thoại</label>
+              </div>
 
-              <Form.Group controlId="formGhiChu" className="mb-3">
-                <Form.Label>Nội Dung</Form.Label>
-                <Form.Control
-                  as="textarea"
+              <div className="form-floating mb-3">
+                <textarea
                   name="ghichu"
-                  rows={5}
-                  placeholder="Nhập nội dung liên hệ"
+                  id="formGhiChu"
+                  rows="5"
+                  className="form-control"
+                  placeholder="Nội dung liên hệ"
                   value={duLieuForm.ghichu}
                   onChange={thayDoiDuLieu}
-                  required
-                />
-              </Form.Group>
+                  style={{ height: '100px' }}
+                ></textarea>
+                <label htmlFor="formGhiChu">Nội Dung</label>
+              </div>
 
-              <Button variant="primary" type="submit">
+              <button type="submit" className="btn btn-primary">
                 Gửi Liên Hệ
-              </Button>
-            </Form>
-          </Col>
-        </Row>
-      </Container>
-      <ToastContainer /> {/* Thêm ToastContainer vào đây */}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <ToastContainer />
     </>
   );
 };

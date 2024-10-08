@@ -11,7 +11,7 @@ const ModlaAdddanhsachsanpham = ({ show, handleClose, isEdit, product, fetchProd
     if (isEdit && product) {
       setName(product.name);
      
-    } else {
+    } else {    
       setName('');
      
     }
@@ -63,7 +63,7 @@ const ModlaAdddanhsachsanpham = ({ show, handleClose, isEdit, product, fetchProd
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>{isEdit ? 'Edit Profile' : 'Add Profile'}</Modal.Title>
+        <Modal.Title>{isEdit ? 'Chỉnh sửa danh muc5 Profile' : 'Thêm mới Danh mục'}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
@@ -83,7 +83,7 @@ const ModlaAdddanhsachsanpham = ({ show, handleClose, isEdit, product, fetchProd
           Cancel
         </Button>
         <Button variant="primary" onClick={handleSubmit}>
-          {isEdit ? 'Update' : 'Add'}
+          {isEdit ? 'Cập nhật' : 'Thêm mới'}
         </Button>
       </Modal.Footer>
     </Modal>

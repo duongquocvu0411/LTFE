@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Tieude from "../HeaderUsers";
 import Footerusers from "../Footerusers";
 
-const Testimonial = () => {
+const Gioithieu = () => {
 
 
   return (
@@ -102,14 +102,14 @@ const Testimonial = () => {
                   </div>
                 </div>
               </div>
-              {/* More testimonials */}
+            
             </div>
           </div>
         </div>
-        {/* Testimonial Section End */}
+       
       </div>
       <Footerusers />
     </>
   );
 };
-export default Testimonial;
+export default Gioithieu;

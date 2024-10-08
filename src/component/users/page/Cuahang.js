@@ -2,54 +2,75 @@ import React, { useContext, useEffect, useState } from "react";
 import Footerusers from "../Footerusers";
 import axios from "axios";
 import HeaderUsers from "../HeaderUsers";
-import { CartContext } from "./CartContext";
+import { CartContext } from "./CartContext"; 
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-const Shop = () => {
+const Cuahang = () => {
+  // Khởi tạo state `danhMuc` để lưu trữ danh mục sản phẩm
   const [danhMuc, setDanhMuc] = useState([]);
+  
+  // Khởi tạo state `sanPham` để lưu trữ danh sách sản phẩm
   const [sanPham, setSanPham] = useState([]);
+  
+  // Khởi tạo state `danhMucDuocChon` để lưu trữ danh mục sản phẩm được chọn
   const [danhMucDuocChon, setDanhMucDuocChon] = useState("");
+
+  // Sử dụng context `CartContext` để lấy hàm `addToCart` nhằm thêm sản phẩm vào giỏ hàng
   const { addToCart } = useContext(CartContext);
 
-  // Pagination
+  // Pagination (phân trang)
+  // Khởi tạo state `trangHienTai` để lưu trữ trang hiện tại, mặc định là trang 1
   const [trangHienTai, setTrangHienTai] = useState(1);
+  
+  // Số lượng sản phẩm hiển thị trên mỗi trang
   const sanPhamMoiTrang = 8;
 
-  // Fetch categories and products
+  // useEffect: Gọi hàm `fetchDanhMuc` và `fetchSanPham` mỗi khi `danhMucDuocChon` thay đổi
   useEffect(() => {
     fetchDanhMuc();
     fetchSanPham();
   }, [danhMucDuocChon]);
 
+  // Hàm `fetchDanhMuc` để lấy danh sách danh mục sản phẩm từ API
   const fetchDanhMuc = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhsachsanpham`);
-      setDanhMuc(response.data);
+      setDanhMuc(response.data); // Lưu danh mục vào state `danhMuc`
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   };
 
+  // Hàm `fetchSanPham` để lấy danh sách sản phẩm từ API
   const fetchSanPham = async () => {
     try {
+      // Nếu `danhMucDuocChon` có giá trị, gọi API lấy sản phẩm thuộc danh mục đó, ngược lại lấy tất cả sản phẩm
       const url = danhMucDuocChon
         ? `${process.env.REACT_APP_BASEURL}/api/products?danhsachsanpham_id=${danhMucDuocChon}`
         : `${process.env.REACT_APP_BASEURL}/api/products`;
       const response = await axios.get(url);
-      setSanPham(response.data);
+      setSanPham(response.data); // Lưu danh sách sản phẩm vào state `sanPham`
     } catch (error) {
       console.error('Error fetching products:', error);
     }
   };
 
-  // Pagination logic
+  // Pagination logic (Xử lý phân trang)
+  // Tính vị trí sản phẩm cuối cùng trên trang hiện tại
   const indexOfLastProduct = trangHienTai * sanPhamMoiTrang;
+  
+  // Tính vị trí sản phẩm đầu tiên trên trang hiện tại
   const indexOfFirstProduct = indexOfLastProduct - sanPhamMoiTrang;
+  
+  // Lấy danh sách sản phẩm hiển thị trên trang hiện tại
   const sanPhamHienTai = sanPham.slice(indexOfFirstProduct, indexOfLastProduct);
+  
+  // Tính tổng số trang
   const tongSoTrang = Math.ceil(sanPham.length / sanPhamMoiTrang);
+  
+  // Hàm `thayDoiTrang` để thay đổi trang hiện tại
   const thayDoiTrang = (soTrang) => setTrangHienTai(soTrang);
-
   return (
     <div>
       <HeaderUsers />
@@ -73,8 +94,8 @@ const Shop = () => {
               <select
                 id="fruits"
                 className="border-0 form-select-sm bg-light"
-                value={danhMucDuocChon}
-                onChange={(e) => setDanhMucDuocChon(e.target.value)}
+                value={danhMucDuocChon} // Giá trị danh mục đang được chọn
+                onChange={(e) => setDanhMucDuocChon(e.target.value)} // Cập nhật `danhMucDuocChon` khi người dùng chọn danh mục mới
               >
                 <option value="">Tất cả danh mục</option>
                 {danhMuc.map((dm) => (
@@ -86,7 +107,7 @@ const Shop = () => {
             </div>
           </div>
 
-          {/* Product List */}
+          {/* Danh sách sản phâm */}
           <div className="row g-4">
             {sanPhamHienTai.map((sp) => (
               <div key={sp.id} className="col-md-6 col-lg-4 col-xl-3 d-flex">
@@ -100,7 +121,7 @@ const Shop = () => {
                         style={{ height: 250, objectFit: 'cover' }}
                       />
                     </Link>
-                    {/* Kiểm tra trạng thái Hết hàng */}
+                    {/* Kiểm tra trạng thái Hết hàng và hiển thị thông báo */}
                     {sp.status === 'Hết hàng' && (
                       <div
                         className="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center bg-dark bg-opacity-50"
@@ -116,7 +137,7 @@ const Shop = () => {
                   <div className="card-body d-flex flex-column rounded-bottom">
                     <h4 className="card-title">{sp.title}</h4>
                     <div className="d-flex justify-content-between mt-auto">
-                      <p className="text-dark fs-5 fw-bold mb-0">{sp.price} vnđ / kg</p>
+                       <p className="text-dark fs-5 fw-bold mb-0">{sp.price} vnđ / kg</p>
                       {/* Ẩn nút Thêm vào giỏ nếu sản phẩm hết hàng */}
                       {sp.status !== 'Hết hàng' && (
                         <button
@@ -134,10 +155,11 @@ const Shop = () => {
             ))}
           </div>
 
-          {/* Pagination */}
+          {/* Phân trang */}
           <div className="d-flex justify-content-center mt-5">
             <nav aria-label="Page navigation">
               <ul className="pagination pagination-sm m-0">
+                    {/* Các nút phân trang */}
                 <li className={`page-item ${trangHienTai === 1 ? 'disabled' : ''}`}>
                   <button className="page-link" onClick={() => thayDoiTrang(1)}>«</button>
                 </li>
@@ -169,4 +191,4 @@ const Shop = () => {
   );
 };
 
-export default Shop;
+export default Cuahang;

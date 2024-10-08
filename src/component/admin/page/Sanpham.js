@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from '../Sidebar';
 import Footer from '../Footer';
 import axios from 'axios';
-import ThemHoacSuaSanPhamModal from '../modla/AddProduct';
+
 import { Button, Modal } from 'react-bootstrap';
 import { nanoid } from 'nanoid';
 import { toast, ToastContainer } from 'react-toastify';
 import HeaderAdmin from '../HeaderAdmin';
+import ModlaSanpham from './../modla/ModlaSanpham';
 
 const SanPham = () => {
   const [danhSachSanPham, setDanhSachSanPham] = useState([]);
@@ -196,12 +197,12 @@ const SanPham = () => {
         </div>
 
         {/* Modal Thêm/Sửa Sản Phẩm */}
-        <ThemHoacSuaSanPhamModal
+        <ModlaSanpham
           show={hienThiModal}
           handleClose={() => setHienThiModal(false)}
           isEdit={chinhSua}
           product={sanPhamHienTai}
-          fetchSanpham={layDanhSachSanPham}
+          fetchSanpham={layDanhSachSanPham}    
         />
 
         <Footer />

@@ -3,7 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const AddOrEditProductModal = ({
+const ModlaSanpham = ({
   show,
   handleClose,
   isEdit,
@@ -209,4 +209,4 @@ Nếu isEdit là false, giá trị 'Thêm sản phẩm' sẽ được hiển th�
   );
 };
 
-export default AddOrEditProductModal;
+export default ModlaSanpham;

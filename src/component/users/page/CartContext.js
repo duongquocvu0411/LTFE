@@ -18,7 +18,7 @@ export const CartProvider = ({ children }) => {
       const savedCart = localStorage.getItem('giohang');
       return savedCart ? JSON.parse(savedCart) : [];
     } catch (error) {
-      console.error('Error parsing JSON from localStorage:', error);
+      console.error('Lỗi phân tích cú pháp JSON từ localStorage:', error);
       return [];
     }
   });    

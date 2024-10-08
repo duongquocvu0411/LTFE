@@ -7,7 +7,7 @@ import { CartContext } from './CartContext';
 import { Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-const HomeUsers = () => {
+const TrangchuNguoidung = () => {
   const [danhMuc, setDanhMuc] = useState([]); // Khởi tạo state lưu trữ danh mục
   const [sanPham, setSanPham] = useState([]); // Khởi tạo state lưu trữ sản phẩm
   const [danhMucDuocChon, setDanhMucDuocChon] = useState(""); // Danh mục được chọn
@@ -224,4 +224,4 @@ const HomeUsers = () => {
   );
 };
 
-export default HomeUsers;
+export default TrangchuNguoidung;

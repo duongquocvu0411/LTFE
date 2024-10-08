@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { CartContext } from "./CartContext";
 import { ToastContainer } from "react-toastify";
 
-const Cart = () => {
+const Giohang = () => {
   const { giohang, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong } = useContext(CartContext);
 
   // Tính tổng giá trị của giỏ hàng và định dạng theo kiểu tiền tệ Việt Nam
@@ -123,4 +123,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default Giohang;

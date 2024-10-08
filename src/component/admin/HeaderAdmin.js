@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Import axios để gọi API
 
 const HeaderAdmin = () => {
   const [showModal, setShowModal] = useState(false);
@@ -11,10 +12,29 @@ const HeaderAdmin = () => {
   };
 
   // Xác nhận đăng xuất
-  const handleXacNhanDangXuatTaiKhoan = () => {
-    localStorage.removeItem('isAdminLoggedIn');
-    setShowModal(false);
-    navigate('/admin/Login');
+  const handleXacNhanDangXuatTaiKhoan = async () => {
+    try {
+      // Lấy token từ localStorage
+      const token = localStorage.getItem('adminToken');
+
+      // Gửi yêu cầu đăng xuất đến API
+      await axios.post('http://127.0.0.1:8000/api/admin/logout', {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      // Xóa token và trạng thái đăng nhập khỏi localStorage
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('isAdminLoggedIn');
+
+      // Đóng modal và chuyển hướng người dùng đến trang đăng nhập
+      setShowModal(false);
+      navigate('/admin/Login');
+    } catch (error) {
+      console.error('Đăng xuất thất bại:', error);
+      // Xử lý khi lỗi xảy ra, ví dụ như thông báo cho người dùng
+    }
   };
 
   // Đóng modal xác nhận đăng xuất
@@ -24,8 +44,8 @@ const HeaderAdmin = () => {
 
   return (
     <>
-      {/* Topbar */}
-      <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+    {/* Topbar */}
+    <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
         {/* Sidebar Toggle (Topbar) */}
         <button
           id="sidebarToggleTop"

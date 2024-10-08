@@ -14,14 +14,14 @@ const ModalChiTietKhachHang = ({ show, handleClose, chiTietKhachHang, capNhatTra
             <p><strong>Email:</strong> {chiTietKhachHang.Emaildiachi}</p>
             <p><strong>Số Điện Thoại:</strong> {chiTietKhachHang.sdt}</p>
             <p><strong>Hóa Đơn:</strong></p>
-            {chiTietKhachHang.bills.map((bill, index) => (
+            {chiTietKhachHang.hoadons.map((bill, index) => (
               <div key={index}>
                 <p>Hóa đơn #{index + 1}: Tổng tiền - {bill.total_price} (VND)</p>
                 <p><strong>Trạng thái:</strong> {bill.status}</p>
                 <p><strong>Mã đơn hàng:</strong> {bill.order_code}</p>
                 <p>Chi tiết:</p>
                 <ul>
-                  {bill.billchitiets.map((chitiet, idx) => (
+                  {bill.hoadonchitiets.map((chitiet, idx) => (
                     <li key={idx}>
                       Sản phẩm: {chitiet.sanpham_names} x {chitiet.quantity} kg, Giá: {chitiet.price} (VND)
                     </li>

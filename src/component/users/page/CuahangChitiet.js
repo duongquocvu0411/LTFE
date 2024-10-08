@@ -4,7 +4,7 @@ import Footerusers from "../Footerusers";
 import HeaderUsers from "../HeaderUsers";
 import { CartContext } from "./CartContext";
 
-const ChiTietSanPham = () => {
+const CuahangChitiet = () => {
   const { id } = useParams(); // Lấy ID sản phẩm từ URL
   const [sanPham, setSanPham] = useState(null); // State lưu trữ thông tin sản phẩm
   const { addToCart } = useContext(CartContext); // Hàm thêm sản phẩm vào giỏ hàng từ context
@@ -13,7 +13,7 @@ const ChiTietSanPham = () => {
     // Hàm gọi API lấy thông tin sản phẩm
     const layThongTinSanPham = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_BASEURL}/api/products/${id}`); 
+        const response = await fetch(`${process.env.REACT_APP_BASEURL}/api/products/${id}`);
         const data = await response.json();
         setSanPham(data); // Lưu thông tin sản phẩm vào state
       } catch (error) {
@@ -80,14 +80,14 @@ const ChiTietSanPham = () => {
                   </div>
                   <div className="col-lg-6">
                     <h4 className="fw-bold mb-3">{sanPham.name}</h4>
-                    <p className="mb-3">Danh Mục: {sanPham.danhsachsanpham ?.name}</p>
+                    <p className="mb-3">Danh Mục: {sanPham.danhsachsanpham?.name}</p>
                     <h5 className="fw-bold mb-3">{sanPham.price} vnđ / kg</h5>
 
                     <p className="mb-4">{sanPham.description} <Link to="/shop" className="btn btn-primary btn-lg rounded-pill shadow">
-  <i className="fa fa-arrow-left me-2"></i>
+                      <i className="fa fa-arrow-left me-2"></i>
 
-</Link>
-</p>
+                    </Link>
+                    </p>
 
                     {/* Kiểm tra trạng thái Hết hàng */}
                     {sanPham.status === 'Hết hàng' ? (
@@ -100,12 +100,12 @@ const ChiTietSanPham = () => {
                       </button>
                     )}
                   </div>
-                  
-                  {/* Thêm phần còn lại của code cho đánh giá và thông tin khác ở đây... */}
+
+
                 </div>
               </div>
 
-              {/* Thêm phần sidebar hoặc sản phẩm nổi bật như trước... */}
+
             </div>
           </div>
         </div>
@@ -116,4 +116,4 @@ const ChiTietSanPham = () => {
   );
 }
 
-export default ChiTietSanPham;
+export default CuahangChitiet;
