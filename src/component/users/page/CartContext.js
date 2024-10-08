@@ -44,7 +44,8 @@ export const CartProvider = ({ children }) => {
         return giohanghientai.map((item) =>
           item.id === sanPham.id ? { ...item, soLuong: item.soLuong + 1 } : item
         );
-      } else {
+      } 
+      else {
         toast.success(`${sanPham.title} đã được thêm vào giỏ hàng!`,{
           position: "top-right",
           autoClose:3000,
@@ -106,6 +107,7 @@ export const CartProvider = ({ children }) => {
     setGiohang([]); // Đặt giỏ hàng về mảng rỗng
     localStorage.removeItem('giohang'); // Xóa giỏ hàng khỏi localStorage
   };
+  
   return (
     <CartContext.Provider value={{ giohang, addToCart, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong,clearCart  }}>
       {children}

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Footerusers from '../Footerusers';
 import axios from 'axios';
-import { Pagination } from 'react-bootstrap';
 import HeaderUsers from '../HeaderUsers';
 import { CartContext } from './CartContext';
 import { Link } from 'react-router-dom';

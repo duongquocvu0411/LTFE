@@ -247,6 +247,6 @@ const Khachhangs = () => {
       </div>
     </div>
   );
-};
+};  
 
 export default Khachhangs;

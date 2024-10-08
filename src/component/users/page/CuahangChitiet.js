@@ -77,7 +77,7 @@ const CuahangChitiet = () => {
                     </div>
                   </div>
                   <div className="col-lg-6">
-                    <h4 className="fw-bold mb-3">{sanPham.name}</h4>
+                    <h4 className="fw-bold mb-3">{sanPham.title}</h4>
                     <p className="mb-3">Danh Mục: {sanPham.danhsachsanpham?.name}</p>
                     <h5 className="fw-bold mb-3">{sanPham.price} vnđ / {sanPham.don_vi_tinh}</h5>
 

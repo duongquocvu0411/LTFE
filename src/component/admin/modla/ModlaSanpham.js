@@ -49,7 +49,7 @@ const ModlaSanpham = ({
       setTitle(product.title);
       setStatus(product.status);
       setPrice(product.price);
-      setDvt(product.dvt);
+      setDvt(product.don_vi_tinh);
       setImage(product.image);
       setCategoryId(product.danhsachsanpham_id);
 

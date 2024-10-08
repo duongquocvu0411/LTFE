@@ -13,10 +13,10 @@ const Tracuu = () => {
   const handleLookupOrder = async (e) => {
     e.preventDefault();
 
-    if (!orderCode) {
-      setError("Vui lòng nhập mã đơn hàng.");
-      return;
-    }
+      if (!orderCode) {
+        setError("Vui lòng nhập mã đơn hàng.");
+        return;
+      }
 
     try {
       // Gửi yêu cầu tra cứu đơn hàng tới API

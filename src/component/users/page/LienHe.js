@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import HeaderUsers from '../HeaderUsers';
 import { toast, ToastContainer } from 'react-toastify';
@@ -13,7 +12,7 @@ const LienHe = () => {
     ghichu: ''
   });
 
-  const [error, setError] = useState(null);
+ 
 
   // Cập nhật dữ liệu khi người dùng nhập vào form
   const thayDoiDuLieu = (e) => {
@@ -28,6 +27,7 @@ const LienHe = () => {
         });
       }
     } else {
+      //Nếu không phải là trường sdt (nghĩa là các trường khác như ten, email, hoặc ghichu), thì sẽ không kiểm tra điều kiện về số.
       setDuLieuForm({
         ...duLieuForm,
         [name]: value,
@@ -66,8 +66,11 @@ const LienHe = () => {
       }
     })
       .then(response => {
-        setError(null); // Xóa lỗi nếu gửi thành công
-        toast.success('Đã gửi  liên hệ thành công!'); // Thông báo thành công
+       
+        toast.success('Đã gửi  liên hệ thành công!',{
+          position: 'top-right',
+          autoClose: 3000 
+        }); // Thông báo thành công
 
         // Reset form về trạng thái ban đầu
         setDuLieuForm({
@@ -80,11 +83,11 @@ const LienHe = () => {
       .catch(error => {
         if (error.response && error.response.data) {
           console.error('Chi tiết lỗi từ server:', error.response.data);
-          setError(error.response.data);
+        
           toast.error('Lỗi khi gửi form liên hệ!');
         } else {
           console.error('Lỗi khi gửi form liên hệ:', error);
-          setError({ message: 'Lỗi khi gửi form liên hệ!' });
+        
           toast.error('Lỗi khi gửi form liên hệ!');
         }
       });
