@@ -53,25 +53,31 @@ const ModlaSanpham = ({
       setImage(product.image);
       setCategoryId(product.danhsachsanpham_id);
 
-      // Set các trường chi tiết sản phẩm nếu có
-      if (product.chitiet) {
-        setChiTiet({
-          mo_ta_chung: product.chitiet.mo_ta_chung,
-          hinh_dang: product.chitiet.hinh_dang,
-          cong_dung: product.chitiet.cong_dung,
-          xuat_xu: product.chitiet.xuat_xu,
-          khoi_luong: product.chitiet.khoi_luong,
-          bao_quan: product.chitiet.bao_quan,
-          thanh_phan_dinh_duong: product.chitiet.thanh_phan_dinh_duong,
-          ngay_thu_hoach: product.chitiet.ngay_thu_hoach,
-          huong_vi: product.chitiet.huong_vi,
-          nong_do_duong: product.chitiet.nong_do_duong,
-        });
-      }
+      // Đặt các trường chi tiết sản phẩm nếu có
+    if (product.chitiet) {
+      setChiTiet({
+        mo_ta_chung: product.chitiet.mo_ta_chung || '',
+        hinh_dang: product.chitiet.hinh_dang || '',
+        cong_dung: product.chitiet.cong_dung || '',
+        xuat_xu: product.chitiet.xuat_xu || '',
+        khoi_luong: product.chitiet.khoi_luong || '',
+        bao_quan: product.chitiet.bao_quan || '',
+        thanh_phan_dinh_duong: product.chitiet.thanh_phan_dinh_duong || '',
+        ngay_thu_hoach: product.chitiet.ngay_thu_hoach || '',
+        huong_vi: product.chitiet.huong_vi || '',
+        nong_do_duong: product.chitiet.nong_do_duong || ''
+      });
     } else {
-      resetForm();
+      // Nếu không có `chitiet`, reset chiTiet về trạng thái ban đầu
       resetChiTiet();
     }
+  } else {
+    resetForm();
+    resetChiTiet();
+  }
+  if (isEdit && product) {
+    console.log('Chi tiết sản phẩm:', product.chitiet); // Kiểm tra xem chi tiết có được nạp đúng không
+  }
   }, [isEdit, product]);
 
   // Hàm reset form chi tiết sản phẩm

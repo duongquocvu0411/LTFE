@@ -83,11 +83,22 @@ const SanPham = () => {
   };
 
   // Hàm mở modal để chỉnh sửa sản phẩm
-  const moModalSuaSanPham = (sanPham) => {
-    setChinhSua(true); // Đặt trạng thái chỉnh sửa
-    setSanPhamHienTai(sanPham); // Lưu sản phẩm hiện tại
-    setHienThiModal(true); // Hiển thị modal
-  };
+const moModalSuaSanPham = (sanPham) => {
+  axios.get(`${process.env.REACT_APP_BASEURL}/api/products/${sanPham.id}`)
+    .then((response) => {
+      const productData = response.data;
+      setSanPhamHienTai(productData); // Lưu sản phẩm hiện tại với chi tiết đầy đủ
+      setChinhSua(true); // Đặt trạng thái chỉnh sửa
+      setHienThiModal(true); // Hiển thị modal
+    })
+    .catch((error) => {
+      console.log('Lỗi khi lấy dữ liệu sản phẩm:', error);
+      toast.error('Không thể lấy dữ liệu sản phẩm', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+    });
+};
 
   // Hàm xóa sản phẩm
   const xoaSanPham = (id) => {
