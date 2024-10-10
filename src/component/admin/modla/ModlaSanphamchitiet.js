@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 const MoadlChitietsanpham = ({ show, handleClose, chiTiet, setChiTiet, handleSaveChiTiet }) => {
   return (
     <Modal show={show} onHide={handleClose}>
@@ -112,6 +113,17 @@ const MoadlChitietsanpham = ({ show, handleClose, chiTiet, setChiTiet, handleSav
               }
             />
           </Form.Group>
+          <Form.Group className="mb-3">
+  <Form.Label>Bài viết</Form.Label>
+  <CKEditor
+              editor={ClassicEditor}
+              data={chiTiet.bai_viet || ""}
+              onChange={(event, editor) => {
+                const data = editor.getData();
+                setChiTiet({ ...chiTiet, bai_viet: data });
+              }}
+            />
+</Form.Group>
         </Form>
       </Modal.Body>
       <Modal.Footer>

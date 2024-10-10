@@ -8,6 +8,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import HeaderAdmin from '../HeaderAdmin';
 import ModlaSanpham from './../modla/ModlaSanpham';
 import SiderbarAdmin from '../SidebarAdmin';
+import ModalDanhGia from '../modla/ModalDanhGia';
 
 const SanPham = () => {
   // State lưu trữ danh mục sản phẩm
@@ -18,7 +19,8 @@ const SanPham = () => {
   const [danhMucDuocChon, setDanhMucDuocChon] = useState("");
   // State lưu trữ danh sách sản phẩm
   const [danhSachSanPham, setDanhSachSanPham] = useState([]);
-
+  const [showModalDanhGia, setShowModalDanhGia] = useState(false); // Quản lý hiển thị modal đánh giá
+  const [sanphamIdXemDanhGia, setSanphamIdXemDanhGia] = useState(null); // Lưu trữ sanphams_id cho modal đánh giá
   // State quản lý trang hiện tại của phân trang
   const [trangHienTai, setTrangHienTai] = useState(1);
 
@@ -139,6 +141,11 @@ const moModalSuaSanPham = (sanPham) => {
         });
       });
   };
+  const moModalDanhGia = (sanphams_id) => {
+    setSanphamIdXemDanhGia(sanphams_id); // Lưu trữ sanphams_id
+    setShowModalDanhGia(true); // Hiển thị modal đánh giá
+  };
+
 
   return (
     <div id="wrapper">
@@ -208,6 +215,7 @@ const moModalSuaSanPham = (sanPham) => {
                       <th scope="col">Giá</th>
                       <th scope='col'>Đơn vị tính</th>
                       <th scope='col'>Chi tiết sản phẩm</th>
+                      <th scope='col'>Đánh giá</th>
                       <th scope="col">Trạng thái</th>
                       <th scope="col">Chức năng</th>
                     </tr>
@@ -228,10 +236,16 @@ const moModalSuaSanPham = (sanPham) => {
                         <td>{sanPham.title}</td>
                         <td>{sanPham.price} vnđ</td>
                         <td>{sanPham.don_vi_tinh}</td>
+                        
                         <td>
                           {/* chi tiết sản phẩm */}
                           <Button variant="btn btn-primary" onClick={() => moModalChiTiet(sanPham.id)}>
                             Xem chi tiết
+                          </Button>
+                        </td>
+                        <td>
+                          <Button variant="info" onClick={() => moModalDanhGia(sanPham.id)}>
+                            Xem Đánh Giá
                           </Button>
                         </td>
                         <td>{sanPham.status}</td>
@@ -278,9 +292,17 @@ const moModalSuaSanPham = (sanPham) => {
           fetchSanpham={layDanhSachSanPham}
         />
 
+        {/* Modal xem đánh giá */}
+        <ModalDanhGia
+          show={showModalDanhGia}
+          handleClose={() => setShowModalDanhGia(false)}
+          sanphamId={sanphamIdXemDanhGia}
+        />
+
         {/* Footer */}
         <Footer />
         <ToastContainer />
+
 
         {/* Modal chi tiết sản phẩm */}
         <Modal show={hienThiModalChiTiet} onHide={() => setHienThiModalChiTiet(false)}>
@@ -298,6 +320,9 @@ const moModalSuaSanPham = (sanPham) => {
             <p><strong>Ngày thu hoạch:</strong> {noiDungChiTiet.ngay_thu_hoach}</p>
             <p><strong>Hương vị:</strong> {noiDungChiTiet.huong_vi}</p>
             <p><strong>Nồng độ đường:</strong> {noiDungChiTiet.nong_do_duong}</p>
+           {/* Sử dụng dangerouslySetInnerHTML để render bài viết dưới dạng HTML */}
+    <p><strong>Bài viết:</strong></p>
+    <div dangerouslySetInnerHTML={{ __html: noiDungChiTiet.bai_viet }} />
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setHienThiModalChiTiet(false)}>

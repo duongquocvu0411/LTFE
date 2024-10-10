@@ -33,6 +33,7 @@ const ModlaSanpham = ({
     ngay_thu_hoach: "",
     huong_vi: "",
     nong_do_duong: "",
+    bai_viet: "",
   });
 
   useEffect(() => {
@@ -46,6 +47,8 @@ const ModlaSanpham = ({
       });
 
     if (isEdit && product) {
+
+      // nếu là edit thì sẽ lấy dữ liệu của id sản phẩm cần edit
       setTitle(product.title);
       setStatus(product.status);
       setPrice(product.price);
@@ -65,7 +68,8 @@ const ModlaSanpham = ({
         thanh_phan_dinh_duong: product.chitiet.thanh_phan_dinh_duong || '',
         ngay_thu_hoach: product.chitiet.ngay_thu_hoach || '',
         huong_vi: product.chitiet.huong_vi || '',
-        nong_do_duong: product.chitiet.nong_do_duong || ''
+        nong_do_duong: product.chitiet.nong_do_duong || '',
+        bai_viet: product.chitiet.bai_viet || '',
       });
     } else {
       // Nếu không có `chitiet`, reset chiTiet về trạng thái ban đầu
@@ -110,7 +114,7 @@ const ModlaSanpham = ({
     formData.append("don_vi_tinh", dvt); 
     formData.append("danhsachsanpham_id", categoryId);
 
-    // Thêm chi tiết sản phẩm vào formData
+    // Thêm chi tiết sản phẩm vào formData,bao gồm cả chitiet sản phẩm
     for (const key in chiTiet) {
       formData.append(key, chiTiet[key]);
     }
