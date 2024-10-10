@@ -120,7 +120,18 @@ const Khachhangs = () => {
         });
       });
   };
+// Kiểm tra xem hóa đơn của khách hàng có trạng thái "Đã hủy" hoặc "Giao không thành công" hay không
+const kiemTraTrangThaiHoaDon = (hoadons) => {
+  return hoadons?.some(hoadon => 
+    hoadon.status === 'Hủy đơn' || hoadon.status === 'Giao không thành công' || hoadon.status === 'Giao không thành công'
+  );
+};
 
+// Hàm kiểm tra trạng thái đơn hàng
+const layTrangThaiDonHang = (hoadons) => {
+  const hoadon = hoadons?.find(h => h.status === 'Chờ xử lý');
+  return hoadon ? hoadon.status : 'đã xữ lý';
+};
   return (
     <div id="wrapper">
       <SiderbarAdmin />
@@ -176,6 +187,7 @@ const Khachhangs = () => {
                         <th scope='col'>Địa chỉ chi tiết</th>
                         <th scope='col'>Thành phố</th>
                         <th scope='col'>Ghi chú</th>
+                        <th scope='col'>Trạng thái</th>
                         <th scope="col">Chức Năng</th>
                       </tr>
                     </thead>
@@ -195,13 +207,16 @@ const Khachhangs = () => {
                             <td>{item.diachicuthe}</td>
                             <td>{item.thanhpho}</td>
                             <td>{item.ghichu}</td>
+                            <td>{layTrangThaiDonHang(item.hoadons)}</td>
                             <td>
                               <Button variant="info" onClick={() => hienThiChiTiet(item.id)}>
                                 Xem chi tiết
                               </Button>{' '}
-                              <Button variant="danger" onClick={() => xoaKhachHang(item.id)}>
-                                Xóa
-                              </Button>
+                              {kiemTraTrangThaiHoaDon(item.hoadons) && (
+                                <Button variant="danger" onClick={() => xoaKhachHang(item.id)}>
+                                  Xóa
+                                </Button>
+                              )}
                             </td>
                           </tr>
                         ))

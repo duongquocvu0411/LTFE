@@ -209,13 +209,10 @@ const guiDanhGia = async () => {
               </div>
             )}
 
-           {/* Hiển thị danh sách đánh giá */}
-{tab === "danhGia" && (
+              {/* Hiển thị danh sách đánh giá */}
+              {tab === "danhGia" && (
   <div>
-    {/* Danh sách đánh giá */}
-    {danhGia.length > 0 ? (
-      <div className="container border p-4 rounded">
-         {/* Nút mở modal chọn sao và viết đánh giá */}
+    {/* Nút mở modal chọn sao và viết đánh giá */}
     <div className="mt-4">
       <h4 className="fw-bold">Viết Đánh Giá của bạn</h4>
       <p>Chọn số sao:</p>
@@ -228,7 +225,10 @@ const guiDanhGia = async () => {
         />
       ))}
     </div>
-<br/><br/><br/>
+
+    {/* Kiểm tra danh sách đánh giá */}
+    {danhGia.length > 0 ? (
+      <div className="container border p-4 rounded mt-4">
         {/* hiển thị nội dung đánh giá sản phẩm */}
         <h4 className="fw-bold">Đánh Giá Sản Phẩm</h4>
         {danhGia.map((dg, index) => (
@@ -251,14 +251,13 @@ const guiDanhGia = async () => {
         ))}
       </div>
     ) : (
-      <div className="container border p-4 rounded">
+      <div className="container border p-4 rounded mt-4">
         <p>Chưa có đánh giá nào cho sản phẩm này.</p>
       </div>
     )}
-
-   
   </div>
 )}
+
 
             {/* Modal viết đánh giá */}
             <Modal show={showModal} 

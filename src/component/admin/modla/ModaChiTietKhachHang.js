@@ -34,7 +34,7 @@ const ModalChiTietKhachHang = ({ show, handleClose, chiTietKhachHang, capNhatTra
                   <Button variant="danger" onClick={() => xoaKhachHang(chiTietKhachHang.id)}>Xóa đơn hàng</Button>
                 )}
                 {/* Chỉ hiển thị Form.Group nếu trạng thái không phải là "Hủy đơn" hoặc "Đã giao thành công" */}
-                {bill.status !== 'Hủy đơn' && bill.status !== 'Đã giao thành công' && (
+                {bill.status !== 'Hủy đơn' && bill.status !== 'Đã giao thành công' &&   bill.status !== 'Giao không thành công' &&(
                   <Form.Group controlId="formTrangThai">
                     <Form.Label>Trạng thái đơn hàng:</Form.Label>
                     <Form.Control
