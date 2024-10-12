@@ -16,7 +16,7 @@ const ChiTietDoanhThuModal = ({ show, onHide, thangDuocChon, chiTietDoanhThu }) 
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
-          Đóng
+          Đóng 
         </Button>
       </Modal.Footer>
     </Modal>

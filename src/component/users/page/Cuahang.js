@@ -71,6 +71,12 @@ const Cuahang = () => {
   
   // Hàm `thayDoiTrang` để thay đổi trang hiện tại
   const thayDoiTrang = (soTrang) => setTrangHienTai(soTrang);
+
+    // Hàm lấy tên danh mục dựa trên id
+    const layTenDanhMuc = (idDanhMuc) => {
+      const danhMucTimDuoc = danhMuc.find(dm => dm.id === idDanhMuc);
+      return danhMucTimDuoc ? danhMucTimDuoc.name : 'Không rõ';
+    };
   return (
     <div>
       <HeaderUsers />
@@ -115,14 +121,14 @@ const Cuahang = () => {
                   <div className="fruite-img card-img-top">
                     <Link to={`/shop/${sp.id}`}>
                       <img
-                        src={`${process.env.REACT_APP_BASEURL}/storage/${sp.image}`}
+                        src={`${process.env.REACT_APP_BASEURL}/storage/${sp.hinhanh}`}
                         className="img-fluid w-100 rounded-top"
-                        alt={sp.title}
+                        alt={sp.tieude}
                         style={{ height: 250, objectFit: 'cover' }}
                       />
                     </Link>
                     {/* Kiểm tra trạng thái Hết hàng và hiển thị thông báo */}
-                    {sp.status === 'Hết hàng' && (
+                    {sp.trangthai === 'Hết hàng' && (
                       <div
                         className="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center bg-dark bg-opacity-50"
                         style={{ zIndex: 1, padding: '5px 10px', borderRadius: '5px' }}
@@ -132,14 +138,14 @@ const Cuahang = () => {
                     )}
                   </div>
                   <div className="text-white bg-secondary px-3 py-1 rounded position-absolute" style={{ top: 10, left: 10 }}>
-                    Fruits
+                  {layTenDanhMuc(sp.danhsachsanpham_id)}
                   </div>
                   <div className="card-body d-flex flex-column rounded-bottom">
-                    <h4 className="card-title">{sp.title}</h4>
+                    <h4 className="card-title">{sp.tieude}</h4>
                     <div className="d-flex justify-content-between mt-auto">
-                       <p className="text-dark fs-5 fw-bold mb-0">{sp.price} vnđ /{sp.don_vi_tinh}</p>
+                       <p className="text-dark fs-5 fw-bold mb-0">{sp.giatien} vnđ /{sp.don_vi_tinh}</p>
                       {/* Ẩn nút Thêm vào giỏ nếu sản phẩm hết hàng */}
-                      {sp.status !== 'Hết hàng' && (
+                      {sp.trangthai !== 'Hết hàng' && (
                         <button
                           onClick={() => addToCart(sp)}
                           className="btn border border-secondary rounded-pill px-3 text-primary"

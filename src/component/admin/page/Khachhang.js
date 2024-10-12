@@ -9,6 +9,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import ModalChiTietKhachHang from '../modla/ModaChiTietKhachHang';
 import HeaderAdmin from '../HeaderAdmin';
 import SiderbarAdmin from '../SidebarAdmin';
+import { Link } from 'react-router-dom';
 
 const Khachhangs = () => {
   // Khai báo các state cần thiết
@@ -150,7 +151,7 @@ const layTrangThaiDonHang = (hoadons) => {
                   </div>
                   <div className="col-sm-6">
                     <ol className="breadcrumb float-sm-right">
-                      <li className="breadcrumb-item"><a href="#">Home</a></li>
+                      <li className="breadcrumb-item"><Link to="/admin/trangchu">Home</Link></li>
                       <li className="breadcrumb-item active">Danh Sách Khách Hàng</li>
                     </ol>
                   </div>

@@ -126,18 +126,36 @@ const Footerusers = () => {
       </div>
       {/* Footer End */}
       {/* Copyright Start */}
-      <div className="container-fluid copyright bg-dark py-4">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-6 text-center text-md-start mb-3 mb-md-0">
-              <span className="text-light"><Link to="/" className="text-decoration-none"><i className="fas fa-copyright text-light me-2" />Khóa k22</Link>, All right reserved.</span>
-            </div>
-            <div className="col-md-6 my-auto text-center text-md-end text-white">
-              Designed By <Link className="border-bottom text-decoration-none" to="https://htmlcodex.com">HTML Codex</Link> Distributed By <Link className="border-bottom text-decoration-none" to="https://themewagon.com">ThemeWagon</Link>
-            </div>
-          </div>
-        </div>
+      <div className="container-fluid bg-dark text-light py-4" style={{ background: "linear-gradient(90deg, rgba(33,37,41,1) 0%, rgba(52,58,64,1) 100%)" }}>
+  <div className="container">
+    <div className="row align-items-center">
+      {/* Phần thông tin bản quyền */}
+      <div className="col-md-6 text-center text-md-start mb-3 mb-md-0">
+        <span className="text-light">
+          <i className="fas fa-copyright text-light me-2" />
+          <Link to="/" className="text-decoration-none text-primary fw-bold">
+            Trái Cây Tươi
+          </Link> - Tất cả các quyền được bảo hộ.
+        </span>
       </div>
+
+      {/* Phần thông tin người thiết kế và phân phối */}
+      <div className="col-md-6 text-center text-md-end">
+        <p className="mb-0 text-white">
+          Thiết kế bởi 
+          <Link className="text-decoration-none text-primary fw-bold mx-1" to="https://htmlcodex.com">
+            HTML Codex
+          </Link>
+          và phân phối bởi 
+          <Link className="text-decoration-none text-primary fw-bold ms-1" to="https://themewagon.com">
+            ThemeWagon
+          </Link>.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
       {/* Copyright End */}
     </>
   );

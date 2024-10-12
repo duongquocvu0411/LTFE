@@ -39,7 +39,7 @@ const handleInput = (e) => {
   //   (tong, item) => tong + item.price * item.soLuong,
   //   0
   // );
-  const tongTienGioHang = giohang.reduce((tong, item) => tong + parseFloat(item.price) * item.soLuong, 0);
+  const tongTienGioHang = giohang.reduce((tong, item) => tong + parseFloat(item.giatien) * item.soLuong, 0);
 
   // Hàm xử lý khi nhấn "Place Order"
   const handlePlaceOrder = async (e) => {
@@ -310,17 +310,17 @@ const handleInput = (e) => {
                               <th scope="row">
                                 <div className="d-flex align-items-center mt-2">
                                   <img
-                                    src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.image}`}
+                                    src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
                                     className="img-fluid rounded-circle"
                                     style={{ width: 90, height: 90 }}
-                                    alt={sanPham.title}
+                                    alt={sanPham.tieude}
                                   />
                                 </div>
                               </th>
-                              <td className="py-5">{sanPham.title}</td>
-                              <td className="py-5">{sanPham.price} VND</td>
+                              <td className="py-5">{sanPham.tieude}</td>
+                              <td className="py-5">{sanPham.giatien} VND</td>
                               <td className="py-5">{sanPham.soLuong}</td>
-                              <td className="py-5">{(parseFloat(sanPham.price) * sanPham.soLuong).toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ</td>
+                              <td className="py-5">{(parseFloat(sanPham.giatien) * sanPham.soLuong).toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ</td>
                             </tr>
                           ))
                         ) : (

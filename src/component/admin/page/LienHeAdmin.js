@@ -7,6 +7,7 @@ import { nanoid } from 'nanoid';
 import { toast, ToastContainer } from 'react-toastify';
 import HeaderAdmin from '../HeaderAdmin';
 import SiderbarAdmin from '../SidebarAdmin';
+import { Link } from 'react-router-dom';
 
 const LienHeAdmin = () => {
   const [danhSachLienHe, setDanhSachLienHe] = useState([]);
@@ -94,8 +95,8 @@ const LienHeAdmin = () => {
                   <h1 className="h3 mb-0 text-gray-800">Danh Sách Liên Hệ</h1>
                 </div>
                 <div className="col-sm-6">
-                  <ol className="breadcrumb float-sm-right">
-                    <li className="breadcrumb-item"><a href="#">Home</a></li>
+                  <ol className="breadcrumb float-sm-right">  
+                    <li className="breadcrumb-item"><Link to="/admin/trangchu">Home</Link></li>
                     <li className="breadcrumb-item active">Danh Sách Liên Hệ</li>
                   </ol>
                 </div>

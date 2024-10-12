@@ -7,6 +7,7 @@ import ModalDiaChiChiTiet from '../modla/ModlaDiachichitiet';
 import { toast, ToastContainer } from 'react-toastify';
 import HeaderAdmin from '../HeaderAdmin';
 import SiderbarAdmin from '../SidebarAdmin';
+import { Link } from 'react-router-dom';
 
 const DiaChiChiTiet = () => {
   const [danhSachDiaChi, setDanhSachDiaChi] = useState([]); // State lưu trữ danh sách địa chỉ
@@ -98,18 +99,21 @@ const DiaChiChiTiet = () => {
         {/* Main Content */}
         <div id="content">
           <HeaderAdmin />
-          <div id="content">
-            {/* Content Header (Page header) */}
+            {/* Content Header */}
             <div className="content-header">
-              <div className="container-fluid">
-                <div className="row mb-2">
-                  <div className="col-sm-6">
-                    <h1 className="h3 mb-0 text-gray-800">Danh Sách Địa Chỉ Chi Tiết</h1>
-                  </div>
+            <div className="container-fluid">
+              <div className="row mb-2">
+                <div className="col-sm-6">
+                  <h1 className="h3 mb-0 text-gray-800">Danh Sách Địa Chỉ</h1>
+                </div>
+                <div className="col-sm-6">
+                  <ol className="breadcrumb float-sm-right">  
+                    <li className="breadcrumb-item"><Link to="/admin/trangchu">Home</Link></li>
+                    <li className="breadcrumb-item active">Danh Sách Địa Chỉ</li>
+                  </ol>
                 </div>
               </div>
             </div>
-            {/* /.content-header */}
 
             {/* Main content */}
             <div className="container-fluid">

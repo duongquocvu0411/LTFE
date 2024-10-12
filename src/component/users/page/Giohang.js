@@ -9,7 +9,7 @@ const Giohang = () => {
   const { giohang, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong } = useContext(CartContext);
 
   // Tính tổng giá trị của giỏ hàng và định dạng theo kiểu tiền tệ Việt Nam
-  const tongTienGioHang = giohang.reduce((tong, item) => tong + parseFloat(item.price) * item.soLuong, 0);
+  const tongTienGioHang = giohang.reduce((tong, item) => tong + parseFloat(item.giatien) * item.soLuong, 0);
   
 // reduce là một phương thức (method) của mảng trong JavaScript, cho phép lặp qua tất cả các phần tử của mảng và "rút gọn" chúng lại thành một giá trị duy nhất.
 // parseFloat là một hàm trong JavaScript dùng để chuyển đổi một chuỗi ký tự (string) thành một số thập phân (floating-point number).
@@ -48,14 +48,14 @@ const Giohang = () => {
                       <tr key={index}>
                         <td>
                           <img
-                            src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.image}`}
+                            src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
                             className="img-fluid rounded"
                             style={{ width: "60px", height: "60px" }}
-                            alt={sanPham.title}
+                            alt={sanPham.tieude}
                           />
                         </td>
                         <td>{sanPham.title}</td>
-                        <td>{parseFloat(sanPham.price).toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ / {sanPham.don_vi_tinh}</td>
+                        <td>{parseFloat(sanPham.giatien).toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ / {sanPham.don_vi_tinh}</td>
                         <td> 
                           <div className="d-flex">
                             <button 
@@ -80,7 +80,7 @@ const Giohang = () => {
                             </button>
                           </div>
                         </td>
-                        <td>{(parseFloat(sanPham.price) * sanPham.soLuong).toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ</td>
+                        <td>{(parseFloat(sanPham.giatien) * sanPham.soLuong).toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ</td>
                         <td>
                           <button className="btn btn-danger btn-sm" onClick={() => XoaGioHang(sanPham.id)}>
                             <i className="bi bi-trash3-fill"></i>

@@ -9,6 +9,7 @@ import HeaderAdmin from '../HeaderAdmin';
 import ModlaSanpham from './../modla/ModlaSanpham';
 import SiderbarAdmin from '../SidebarAdmin';
 import ModalDanhGia from '../modla/ModalDanhGia';
+import { Link } from 'react-router-dom';
 
 const SanPham = () => {
   // State lưu trữ danh mục sản phẩm
@@ -107,7 +108,7 @@ const moModalSuaSanPham = (sanPham) => {
     const SanphamXoa = danhSachSanPham.find((sanpham) => sanpham.id === id);
     axios.delete(`${process.env.REACT_APP_BASEURL}/api/products/${id}`)
       .then(() => {
-        toast.success(`Sản phẩm ${SanphamXoa.title} đã được xóa thành công!`, {
+        toast.success(`Sản phẩm ${SanphamXoa.tieude} đã được xóa thành công!`, {
           position: 'top-right',
           autoClose: 3000,
         });
@@ -115,7 +116,7 @@ const moModalSuaSanPham = (sanPham) => {
       })
       .catch(error => {
         console.log('Lỗi khi xóa sản phẩm:', error);
-        toast.error(`Sản phẩm ${SanphamXoa.title} chưa xóa được, vui lòng thử lại!`, {
+        toast.error(`Sản phẩm ${SanphamXoa.tieude} chưa xóa được, vui lòng thử lại!`, {
           position: 'top-right',
           autoClose: 3000,
         });
@@ -167,7 +168,7 @@ const moModalSuaSanPham = (sanPham) => {
                 </div>
                 <div className="col-sm-6">
                   <ol className="breadcrumb float-sm-right">
-                    <li className="breadcrumb-item"><a href="#">Home</a></li>
+                    <li className="breadcrumb-item"><Link to="/admin/trangchu">Home</Link></li>
                     <li className="breadcrumb-item active">Sản Phẩm</li>
                   </ol>
                 </div>
@@ -227,14 +228,14 @@ const moModalSuaSanPham = (sanPham) => {
                         <td>
                           <div className="d-flex align-items-center">
                             <img
-                              src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.image}`}
-                              alt={sanPham.title}
+                              src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
+                              alt={sanPham.tieude}
                               style={{ height: '50px', objectFit: 'cover' }}
                             />
                           </div>
                         </td>
-                        <td>{sanPham.title}</td>
-                        <td>{sanPham.price} vnđ</td>
+                        <td>{sanPham.tieude}</td>
+                        <td>{sanPham.giatien} vnđ</td>
                         <td>{sanPham.don_vi_tinh}</td>
                         
                         <td>
@@ -248,7 +249,7 @@ const moModalSuaSanPham = (sanPham) => {
                             Xem Đánh Giá
                           </Button>
                         </td>
-                        <td>{sanPham.status}</td>
+                        <td>{sanPham.trangthai}</td>
                         <td>
                           <Button variant="primary me-2" onClick={() => moModalSuaSanPham(sanPham)}>
                             <i className="fas fa-edit"></i>

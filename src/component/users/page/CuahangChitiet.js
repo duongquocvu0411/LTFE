@@ -57,58 +57,58 @@ const CuahangChitiet = () => {
   };
 
   // Hàm gửi đánh giá
-const guiDanhGia = async () => {
-  const danhGiaMoi = {
-    sanphams_id: id,
-    ho_ten: hoTen,
-    so_sao: soSao, // Số sao được lấy từ lựa chọn ban đầu
-    noi_dung: noiDung,
+  const guiDanhGia = async () => {
+    const danhGiaMoi = {
+      sanphams_id: id,
+      ho_ten: hoTen,
+      so_sao: soSao, // Số sao được lấy từ lựa chọn ban đầu
+      noi_dung: noiDung,
+    };
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BASEURL}/api/danhgia`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(danhGiaMoi),
+      });
+
+      if (response.ok) {
+        // Lấy dữ liệu đánh giá mới nhất từ API
+        const layDanhGiaMoi = async () => {
+          const response = await fetch(`${process.env.REACT_APP_BASEURL}/api/danhgia?sanphams_id=${id}`);
+          const data = await response.json();
+          setDanhGia(data); // Cập nhật danh sách đánh giá mới nhất
+        };
+
+        await layDanhGiaMoi(); // Cập nhật danh sách đánh giá sau khi gửi thành công
+
+        setShowModal(false); // Đóng modal
+        //Reset dữ liệu form
+        setHoTen("");
+        setTieude("");
+        setNoiDung("");
+        setSoSao(0);
+
+        // hiển thị thông báo
+        toast.success('Đánh giá của bạn đã được gửi!', {
+          position: 'top-right',
+          autoClose: 3000
+        })
+      } else {
+        toast.warning('Có lỗi xảy ra, vui lòng thử lại!', {
+          position: 'top-right',
+          autoClose: 3000
+        })
+
+      }
+    } catch (error) {
+      console.error("Lỗi khi gửi đánh giá:", error);
+
+    }
   };
 
-  try {
-    const response = await fetch(`${process.env.REACT_APP_BASEURL}/api/danhgia`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(danhGiaMoi),
-    });
-
-    if (response.ok) {
-      // Lấy dữ liệu đánh giá mới nhất từ API
-      const layDanhGiaMoi = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASEURL}/api/danhgia?sanphams_id=${id}`);
-        const data = await response.json();
-        setDanhGia(data); // Cập nhật danh sách đánh giá mới nhất
-      };
-
-      await layDanhGiaMoi(); // Cập nhật danh sách đánh giá sau khi gửi thành công
-
-      setShowModal(false); // Đóng modal
-      //Reset dữ liệu form
-      setHoTen(""); 
-      setTieude("");
-      setNoiDung("");
-      setSoSao(0); 
-
-      // hiển thị thông báo
-      toast.success('Đánh giá của bạn đã được gửi!',{
-        position: 'top-right',
-        autoClose:3000
-      })
-    } else {
-      toast.warning('Có lỗi xảy ra, vui lòng thử lại!',{
-        position: 'top-right',
-        autoClose:3000
-      })
-     
-    }
-  } catch (error) {
-    console.error("Lỗi khi gửi đánh giá:", error);
-   
-  }
-};
-  
 
   if (!sanPham) {
     return <div>Đang tải...</div>;
@@ -132,19 +132,20 @@ const guiDanhGia = async () => {
                   <div className="col-lg-6">
                     <div className="border rounded">
                       <img
-                        src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.image}`}
+                        src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
                         className="img-fluid rounded square-image"
-                        alt={sanPham.title}
+                        alt={sanPham.tieude}
                       />
                     </div>
                   </div>
                   <div className="col-lg-6">
-                    <h4 className="fw-bold mb-3">{sanPham.title}</h4>
+                    <h4 className="fw-bold mb-3">{sanPham.tieude}</h4>
                     <p className="mb-3">Danh Mục: {sanPham.danhsachsanpham?.name}</p>
-                    <h5 className="fw-bold mb-3">{sanPham.price} vnđ / {sanPham.don_vi_tinh}</h5>
+
+                    <h5 className="fw-bold mb-3">{sanPham.giatien} vnđ / {sanPham.don_vi_tinh}</h5>
 
                     {/* Kiểm tra trạng thái Hết hàng */}
-                    {sanPham.status === 'Hết hàng' ? (
+                    {sanPham.trangthai === 'Hết hàng' ? (
                       <p className="text-danger fw-bold">Sản phẩm hiện đang hết hàng</p>
                     ) : (
                       <button
@@ -170,7 +171,7 @@ const guiDanhGia = async () => {
                 className={`btn ${tab === 'baiViet' ? 'btn-primary' : 'btn-light'} me-2`}
                 onClick={() => setTab("baiViet")}
               >
-                Bài Viết về {sanPham.title}
+                Bài Viết về {sanPham.tieude}
               </button>
               <button
                 className={`btn ${tab === 'danhGia' ? 'btn-primary' : 'btn-light'}`}
@@ -209,58 +210,61 @@ const guiDanhGia = async () => {
               </div>
             )}
 
-              {/* Hiển thị danh sách đánh giá */}
-              {tab === "danhGia" && (
-  <div>
-    {/* Nút mở modal chọn sao và viết đánh giá */}
-    <div className="mt-4">
-      <h4 className="fw-bold">Viết Đánh Giá của bạn</h4>
-      <p>Chọn số sao:</p>
-      {[1, 2, 3, 4, 5].map((soSaoItem) => (
-        <span
-          key={soSaoItem}
-          className={`fa fa-star ${soSao >= soSaoItem ? 'text-warning' : ''}`}
-          style={{ cursor: "pointer" }}
-          onClick={() => moModalVietDanhGia(soSaoItem)}
-        />
-      ))}
-    </div>
+            {/* Hiển thị danh sách đánh giá */}
+            {tab === "danhGia" && (
+              <div>
+                {/* Nút mở modal chọn sao và viết đánh giá */}
+                <div className="mt-4">
+                  <h4 className="fw-bold">Viết Đánh Giá của bạn</h4>
+                  <p>Chọn số sao:</p>
+                  {[1, 2, 3, 4, 5].map((soSaoItem) => (
+                    <span
+                      key={soSaoItem}
+                      className={`fa fa-star ${soSao >= soSaoItem ? 'text-warning' : ''}`}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => moModalVietDanhGia(soSaoItem)}
+                    />
+                  ))}
+                </div>
 
-    {/* Kiểm tra danh sách đánh giá */}
-    {danhGia.length > 0 ? (
-      <div className="container border p-4 rounded mt-4">
-        {/* hiển thị nội dung đánh giá sản phẩm */}
-        <h4 className="fw-bold">Đánh Giá Sản Phẩm</h4>
-        {danhGia.map((dg, index) => (
-          <div key={index} className="mb-3">
-            <h5>{dg.ho_ten}</h5>
-            <p>
-              {Array(dg.so_sao)
-                .fill()
-                .map((_, i) => (
-                  <span key={i} className="fa fa-star text-warning"></span>
-                ))}
-              {Array(5 - dg.so_sao)
-                .fill()
-                .map((_, i) => (
-                  <span key={i} className="fa fa-star"></span>
-                ))}
-            </p>
-            <p>{dg.noi_dung}</p>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <div className="container border p-4 rounded mt-4">
-        <p>Chưa có đánh giá nào cho sản phẩm này.</p>
-      </div>
-    )}
-  </div>
-)}
+                {/* Kiểm tra danh sách đánh giá */}
+                {danhGia.length > 0 ? (
+                  <div className="container border p-4 rounded mt-4">
+                    {/* hiển thị nội dung đánh giá sản phẩm */}
+                    <h4 className="fw-bold">Đánh Giá Sản Phẩm</h4>
+                    {danhGia.map((dg, index) => (
+                      <div key={index} className="mb-3">
+                        <h5>{dg.ho_ten}</h5>
+                        <p>
+                          {/* Array(dg.so_sao).fill().map((_, i) => ...): Hiển thị số ngôi sao đã chọn màu vàng. */}
+                          {Array(dg.so_sao)
+                            .fill()
+                            .map((_, i) => (
+                              <span key={i} className="fa fa-star text-warning"></span>
+                            ))}
+                          {/* 
+                          Array(5 - dg.so_sao).fill().map((_, i) => ...): Hiển thị các ngôi sao trống (chưa chọn) */}
+                          {Array(5 - dg.so_sao)
+                            .fill()
+                            .map((_, i) => (
+                              <span key={i} className="fa fa-star"></span>
+                            ))}
+                        </p>
+                        <p>{dg.noi_dung}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="container border p-4 rounded mt-4">
+                    <p>Chưa có đánh giá nào cho sản phẩm này.</p>
+                  </div>
+                )}
+              </div>
+            )}
 
 
             {/* Modal viết đánh giá */}
-            <Modal show={showModal} 
+            <Modal show={showModal}
               onHide={() => {
                 setShowModal(false); // tắt modald khi ấn hủy 
                 setSoSao(0);
@@ -320,7 +324,7 @@ const guiDanhGia = async () => {
         </div>
 
         <Footerusers />
-        <ToastContainer/>
+        <ToastContainer />
       </div>
     </>
   );

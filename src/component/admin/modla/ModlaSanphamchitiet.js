@@ -114,8 +114,8 @@ const MoadlChitietsanpham = ({ show, handleClose, chiTiet, setChiTiet, handleSav
             />
           </Form.Group>
           <Form.Group className="mb-3">
-  <Form.Label>Bài viết</Form.Label>
-  <CKEditor
+            <Form.Label>Bài viết</Form.Label>
+            <CKEditor
               editor={ClassicEditor}
               data={chiTiet.bai_viet || ""}
               onChange={(event, editor) => {
@@ -123,7 +123,7 @@ const MoadlChitietsanpham = ({ show, handleClose, chiTiet, setChiTiet, handleSav
                 setChiTiet({ ...chiTiet, bai_viet: data });
               }}
             />
-</Form.Group>
+          </Form.Group>
         </Form>
       </Modal.Body>
       <Modal.Footer>

@@ -135,13 +135,13 @@ const TrangchuNguoidung = () => {
                         <div className="fruite-img position-relative">
                           <Link to={`/shop/${sanPham.id}`} className="btn btn-link">
                             <img
-                              src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.image}`}
+                              src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
                               className="img-fluid w-100 rounded-top"
-                              alt={sanPham.title}
+                              alt={sanPham.tieude}
                               style={{ height: 250, objectFit: 'cover' }}
                             />
                           </Link>
-                          {sanPham.status === 'Hết hàng' && (
+                          {sanPham.trangthai === 'Hết hàng' && (
                             <div className="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center bg-dark bg-opacity-50"
                               style={{ zIndex: 1, padding: '5px 10px', borderRadius: '5px' }}>
                               <span className="text-white small fw-bold">Hết hàng</span>
@@ -153,10 +153,10 @@ const TrangchuNguoidung = () => {
                           {layTenDanhMuc(sanPham.danhsachsanpham_id)}
                         </div>
                         <div className="p-3 border border-secondary border-top-0 rounded-bottom">
-                          <p className="h5 fw-bold">{sanPham.title}</p>
+                          <p className="h5 fw-bold">{sanPham.tieude}</p>
                           <div className="d-flex justify-content-between align-items-center">
-                            <p className="text-dark fs-5 fst-italic mb-0">{sanPham.price} vnđ/ {sanPham.don_vi_tinh}</p>
-                            {sanPham.status !== 'Hết hàng' && (
+                            <p className="text-dark fs-5 fst-italic mb-0">{sanPham.giatien} vnđ/ {sanPham.don_vi_tinh}</p>
+                            {sanPham.trangthai !== 'Hết hàng' && (
                               <button
                                 onClick={() => addToCart(sanPham)}
                                 className="btn border border-secondary rounded-pill px-3 text-primary"

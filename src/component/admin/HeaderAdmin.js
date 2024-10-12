@@ -17,16 +17,19 @@ const HeaderAdmin = () => {
       // Lấy token từ localStorage
       const token = localStorage.getItem('adminToken');
 
-      // Gửi yêu cầu đăng xuất đến API
-      await axios.post('http://127.0.0.1:8000/api/admin/logout', {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      
+     // Gửi yêu cầu đăng xuất đến API
+    const response = await axios.post('http://127.0.0.1:8000/api/admin/logout', {}, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }); 
+    
+      console.log('API Response:', response.data); // Kiểm tra phản hồi từ API
 
       // Xóa token và trạng thái đăng nhập khỏi localStorage
       localStorage.removeItem('adminToken');
-      localStorage.removeItem('isAdminLoggedIn');
+     
 
       // Đóng modal và chuyển hướng người dùng đến trang đăng nhập
       setShowModal(false);
@@ -111,7 +114,7 @@ const HeaderAdmin = () => {
           </div>
         </div>
       )}
-      {showModal && <div className="modal-backdrop fade show"></div>}
+     
     </>
   );
 };

@@ -1,111 +1,127 @@
 import React, { useState, useEffect } from "react";
 import { Bar, Line } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Tooltip, Legend, Filler } from 'chart.js'; // Import Filler plugin
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Tooltip, Legend, Filler } from 'chart.js'; // Đăng ký Filler plugin
 import axios from "axios";
 import { toast } from "react-toastify";
 import ChiTietDoanhThuModal from "../modla/ChiTietDoanhThuModal";
-
-
 import Footer from "../Footer";
 import HeaderAdmin from "../HeaderAdmin";
-import SiderbarAdmin from "../SidebarAdmin";
+import SidebarAdmin from "../SidebarAdmin";
+import { Link } from "react-router-dom";
 
-// Register chart components, including the Filler plugin
+// Đăng ký các thành phần của ChartJS, bao gồm plugin Filler
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Tooltip, Legend, Filler);
 
 const BieuDoDoanhThu = () => {
-  const [dsDoanhThuThang, setDsDoanhThuThang] = useState([]);
-  const [thangDuocChon, setThangDuocChon] = useState(null);
-  const [chiTietDoanhThu, setChiTietDoanhThu] = useState(null);
-  const [hienThiModal, setHienThiModal] = useState(false);
-  const [chartType, setChartType] = useState('Bar');
+  // Khai báo các state cần thiết
+  const [dsDoanhThuThang, setDsDoanhThuThang] = useState([]); // Danh sách doanh thu theo tháng
+  const [thangDuocChon, setThangDuocChon] = useState(null); // Tháng được chọn để xem chi tiết
+  const [chiTietDoanhThu, setChiTietDoanhThu] = useState(null); // Chi tiết doanh thu của tháng
+  const [hienThiModal, setHienThiModal] = useState(false); // Hiển thị modal chi tiết doanh thu
+  const [kieuBieuDo, setKieuBieuDo] = useState('Bar'); // Kiểu biểu đồ: cột (Bar) hoặc đường (Line)
 
-  // Fetch monthly revenue data
+  // Hàm lấy dữ liệu doanh thu theo tháng
   const layDoanhThuThang = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/revenue/monthly`);
-      const sortedData = response.data.sort((a, b) => a.year === b.year ? a.month - b.month : a.year - b.year);
-      setDsDoanhThuThang(sortedData);
-    } catch (error) {
-      console.error("Lỗi khi lấy dữ liệu doanh thu hàng tháng:", error);
+      const phanHoi = await axios.get(`${process.env.REACT_APP_BASEURL}/api/revenue/monthly`);
+      // Sắp xếp dữ liệu theo tháng và năm
+      const duLieuDaSapXep = phanHoi.data.sort((a, b) => a.year === b.year ? a.month - b.month : a.year - b.year);
+      setDsDoanhThuThang(duLieuDaSapXep); // Lưu dữ liệu vào state
+    } catch (loi) {
+      console.error("Lỗi khi lấy dữ liệu doanh thu hàng tháng:", loi);
       toast.error("Lỗi khi lấy dữ liệu doanh thu hàng tháng!");
     }
   };
 
-  // Fetch detailed revenue data
+  // Hàm lấy chi tiết doanh thu của một tháng cụ thể
   const layChiTietDoanhThu = async (nam, thang) => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/doanhthu/${nam}/${thang}`);
-      setChiTietDoanhThu(response.data);
-      setHienThiModal(true);
-    } catch (error) {
-      console.error("Lỗi khi lấy chi tiết doanh thu:", error);
+      const phanHoi = await axios.get(`${process.env.REACT_APP_BASEURL}/api/doanhthu/${nam}/${thang}`);
+      setChiTietDoanhThu(phanHoi.data); // Lưu dữ liệu chi tiết vào state
+      setHienThiModal(true); // Hiển thị modal
+    } catch (loi) {
+      console.error("Lỗi khi lấy chi tiết doanh thu:", loi);
       toast.error("Lỗi khi lấy chi tiết doanh thu!");
     }
   };
 
+  // Hàm này chạy một lần khi component được render
   useEffect(() => {
     layDoanhThuThang();
   }, []);
 
+  // Dữ liệu cho biểu đồ
   const duLieuBieuDo = {
-    labels: dsDoanhThuThang.map((item) => `${item.month}/${item.year}`),
+    labels: dsDoanhThuThang.map((muc) => `${muc.month}/${muc.year}`), // Nhãn là tháng/năm
     datasets: [
       {
-        label: "Doanh thu (VND)",
-        data: dsDoanhThuThang.map((item) => item.total_revenue),
-        backgroundColor: "rgba(54, 162, 235, 0.6)",
-        borderColor: "rgba(54, 162, 235, 1)",
-        fill: true, // Filler plugin will handle this
+        label: "Doanh thu (VND)", // Tên biểu đồ
+        data: dsDoanhThuThang.map((muc) => muc.total_revenue), // Doanh thu theo tháng
+        backgroundColor: "rgba(54, 162, 235, 0.6)", // Màu nền biểu đồ cột
+        borderColor: "rgba(54, 162, 235, 1)", // Màu viền biểu đồ cột
+        fill: true, // Kích hoạt tô màu (cho biểu đồ đường)
       },
     ],
   };
 
+  // Tùy chọn cho biểu đồ
   const tuyChonBieuDo = {
-    onClick: (event, elements) => {
-      if (elements.length > 0) {
-        const chiSoCot = elements[0].index;
-        const thangChon = dsDoanhThuThang[chiSoCot];
-        setThangDuocChon(thangChon);
-        layChiTietDoanhThu(thangChon.year, thangChon.month);
+    // Sự kiện khi người dùng click vào cột biểu đồ
+    onClick: (suKien, phanTu) => {
+      if (phanTu.length > 0) {
+        const chiSoCot = phanTu[0].index; // Lấy chỉ số cột người dùng click
+        const thangChon = dsDoanhThuThang[chiSoCot]; // Lấy tháng tương ứng với cột
+        setThangDuocChon(thangChon); // Lưu tháng được chọn vào state
+        layChiTietDoanhThu(thangChon.year, thangChon.month); // Lấy chi tiết doanh thu của tháng được chọn
       }
     },
-    maintainAspectRatio: false,
+    maintainAspectRatio: false, // Không giữ tỷ lệ mặc định
   };
 
   return (
     <div id="wrapper">
-      <SiderbarAdmin />
+      <SidebarAdmin /> {/* Thanh điều hướng admin */}
 
       <div id="content-wrapper" className="d-flex flex-column">
-        {/* Main Content */}
+        {/* Nội dung chính */}
         <div id="content">
-          <HeaderAdmin />
+          <HeaderAdmin /> {/* Header admin */}
 
-          {/* Begin Page Content */}
-          <div className="container-fluid">
-            {/* Page Heading */}
-            <div className="d-sm-flex align-items-center justify-content-between mb-4">
-              <h1 className="h3 mb-0 text-gray-800">Biểu đồ doanh thu hàng tháng</h1>
+          {/* Nội dung trang */}
+          <div className="content-header">
+            <div className="container-fluid">
+              <div className="row mb-2">
+                <div className="col-sm-6">
+                  <h1 className="h3 mb-0 text-gray-800">Biểu đồ doanh thu hàng tháng</h1>
+                </div>
+                <div className="col-sm-6">
+                  <ol className="breadcrumb float-sm-right">
+                    <li className="breadcrumb-item"><Link to="/admin/trangchu">Trang chủ</Link></li>
+                    <li className="breadcrumb-item active">Biểu đồ doanh thu</li>
+                  </ol>
+                </div>
+              </div>
             </div>
 
-            {/* Content Row */}
+            {/* Dòng chứa biểu đồ */}
             <div className="row">
-              {/* Chart Column */}
+              {/* Cột chứa biểu đồ */}
               <div className="col-xl-12 col-lg-12">
                 <div className="card shadow mb-4">
-                  {/* Card Header */}
+                  {/* Tiêu đề card */}
                   <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 className="m-0 font-weight-bold text-primary">Doanh thu</h6>
                     <div>
-                      <button className="btn btn-primary me-2" onClick={() => setChartType('Bar')}>Biểu đồ cột</button>
-                      <button className="btn btn-secondary" onClick={() => setChartType('Line')}>Biểu đồ miền</button>
+                      {/* Nút chọn loại biểu đồ */}
+                      <button className="btn btn-primary me-2" onClick={() => setKieuBieuDo('Bar')}>Biểu đồ cột</button>
+                      <button className="btn btn-secondary" onClick={() => setKieuBieuDo('Line')}>Biểu đồ đường</button>
                     </div>
                   </div>
-                  {/* Card Body */}
+                  {/* Phần thân card chứa biểu đồ */}
                   <div className="card-body">
                     <div className="chart-area" style={{ position: "relative", height: "50vh", width: "100%" }}>
-                      {chartType === 'Bar' ? (
+                      {/* Hiển thị biểu đồ tùy thuộc vào kiểu biểu đồ người dùng chọn */}
+                      {kieuBieuDo === 'Bar' ? (
                         <Bar data={duLieuBieuDo} options={tuyChonBieuDo} />
                       ) : (
                         <Line data={duLieuBieuDo} options={tuyChonBieuDo} />
@@ -116,17 +132,17 @@ const BieuDoDoanhThu = () => {
               </div>
             </div>
           </div>
-          {/* End of Page Content */}
+          {/* Kết thúc nội dung trang */}
         </div>
-        <Footer />
+        <Footer /> {/* Footer */}
       </div>
 
-      {/* Modal Chi Tiết Doanh Thu */}
+      {/* Modal hiển thị chi tiết doanh thu */}
       <ChiTietDoanhThuModal
-        show={hienThiModal}
-        onHide={() => setHienThiModal(false)}
-        thangDuocChon={thangDuocChon}
-        chiTietDoanhThu={chiTietDoanhThu}
+        show={hienThiModal} // Kiểm tra xem có hiển thị modal không
+        onHide={() => setHienThiModal(false)} // Hàm đóng modal
+        thangDuocChon={thangDuocChon} // Tháng được chọn để hiển thị chi tiết
+        chiTietDoanhThu={chiTietDoanhThu} // Dữ liệu chi tiết doanh thu
       />
     </div>
   );

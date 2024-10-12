@@ -5,3 +5,9 @@
     background-repeat: no-repeat;
     background-size: cover;
   }
+  .scroll-to-top {
+    background-color: transparent !important; /* Đảm bảo nền trong suốt */
+    border: none !important; /* Loại bỏ viền */
+    box-shadow: none !important; /* Loại bỏ bóng nếu có */
+  }
+  
