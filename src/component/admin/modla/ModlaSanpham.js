@@ -14,12 +14,13 @@ const ModlaSanpham = ({
   const [tieude, setTieude] = useState("");
   const [giatien, setGiatien] = useState("");
   const [dvt, setDvt] = useState("");
-  const [hinhanh, setHinhanh] = useState(""); // Khởi tạo state cho hình ảnh
-  const [previewImage, setPreviewImage] = useState(""); // State cho xem trước hình ảnh
-  const [danhmucsanphamID, setDanhmucsanphamID] = useState("");
+  const [hinhanh, setHinhanh] = useState(null);
+  const [danhmucsanphamID, setDanhmucsanphamID] = useState(""); 
   const [danhmuc, setDanhmuc] = useState([]);
   const [trangthai, setTrangthai] = useState("");
+  
 
+  // State quản lý modal chi tiết sản phẩm
   const [showChiTietModal, setShowChiTietModal] = useState(false);
   const [chiTiet, setChiTiet] = useState({
     mo_ta_chung: "",
@@ -46,37 +47,44 @@ const ModlaSanpham = ({
       });
 
     if (isEdit && product) {
+
+      // nếu là edit thì sẽ lấy dữ liệu của id sản phẩm cần edit
       setTieude(product.tieude);
       setTrangthai(product.trangthai);
       setGiatien(product.giatien);
       setDvt(product.don_vi_tinh);
-      setHinhanh(product.hinhanh); // Gán hình ảnh hiện tại khi edit
-      setPreviewImage(`${process.env.REACT_APP_BASEURL}/storage/${product.hinhanh}`); // Hiển thị xem trước hình ảnh hiện tại
+      setHinhanh(product.hinhanh);
       setDanhmucsanphamID(product.danhsachsanpham_id);
 
-      if (product.chitiet) {
-        setChiTiet({
-          mo_ta_chung: product.chitiet.mo_ta_chung || "",
-          hinh_dang: product.chitiet.hinh_dang || "",
-          cong_dung: product.chitiet.cong_dung || "",
-          xuat_xu: product.chitiet.xuat_xu || "",
-          khoi_luong: product.chitiet.khoi_luong || "",
-          bao_quan: product.chitiet.bao_quan || "",
-          thanh_phan_dinh_duong: product.chitiet.thanh_phan_dinh_duong || "",
-          ngay_thu_hoach: product.chitiet.ngay_thu_hoach || "",
-          huong_vi: product.chitiet.huong_vi || "",
-          nong_do_duong: product.chitiet.nong_do_duong || "",
-          bai_viet: product.chitiet.bai_viet || "",
-        });
-      } else {
-        resetChiTiet();
-      }
+      // Đặt các trường chi tiết sản phẩm nếu có
+    if (product.chitiet) {
+      setChiTiet({
+        mo_ta_chung: product.chitiet.mo_ta_chung || '',
+        hinh_dang: product.chitiet.hinh_dang || '',
+        cong_dung: product.chitiet.cong_dung || '',
+        xuat_xu: product.chitiet.xuat_xu || '',
+        khoi_luong: product.chitiet.khoi_luong || '',
+        bao_quan: product.chitiet.bao_quan || '',
+        thanh_phan_dinh_duong: product.chitiet.thanh_phan_dinh_duong || '',
+        ngay_thu_hoach: product.chitiet.ngay_thu_hoach || '',
+        huong_vi: product.chitiet.huong_vi || '',
+        nong_do_duong: product.chitiet.nong_do_duong || '',
+        bai_viet: product.chitiet.bai_viet || '',
+      });
     } else {
-      resetForm();
+      // Nếu không có `chitiet`, reset chiTiet về trạng thái ban đầu
       resetChiTiet();
     }
+  } else {
+    resetForm();
+    resetChiTiet();
+  }
+  if (isEdit && product) {
+    console.log('Chi tiết sản phẩm:', product.chitiet); // Kiểm tra xem chi tiết có được nạp đúng không
+  }
   }, [isEdit, product]);
 
+  // Hàm reset form chi tiết sản phẩm
   const resetChiTiet = () => {
     setChiTiet({
       mo_ta_chung: "",
@@ -92,58 +100,81 @@ const ModlaSanpham = ({
     });
   };
 
+  // Hàm lưu chi tiết sản phẩm khi người dùng nhấn nút Lưu trong modal phụ
   const handleSaveChiTiet = () => {
-    setShowChiTietModal(false);
+    setShowChiTietModal(false); // Đóng modal sau khi lưu
+    // Chi tiết sản phẩm đã được lưu vào state `chiTiet`, sẵn sàng để submit
   };
 
   const handleSubmit = async () => {
-    if (!tieude || !giatien || !danhmucsanphamID) {
-      toast.error("Vui lòng điền đầy đủ thông tin!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-      return;
-    }
-
     const formData = new FormData();
     formData.append("tieude", tieude);
     formData.append("trangthai", trangthai);
     formData.append("giatien", giatien);
-    formData.append("don_vi_tinh", dvt);
+    formData.append("don_vi_tinh", dvt); 
     formData.append("danhsachsanpham_id", danhmucsanphamID);
 
-    // Thêm chi tiết sản phẩm vào formData
+    // Thêm chi tiết sản phẩm vào formData,bao gồm cả chitiet sản phẩm
     for (const key in chiTiet) {
       formData.append(key, chiTiet[key]);
     }
 
-    if (hinhanh) {
-      formData.append("hinhanh", hinhanh); // Đưa hình ảnh vào formData
+    if (hinhanh instanceof File) {
+      formData.append("hinhanh", hinhanh);
     }
 
-    try {
-      const url = isEdit
-        ? `${process.env.REACT_APP_BASEURL}/api/products/${product.id}?_method=PUT`
-        : `${process.env.REACT_APP_BASEURL}/api/products`;
-      await axios.post(url, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      toast.success(
-        isEdit ? "Sản phẩm đã được cập nhật thành công!" : "Sản phẩm đã được thêm thành công!",
-        { position: "top-right", autoClose: 3000 }
-      );
-      fetchSanpham();
-      handleClose();
-      resetForm();
-      resetChiTiet();
-    } catch (error) {
-      console.error("Error updating/adding product:", error);
-      toast.error(
-        "Có lỗi xảy ra khi " + (isEdit ? "cập nhật" : "thêm") + " sản phẩm. Vui lòng thử lại.",
-        { position: "top-right", autoClose: 3000 }
-      );
+    if (isEdit) {
+      axios
+        .post(
+          `${process.env.REACT_APP_BASEURL}/api/products/${product.id}?_method=PUT`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then(() => {
+          toast.success("Sản phẩm đã được cập nhật thành công!", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          fetchSanpham(); 
+          handleClose(); 
+          resetForm();
+          resetChiTiet(); // Reset form chi tiết
+        })
+        .catch((error) => {
+          console.log("Error updating product:", error);
+          toast.error("Có lỗi xảy ra khi cập nhật sản phẩm. Vui lòng thử lại.", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        });
+    } else {
+      axios
+        .post(`${process.env.REACT_APP_BASEURL}/api/products`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(() => {
+          toast.success("Sản phẩm đã được thêm thành công!", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          fetchSanpham(); 
+          handleClose(); 
+          resetForm();
+          resetChiTiet(); // Reset form chi tiết
+        })
+        .catch((error) => {
+          console.log("Error adding product:", error);
+          toast.error("Có lỗi xảy ra khi thêm sản phẩm. Vui lòng thử lại.", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        });
     }
   };
 
@@ -152,16 +183,8 @@ const ModlaSanpham = ({
     setTrangthai("");
     setGiatien("");
     setDvt("");
-    setHinhanh(""); // Reset hình ảnh
-    setPreviewImage(""); // Reset hình ảnh xem trước
+    setHinhanh(null);
     setDanhmucsanphamID("");
-  };
-
-  // Hàm xử lý khi người dùng chọn ảnh mới
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setHinhanh(file);
-    setPreviewImage(URL.createObjectURL(file)); // Tạo URL xem trước cho hình ảnh được chọn
   };
 
   return (
@@ -177,10 +200,11 @@ const ModlaSanpham = ({
               <Form.Control
                 type="text"
                 value={tieude}
-                onChange={(e) => setTieude(e.target.value)}
+                onChange={(e) => setTieude(e.target.value)} 
               />
             </Form.Group>
-
+           
+           
             <Form.Group className="mb-3">
               <Form.Label>Trạng thái</Form.Label>
               <Form.Control
@@ -193,7 +217,6 @@ const ModlaSanpham = ({
                 <option value="Hết hàng">Hết hàng</option>
               </Form.Control>
             </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Label>Giá</Form.Label>
               <Form.Control
@@ -202,7 +225,6 @@ const ModlaSanpham = ({
                 onChange={(e) => setGiatien(e.target.value)}
               />
             </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Label>Đơn vị tính</Form.Label>
               <Form.Control
@@ -215,7 +237,6 @@ const ModlaSanpham = ({
                 <option value="Phần">phần</option>
               </Form.Control>
             </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Label>Danh mục sản phẩm</Form.Label>
               <Form.Control
@@ -231,23 +252,12 @@ const ModlaSanpham = ({
                 ))}
               </Form.Control>
             </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Label>Hình ảnh</Form.Label>
               <Form.Control
                 type="file"
-                onChange={handleImageChange} // Gọi hàm khi người dùng chọn hình ảnh mới
+                onChange={(e) => setHinhanh(e.target.files[0])}
               />
-              {previewImage && (
-                <div className="mt-3">
-                  <p>{isEdit ? "Hình ảnh mới chọn:" : "Xem trước hình ảnh:"}</p>
-                  <img
-                    src={previewImage}
-                    alt="Xem trước hình ảnh"
-                    style={{ width: "200px", height: "auto" }}
-                  />
-                </div>
-              )}
             </Form.Group>
 
             {/* Nút mở modal chi tiết sản phẩm */}
@@ -276,7 +286,7 @@ const ModlaSanpham = ({
         handleClose={() => setShowChiTietModal(false)}
         chiTiet={chiTiet}
         setChiTiet={setChiTiet}
-        handleSaveChiTiet={handleSaveChiTiet}
+        handleSaveChiTiet={handleSaveChiTiet} // Thêm hàm lưu chi tiết
       />
     </>
   );
