@@ -1,0 +1,10 @@
+ lệnh tạo bảng php artisan make:migration create_admins_table
+
+php artisan migrate
+php artisan make:model Admin
+php artisan make:seeder AdminSeeder
+php artisan db:seed --class=AdminSeeder
+php artisan make:controller AdminController
+composer require laravel/sanctum
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+php artisan migrate
