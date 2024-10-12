@@ -172,14 +172,7 @@ const moModalSuaSanPham = (sanPham) => {
                     <li className="breadcrumb-item active">Sản Phẩm</li>
                   </ol>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Bộ lọc danh mục sản phẩm */}
-          <div className="container-fluid mb-3">
-            <div className="row">
-              <div className="col-lg-8">
+                <div className='col-sm-2'>
                 <label htmlFor="categoryFilter" className="form-label">Chọn danh mục sản phẩm:</label>
                 <select
                   id="categoryFilter"
@@ -194,75 +187,97 @@ const moModalSuaSanPham = (sanPham) => {
                     </option>
                   ))}
                 </select>
-              </div>
-              <div className="col-lg-4 d-flex align-items-end">
-                <button className="btn btn-primary w-100" onClick={moModalThemSanPham}>
-                  <i className="fas fa-plus"></i> Thêm sản phẩm
-                </button>
+                </div>
               </div>
             </div>
           </div>
 
+        
           {/* Bảng danh sách sản phẩm */}
-          <div className="container-fluid">
-            <div className="card shadow mb-4">
-              <div className="card-body table-responsive" style={{ maxHeight: '400px' }}>
-                <table className="table table-bordered table-hover table-striped">
-                  <thead>
-                    <tr>
-                      <th scope="col">STT</th>
-                      <th scope="col">Hình ảnh</th>
-                      <th scope="col">Tên</th>
-                      <th scope="col">Giá</th>
-                      <th scope='col'>Đơn vị tính</th>
-                      <th scope='col'>Chi tiết sản phẩm</th>
-                      <th scope='col'>Đánh giá</th>
-                      <th scope="col">Trạng thái</th>
-                      <th scope="col">Chức năng</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sanPhamTheoTrang.map((sanPham, index) => (
-                      <tr key={nanoid()}>
-                        <td>{viTriSanPhamDau + index + 1}</td>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <img
-                              src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
-                              alt={sanPham.tieude}
-                              style={{ height: '50px', objectFit: 'cover' }}
-                            />
-                          </div>
-                        </td>
-                        <td>{sanPham.tieude}</td>
-                        <td>{sanPham.giatien} vnđ</td>
-                        <td>{sanPham.don_vi_tinh}</td>
-                        
-                        <td>
-                          {/* chi tiết sản phẩm */}
-                          <Button variant="btn btn-primary" onClick={() => moModalChiTiet(sanPham.id)}>
-                            Xem chi tiết
-                          </Button>
-                        </td>
-                        <td>
-                          <Button variant="info" onClick={() => moModalDanhGia(sanPham.id)}>
-                            Xem Đánh Giá
-                          </Button>
-                        </td>
-                        <td>{sanPham.trangthai}</td>
-                        <td>
-                          <Button variant="primary me-2" onClick={() => moModalSuaSanPham(sanPham)}>
-                            <i className="fas fa-edit"></i>
-                          </Button>
-                          <Button variant="danger" onClick={() => xoaSanPham(sanPham.id)}>
-                            <i className="fas fa-trash"></i>
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+      <div className="container-fluid">
+        <div className="card shadow mb-4">
+          <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 className="m-0 font-weight-bold text-primary">
+              Danh sách sản phẩm
+            </h6>
+            <div className="card-tools">
+              <Button
+                variant="primary"
+                onClick={moModalThemSanPham}
+              >
+                <i className="fas fa-plus-circle"></i> Thêm sản phẩm
+              </Button>
+            </div>
+          </div>
+
+          <div className="card-body table-responsive" style={{ maxHeight: "400px" }}>
+            <table className="table table-bordered table-hover table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">STT</th>
+                  <th scope="col">Hình ảnh</th>
+                  <th scope="col">Tên</th>
+                  <th scope="col">Giá</th>
+                  <th scope="col">Đơn vị tính</th>
+                  <th scope="col">Chi tiết sản phẩm</th>
+                  <th scope="col">Đánh giá</th>
+                  <th scope="col">Trạng thái</th>
+                  <th scope="col">Chức năng</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sanPhamTheoTrang.map((sanPham, index) => (
+                  <tr key={nanoid()}>
+                    <td>{viTriSanPhamDau + index + 1}</td>
+                    <td>
+                      <div className="d-flex align-items-center">
+                        <img
+                          src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
+                          alt={sanPham.tieude}
+                          style={{ height: "50px", objectFit: "cover" }}
+                        />
+                      </div>
+                    </td>
+                    <td>{sanPham.tieude}</td>
+                    <td>{sanPham.giatien} vnđ</td>
+                    <td>{sanPham.don_vi_tinh}</td>
+                    <td>
+                      <Button
+                        variant="btn btn-primary"
+                        onClick={() => moModalChiTiet(sanPham.id)}
+                      >
+                        Xem chi tiết
+                      </Button>
+                    </td>
+                    <td>
+                      <Button
+                        variant="info"
+                        onClick={() => moModalDanhGia(sanPham.id)}
+                      >
+                        Xem Đánh Giá
+                      </Button>
+                    </td>
+                    <td>{sanPham.trangthai}</td>
+                    <td>
+                      <Button
+                        variant="primary me-2"
+                        onClick={() => moModalSuaSanPham(sanPham)}
+                      >
+                        <i className="fas fa-edit"></i>
+                      </Button>
+                      <Button
+                        variant="danger"
+                        onClick={() => xoaSanPham(sanPham.id)}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+              
 
               {/* Phân trang */}
               <div className="card-footer clearfix">

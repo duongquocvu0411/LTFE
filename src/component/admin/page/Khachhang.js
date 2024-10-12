@@ -19,6 +19,7 @@ const Khachhangs = () => {
   const [hienThiModal, setHienThiModal] = useState(false);
   const [chiTietKhachHang, setChiTietKhachHang] = useState(null);
   const [timKiem, setTimKiem] = useState('');
+  const [timKiemTrangThai, setTimKiemTrangThai] = useState('');
   const [khachHangHienThi, setKhachHangHienThi] = useState([]);
 
   // Tính toán các phần tử hiện tại để hiển thị dựa trên trang hiện tại
@@ -67,6 +68,18 @@ const Khachhangs = () => {
     }
   };
 
+  // Hàm lọc theo trạng thái đơn hàng
+  const xuLyLocTrangThai = (e) => {
+    const giaTriLocTrangThai = e.target.value.toLowerCase();
+    setTimKiemTrangThai(giaTriLocTrangThai);
+
+    const ketQuaLoc = danhSachKhachHang.filter(khachHang =>
+      layTrangThaiDonHang(khachHang.hoadons).toLowerCase().includes(giaTriLocTrangThai)
+    );
+
+    setKhachHangHienThi(ketQuaLoc);
+  };
+
   // Hàm xóa khách hàng
   const xoaKhachHang = (id) => {
     axios.delete(`${process.env.REACT_APP_BASEURL}/api/khachhangs/${id}`)
@@ -111,7 +124,29 @@ const Khachhangs = () => {
           position: 'top-right',
           autoClose: 3000
         });
-        hienThiChiTiet(chiTietKhachHang.id);
+  
+        // Cập nhật trạng thái đơn hàng trong danh sách khách hàng hiện tại
+        setKhachHangHienThi(trangThaiTruoc  => {
+          // Sử dụng map để duyệt qua danh sách khách hàng hiện tại
+          return trangThaiTruoc.map(khachHang => {
+            // Kiểm tra nếu khách hàng này có đơn hàng với mã billId
+            if (khachHang.hoadons.some(hoadon => hoadon.id === billId)) {
+              // Nếu tìm thấy, tạo một bản sao của khách hàng và cập nhật trạng thái hóa đơn trong hoadons
+              return {
+                ...khachHang,  // Giữ nguyên các thông tin khác của khách hàng
+                hoadons: khachHang.hoadons.map(hoadon => 
+                  // Kiểm tra nếu id hóa đơn trùng với billId
+                  hoadon.id === billId 
+                  ? { ...hoadon, status: newStatus }  // Cập nhật trạng thái đơn hàng
+                  : hoadon  // Nếu không trùng, giữ nguyên hóa đơn
+                )
+              };
+            }
+            // Nếu khách hàng không có hóa đơn với mã billId, trả về khách hàng mà không thay đổi gì
+            return khachHang;
+          });
+        });
+        setHienThiModal(false);  // Đóng modal 
       })
       .catch(error => {
         console.log('Có lỗi khi cập nhật trạng thái đơn hàng:', error);
@@ -121,6 +156,7 @@ const Khachhangs = () => {
         });
       });
   };
+  
 // Kiểm tra xem hóa đơn của khách hàng có trạng thái "Đã hủy" hoặc "Giao không thành công" hay không
 const kiemTraTrangThaiHoaDon = (hoadons) => {
   return hoadons?.some(hoadon => 
@@ -130,9 +166,30 @@ const kiemTraTrangThaiHoaDon = (hoadons) => {
 
 // Hàm kiểm tra trạng thái đơn hàng
 const layTrangThaiDonHang = (hoadons) => {
-  const hoadon = hoadons?.find(h => h.status === 'Chờ xử lý');
-  return hoadon ? hoadon.status : 'đã xữ lý';
+  // Kiểm tra nếu có đơn hàng đang giao
+  const hoadonDangGiao = hoadons?.find(h => h.status === 'Đang giao');
+  if (hoadonDangGiao) {
+    return 'Đã xử lý (đang giao)';
+  }
+  
+  // Kiểm tra nếu có đơn hàng đã giao thành công
+  const hoadonGiaoThanhCong = hoadons?.find(h => h.status === 'Đã giao thành công');
+  if (hoadonGiaoThanhCong) {
+    return 'Đã xử lý (thành công)';
+  }
+    
+  // Kiểm tra nếu có đơn hàng giao không thành công
+  const hoadonKhongGiaoThanhCong = hoadons?.find(h => h.status === 'Giao không thành công');
+  if (hoadonKhongGiaoThanhCong) {
+    return 'Đã xử lý (Không thành công)';
+  }
+  
+  // Kiểm tra đơn hàng chờ xử lý
+  const hoadonChoXuLy = hoadons?.find(h => h.status === 'Chờ xử lý');
+  return hoadonChoXuLy ? hoadonChoXuLy.status : 'Đã xử lý';
 };
+
+
   return (
     <div id="wrapper">
       <SiderbarAdmin />
@@ -154,6 +211,19 @@ const layTrangThaiDonHang = (hoadons) => {
                       <li className="breadcrumb-item"><Link to="/admin/trangchu">Home</Link></li>
                       <li className="breadcrumb-item active">Danh Sách Khách Hàng</li>
                     </ol>
+                    
+                  </div>
+                  <div className=' col-sm-6'>
+                     {/* Tìm kiếm theo tên khách hàng */}
+                   <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Tìm kiếm theo tên khách hàng"
+                    value={timKiem}
+                    onChange={xuLyTimKiem}
+                    style={{ maxWidth: '300px', marginRight: '10px' }}
+                  />
+
                   </div>
                 </div>
               </div>
@@ -164,19 +234,25 @@ const layTrangThaiDonHang = (hoadons) => {
               <div className="card shadow mb-4">
                 <div className="card-header py-3 d-flex justify-content-between align-items-center">
                   <h3 className="m-0 font-weight-bold text-primary">Danh Sách Khách Hàng</h3>
-                  <input
-                    type="text"
+                  
+                 
+                  {/* Lọc theo trạng thái đơn hàng */}
+                  <select
                     className="form-control"
-                    placeholder="Tìm kiếm theo tên khách hàng"
-                    value={timKiem}
-                    onChange={xuLyTimKiem}
-                    style={{ maxWidth: '300px' }}
-                  />
+                    value={timKiemTrangThai}
+                    onChange={xuLyLocTrangThai}
+                    style={{ maxWidth: '200px' }}
+                  >
+                    <option value="">Lọc theo trạng thái</option>
+                    <option value="đang giao">Đang giao</option>
+                    <option value="thành công">Thành công</option>
+                    <option value="hủy đơn">hủy đơn</option>
+                    <option value="Không thành công">Không thành công</option>
+                    <option value="chờ xử lý">Chờ xử lý</option>
+                  </select>
                 </div>
 
                 {/* Bảng danh sách khách hàng */}
-                {/* ?: Có thể hiểu là "nếu đúng thì..."
-                    :: Có thể hiểu là "nếu không thì..." */}
                 <div className="card-body table-responsive" style={{ maxHeight: '400px' }}>
                   <table className="table table-bordered table-hover table-striped">
                     <thead>
@@ -196,7 +272,7 @@ const layTrangThaiDonHang = (hoadons) => {
                       {/* Kiểm tra nếu không có dữ liệu */}
                       {danhSachKhachHang.length === 0 ? (
                         <tr>
-                          <td colSpan="8" className="text-center">Hiện tại chưa có khách hàng</td>
+                          <td colSpan="9" className="text-center">Hiện tại chưa có khách hàng</td>
                         </tr>
                       ) : cacPhanTuHienTai.length > 0 ? (
                         cacPhanTuHienTai.map((item, index) => (
@@ -223,7 +299,7 @@ const layTrangThaiDonHang = (hoadons) => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="8" className="text-center">Không tìm thấy khách hàng</td>
+                          <td colSpan="9" className="text-center">Không tìm thấy khách hàng</td>
                         </tr>
                       )}
                     </tbody>
@@ -250,6 +326,7 @@ const layTrangThaiDonHang = (hoadons) => {
             </div>
           </div>
         </div>
+
         {/* Sử dụng ModalChiTietKhachHang component */}
         <ModalChiTietKhachHang
           show={hienThiModal}

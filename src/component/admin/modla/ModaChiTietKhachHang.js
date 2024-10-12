@@ -22,11 +22,11 @@ const ModalChiTietKhachHang = ({ show, handleClose, chiTietKhachHang, capNhatTra
                 <p>Chi tiết:</p>
                 <ul>
                   {bill.hoadonchitiets.map((chitiet, idx) => (
-                    <li key={idx}>
+                   
                       <li key={idx}>
                         Sản phẩm: {chitiet.sanpham_names} x {chitiet.quantity}, Giá: {chitiet.price} (VND)
                       </li>
-                    </li>
+                   
                   ))}
                 </ul>
                 {/* Hiển thị nút xóa nếu trạng thái là "Hủy đơn" */}
