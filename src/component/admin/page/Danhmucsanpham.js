@@ -4,7 +4,7 @@ import Footer from '../Footer';
 import HeaderAdmin from '../HeaderAdmin'; // Import HeaderAdmin component
 
 import axios from 'axios';
-import { Button } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import ModalThemDanhMucSanPham from '../modla/ModlaDanhmucsanpham';
 import { nanoid } from 'nanoid';
 import { toast, ToastContainer } from 'react-toastify';
@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 
 const Danhmucsanpham = () => {
   const [danhSachDanhMuc, setDanhSachDanhMuc] = useState([]);
+  const [dangtai,setDangtai]= useState(false);
   const [trangHienTai, setTrangHienTai] = useState(1);
   const danhMucMoiTrang = 4;
 
@@ -37,11 +38,12 @@ const Danhmucsanpham = () => {
 
   // Lấy danh sách danh mục từ API
   const layDanhSachDanhMuc = async () => {
-
+    setDangtai(true); // bật trạng thái đang load để lấy dữ liệu 
     try{
       const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhmucsanphams`)
 
       setDanhSachDanhMuc(response.data);
+      setDangtai(false);
     } 
     catch(error){
       console.log('có lỗi khi lấy danh sách danh mục', error);
@@ -49,9 +51,8 @@ const Danhmucsanpham = () => {
       toast.error('có lỗi khi lấy danh sách ',{
         position:'top-right',
         autoClose:3000
-      })
+      });
     }
-
   };
 
   useEffect(() => {
@@ -148,37 +149,44 @@ const Danhmucsanpham = () => {
             </div>
   
             <div className="card-body table-responsive p-0" style={{ maxHeight: '400px' }}>
+             {dangtai ? (
+                <div className='text-center'>
+                  <Spinner animation='border' variant='primary'/> {/*hiển thị spinner khi đang lấy dữ liệu */}
+                    <p>Đang tải dữ liệu...</p>
+                </div>
+             ) :(
               <table className="table table-bordered table-hover table-striped">
-                <thead>
-                  <tr>
-                    <th scope="col">STT</th>
-                    <th scope="col">Tên</th>
-                    <th scope="col">Chức năng</th>
+              <thead>
+                <tr>
+                  <th scope="col">STT</th>
+                  <th scope="col">Tên</th>
+                  <th scope="col">Chức năng</th>
+                </tr>
+              </thead>
+              <tbody>
+                {danhMucTheoTrang.map((danhMuc, index) => (
+                  <tr key={nanoid()}>
+                    <td>{viTriDanhMucDau + index + 1}</td>
+                    <td>{danhMuc.name}</td>
+                    <td>
+                      <Button
+                        variant="primary me-2"
+                        onClick={() => moModalSuaDanhMuc(danhMuc)}
+                      >
+                        <i className="fas fa-edit"></i>
+                      </Button>
+                      <Button
+                        variant="danger"
+                        onClick={() => xoaDanhMuc(danhMuc.id, danhMuc.name)}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </Button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {danhMucTheoTrang.map((danhMuc, index) => (
-                    <tr key={nanoid()}>
-                      <td>{viTriDanhMucDau + index + 1}</td>
-                      <td>{danhMuc.name}</td>
-                      <td>
-                        <Button
-                          variant="primary me-2"
-                          onClick={() => moModalSuaDanhMuc(danhMuc)}
-                        >
-                          <i className="fas fa-edit"></i>
-                        </Button>
-                        <Button
-                          variant="danger"
-                          onClick={() => xoaDanhMuc(danhMuc.id, danhMuc.name)}
-                        >
-                          <i className="fas fa-trash"></i>
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                ))}
+              </tbody>
+            </table>
+             )}
             </div>
   
             {/* Phân trang */}

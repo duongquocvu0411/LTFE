@@ -68,7 +68,7 @@ export const CartProvider = ({ children }) => {
     
     // Hiển thị thông báo sau khi cập nhật giỏ hàng
     if (sanPhamXoa) {
-      toast.success(`Xóa sản phẩm ${sanPhamXoa.title} khỏi giỏ hàng thành công`,{
+      toast.success(`Xóa sản phẩm ${sanPhamXoa.tieude} khỏi giỏ hàng thành công`,{
         position: "top-right",
         autoClose: 3000,
       })

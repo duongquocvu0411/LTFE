@@ -99,7 +99,7 @@ function App() {
             <Route path="/shop/:id" element={<CuahangChitiet />} />
             <Route path="/cart" element={<Giohang />} />
             <Route path="/Testimonial" element={<Gioithieu />} />
-            <Route path="/page404" element={<Trangloi />} />
+           
             <Route path="/lienhe" element={<LienHe />} />
             <Route path="/tracuu" element={<Tracuu />} />
 

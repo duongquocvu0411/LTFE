@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import Footer from '../Footer';
 import axios from 'axios';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal, Spinner } from 'react-bootstrap';
 import { nanoid } from 'nanoid';
 import { toast, ToastContainer } from 'react-toastify';
 import HeaderAdmin from '../HeaderAdmin';
@@ -22,9 +22,10 @@ const SanPham = () => {
   const [danhSachSanPham, setDanhSachSanPham] = useState([]);
   const [showModalDanhGia, setShowModalDanhGia] = useState(false); // Quản lý hiển thị modal đánh giá
   const [sanphamIdXemDanhGia, setSanphamIdXemDanhGia] = useState(null); // Lưu trữ sanphams_id cho modal đánh giá
-    // State hiển thị modal chi tiết sản phẩm
-    const [hienThiModalChiTiet, setHienThiModalChiTiet] = useState(false);
-    const [noiDungChiTiet, setNoiDungChiTiet] = useState({});
+  // State hiển thị modal chi tiết sản phẩm
+  const [hienThiModalChiTiet, setHienThiModalChiTiet] = useState(false);
+  const [noiDungChiTiet, setNoiDungChiTiet] = useState({});
+  const [dangtai, setDangtai] = useState(false);
   // State quản lý trang hiện tại của phân trang
   const [trangHienTai, setTrangHienTai] = useState(1);
 
@@ -53,6 +54,7 @@ const SanPham = () => {
 
   // Hàm gọi API để lấy danh sách sản phẩm
   const layDanhSachSanPham = async () => {
+    setDangtai(true); //bắt đầu hiện đang tải
     try {
       const url = danhMucDuocChon
         ? `${process.env.REACT_APP_BASEURL}/api/sanphams?danhmucsanpham_id=${danhMucDuocChon}`
@@ -61,6 +63,7 @@ const SanPham = () => {
       const response = await axios.get(url);
       setDanhSachSanPham(response.data); // Lưu danh sách sản phẩm vào state
       // setTrangHienTai(1); // Đặt lại trang hiện tại về 1 khi thay đổi danh mục
+      setDangtai(false); // kết thúc trạng thái đang tải lấy dữ liệu
     } catch (error) {
       console.log('Có lỗi khi lấy API:', error);
       toast.error('Có lỗi khi lấy danh sách sản phẩm', {
@@ -93,11 +96,11 @@ const SanPham = () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/sanphams/${sanPham.id}`);
       const productData = response.data;
-      
+
       setSanPhamHienTai(productData); // Lưu sản phẩm hiện tại với chi tiết đầy đủ
       setChinhSua(true); // Đặt trạng thái chỉnh sửa
       setHienThiModal(true); // Hiển thị modal
-      
+
     } catch (error) {
       console.log('Lỗi khi lấy dữ liệu sản phẩm:', error);
       toast.error('Không thể lấy dữ liệu sản phẩm', {
@@ -106,22 +109,22 @@ const SanPham = () => {
       });
     }
   };
-  
+
 
   // Hàm xóa sản phẩm
   const xoaSanPham = async (id) => {
     const SanphamXoa = danhSachSanPham.find((sanpham) => sanpham.id === id);
-    
+
     try {
       await axios.delete(`${process.env.REACT_APP_BASEURL}/api/sanphams/${id}`);
-      
+
       toast.success(`Sản phẩm ${SanphamXoa.tieude} đã được xóa thành công!`, {
         position: 'top-right',
         autoClose: 3000,
       });
-  
+
       layDanhSachSanPham(); // Cập nhật danh sách sản phẩm sau khi xóa
-      
+
     } catch (error) {
       console.log('Lỗi khi xóa sản phẩm:', error);
       toast.error(`Sản phẩm ${SanphamXoa.tieude} chưa xóa được, vui lòng thử lại!`, {
@@ -130,7 +133,7 @@ const SanPham = () => {
       });
     }
   };
-  
+
 
 
   // Hàm mở modal để xem chi tiết sản phẩm (gọi API lấy dữ liệu chi tiết)
@@ -178,111 +181,109 @@ const SanPham = () => {
                   </ol>
                 </div>
                 <div className='col-sm-2'>
-                <label htmlFor="categoryFilter" className="form-label">Chọn danh mục sản phẩm:</label>
-                <select
-                  id="categoryFilter"
-                  className="form-control"
-                  value={danhMucDuocChon}
-                  onChange={(e) => setDanhMucDuocChon(e.target.value)}
-                >
-                  <option value="">Tất cả sản phẩm</option>
-                  {danhMuc.map((dm) => (
-                    <option key={dm.id} value={dm.id}>
-                      {dm.name}
-                    </option>
-                  ))}
-                </select>
+                  {/* <label htmlFor="categoryFilter" className="form-label">Chọn danh mục sản phẩm:</label> */}
+                  <select
+                    id="categoryFilter"
+                    className="form-control"
+                    value={danhMucDuocChon}
+                    onChange={(e) => setDanhMucDuocChon(e.target.value)}
+                  >
+                    <option value="">Tất cả sản phẩm</option>
+                    {danhMuc.map((dm) => (
+                      <option key={dm.id} value={dm.id}>
+                        {dm.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
           </div>
 
-        
-          {/* Bảng danh sách sản phẩm */}
-      <div className="container-fluid">
-        <div className="card shadow mb-4">
-          <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 className="m-0 font-weight-bold text-primary">
-              Danh sách sản phẩm
-            </h6>
-            <div className="card-tools">
-              <Button
-                variant="primary"
-                onClick={moModalThemSanPham}
-              >
-                <i className="fas fa-plus-circle"></i> Thêm sản phẩm
-              </Button>
-            </div>
-          </div>
 
-          <div className="card-body table-responsive" style={{ maxHeight: "400px" }}>
-            <table className="table table-bordered table-hover table-striped">
-              <thead>
-                <tr>
-                  <th scope="col">STT</th>
-                  <th scope="col">Hình ảnh</th>
-                  <th scope="col">Tên</th>
-                  <th scope="col">Giá</th>
-                  <th scope="col">Đơn vị tính</th>
-                  <th scope="col">Chi tiết sản phẩm</th>
-                  <th scope="col">Đánh giá</th>
-                  <th scope="col">Trạng thái</th>
-                  <th scope="col">Chức năng</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sanPhamTheoTrang.map((sanPham, index) => (
-                  <tr key={nanoid()}>
-                    <td>{viTriSanPhamDau + index + 1}</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <img
-                          src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
-                          alt={sanPham.tieude}
-                          style={{ height: "50px", objectFit: "cover" }}
-                        />
-                      </div>
-                    </td>
-                    <td>{sanPham.tieude}</td>
-                    <td>{sanPham.giatien} vnđ</td>
-                    <td>{sanPham.don_vi_tinh}</td>
-                    <td>
-                      <Button
-                        variant="btn btn-primary"
-                        onClick={() => moModalChiTiet(sanPham.id)}
-                      >
-                        Xem chi tiết
-                      </Button>
-                    </td>
-                    <td>
-                      <Button
-                        variant="info"
-                        onClick={() => moModalDanhGia(sanPham.id)}
-                      >
-                        Xem Đánh Giá
-                      </Button>
-                    </td>
-                    <td>{sanPham.trangthai}</td>
-                    <td>
-                      <Button
-                        variant="primary me-2"
-                        onClick={() => moModalSuaSanPham(sanPham)}
-                      >
-                        <i className="fas fa-edit"></i>
-                      </Button>
-                      <Button
-                        variant="danger"
-                        onClick={() => xoaSanPham(sanPham.id)}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-              
+          {/* Bảng danh sách sản phẩm */}
+          <div className="container-fluid">
+            <div className="card shadow mb-4">
+              <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 className="m-0 font-weight-bold text-primary">
+                  Danh sách sản phẩm
+                </h6>
+                <div className="card-tools">
+                  <Button
+                    variant="primary"
+                    onClick={moModalThemSanPham}
+                  >
+                    <i className="fas fa-plus-circle"></i> Thêm sản phẩm
+                  </Button>
+                </div>
+              </div>
+
+              <div className="card-body table-responsive" style={{ maxHeight: "400px" }}>
+                {dangtai ? (
+                  <div className="text-center">
+                    <Spinner animation="border" variant="primary" /> {/* Hiển thị spinner khi đang tải */}
+                    <p>Đang tải dữ liệu...</p>
+                  </div>
+                ) : (
+                  <table className="table table-bordered table-hover table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Hình ảnh</th>
+                        <th scope="col">Tên</th>
+                        <th scope="col">Giá</th>
+                        <th scope="col">Đơn vị tính</th>
+                        <th scope="col">Chi tiết sản phẩm</th>
+                        <th scope="col">Đánh giá</th>
+                        <th scope="col">Trạng thái</th>
+                        <th scope="col">Chức năng</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sanPhamTheoTrang.map((sanPham, index) => (
+                        <tr key={nanoid()}>
+                          <td>{viTriSanPhamDau + index + 1}</td>
+                          <td>
+                            <div className="d-flex align-items-center">
+                              <img
+                                src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
+                                alt={sanPham.tieude}
+                                style={{ height: "50px", objectFit: "cover" }}
+                              />
+                            </div>
+                          </td>
+                          <td>{sanPham.tieude}</td>
+                          <td>{sanPham.giatien} vnđ</td>
+                          <td>{sanPham.don_vi_tinh}</td>
+                          <td>
+                            <Button
+                              variant="btn btn-primary"
+                              onClick={() => moModalChiTiet(sanPham.id)}
+                            >
+                              Xem chi tiết
+                            </Button>
+                          </td>
+                          <td>
+                            <Button variant="info" onClick={() => moModalDanhGia(sanPham.id)}>
+                              Xem Đánh Giá
+                            </Button>
+                          </td>
+                          <td>{sanPham.trangthai}</td>
+                          <td>
+                            <Button variant="primary me-2" onClick={() => moModalSuaSanPham(sanPham)}>
+                              <i className="fas fa-edit"></i>
+                            </Button>
+                            <Button variant="danger" onClick={() => xoaSanPham(sanPham.id)}>
+                              <i className="fas fa-trash"></i>
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+
 
               {/* Phân trang */}
               <div className="card-footer clearfix">
@@ -341,9 +342,9 @@ const SanPham = () => {
             <p><strong>Ngày thu hoạch:</strong> {noiDungChiTiet.ngay_thu_hoach}</p>
             <p><strong>Hương vị:</strong> {noiDungChiTiet.huong_vi}</p>
             <p><strong>Nồng độ đường:</strong> {noiDungChiTiet.nong_do_duong}</p>
-           {/* Sử dụng dangerouslySetInnerHTML để render bài viết dưới dạng HTML */}
-    <p><strong>Bài viết:</strong></p>
-    <div dangerouslySetInnerHTML={{ __html: noiDungChiTiet.bai_viet }} />
+            {/* Sử dụng dangerouslySetInnerHTML để render bài viết dưới dạng HTML */}
+            <p><strong>Bài viết:</strong></p>
+            <div dangerouslySetInnerHTML={{ __html: noiDungChiTiet.bai_viet }} />
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setHienThiModalChiTiet(false)}>

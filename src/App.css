@@ -10,4 +10,31 @@
     border: none !important; /* Loại bỏ viền */
     box-shadow: none !important; /* Loại bỏ bóng nếu có */
   }
+  .featurs-item {
+    transition: all 0.4s ease-in-out;
+    transform: perspective(1px) translateZ(0);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .featurs-item:hover {
+    transform: scale(1.05); /* Phóng to nhẹ khi di chuột */
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2); /* Bóng đổ rõ hơn */
+  }
+  
+  .featurs-item .featurs-icon {
+    transition: background-color 0.4s ease-in-out;
+  }
+  
+  .featurs-item:hover .featurs-icon {
+    background-color: #f39c12; /* Đổi màu icon khi di chuột */
+  }
+  
+  .featurs-item:hover .featurs-content h5 {
+    color: #f39c12; /* Đổi màu tiêu đề khi di chuột */
+  }
+  
+  .featurs-item:hover .featurs-content p {
+    color: #7f8c8d; /* Đổi màu nội dung khi di chuột */
+  }
   

@@ -54,7 +54,7 @@ const Giohang = () => {
                             alt={sanPham.tieude}
                           />
                         </td>
-                        <td>{sanPham.title}</td>
+                        <td>{sanPham.tieude}</td>
                         <td>{parseFloat(sanPham.giatien).toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ / {sanPham.don_vi_tinh}</td>
                         <td> 
                           <div className="d-flex">

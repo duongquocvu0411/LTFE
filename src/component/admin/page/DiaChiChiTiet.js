@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Footer from '../Footer';
 import axios from 'axios';
-import { Button } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import { nanoid } from 'nanoid';
 import ModalDiaChiChiTiet from '../modla/ModlaDiachichitiet';
 import { toast, ToastContainer } from 'react-toastify';
@@ -14,7 +14,7 @@ const DiaChiChiTiet = () => {
   const [hienThiModal, setHienThiModal] = useState(false); // State để điều khiển hiển thị Modal
   const [chinhSua, setChinhSua] = useState(false); // State xác định chế độ chỉnh sửa hay thêm mới
   const [diaChiHienTai, setDiaChiHienTai] = useState(null); // State lưu trữ thông tin địa chỉ đang được chỉnh sửa
-
+  const [dangtai, setDangtai]=useState(false);
   // Gọi API lấy danh sách địa chỉ khi component được mount
   useEffect(() => {
     layDanhSachDiaChi();
@@ -22,15 +22,15 @@ const DiaChiChiTiet = () => {
 
   // Hàm lấy danh sách địa chỉ từ API
   const layDanhSachDiaChi = async () => {
+    setDangtai(true); 
     try{
         const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/diachichitiet`)
         setDanhSachDiaChi(response.data);
+        setDangtai(false);
     }
     catch(error){
       console.log('có lỗi khi lấy danh sách địa chỉ', error);
     }
-
-  
   };
 
   // Hàm mở modal để chỉnh sửa địa chỉ
@@ -120,7 +120,13 @@ const DiaChiChiTiet = () => {
                 </div>
                 {/* /.card-header */}
                 <div className="card-body table-responsive" style={{ maxHeight: '400px' }}>
-                  <table className="table table-hover table-bordered table-striped">
+                  {dangtai ? (
+                    <div className='text-center'>
+                      <Spinner animation='border' variant='primary'/>
+                        <p>Đang tải dữ liệu...</p>
+                    </div>
+                  ) : (
+                    <table className="table table-hover table-bordered table-striped">
                     <thead>
                       <tr>
                         <th scope="col">STT</th>
@@ -170,6 +176,7 @@ const DiaChiChiTiet = () => {
                       ))}
                     </tbody>
                   </table>
+                  )}
                 </div>
                 {/* /.card-body */}
               </div>

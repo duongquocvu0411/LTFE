@@ -5,6 +5,7 @@ import HeaderUsers from "../HeaderUsers";
 import { CartContext } from "./CartContext"; 
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { Spinner } from "react-bootstrap";
 
 const Cuahang = () => {
   // Khởi tạo state `danhMuc` để lưu trữ danh mục sản phẩm
@@ -26,6 +27,7 @@ const Cuahang = () => {
   // Số lượng sản phẩm hiển thị trên mỗi trang
   const sanPhamMoiTrang = 8;
 
+  const [dangtai,setDangtai] = useState(false);
   // useEffect: Gọi hàm `fetchDanhMuc` và `fetchSanPham` mỗi khi `danhMucDuocChon` thay đổi
   useEffect(() => {
     fetchDanhMuc();
@@ -34,9 +36,11 @@ const Cuahang = () => {
 
   // Hàm `fetchDanhMuc` để lấy danh sách danh mục sản phẩm từ API
   const fetchDanhMuc = async () => {
+    
     try {
       const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhmucsanphams`);
       setDanhMuc(response.data); // Lưu danh mục vào state `danhMuc`
+     
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
@@ -44,6 +48,7 @@ const Cuahang = () => {
 
   // Hàm `fetchSanPham` để lấy danh sách sản phẩm từ API
   const fetchSanPham = async () => {
+    setDangtai(true);
     try {
       // Nếu `danhMucDuocChon` có giá trị, gọi API lấy sản phẩm thuộc danh mục đó, ngược lại lấy tất cả sản phẩm
       const url = danhMucDuocChon
@@ -51,6 +56,7 @@ const Cuahang = () => {
         : `${process.env.REACT_APP_BASEURL}/api/sanphams`;
       const response = await axios.get(url);
       setSanPham(response.data); // Lưu danh sách sản phẩm vào state `sanPham`
+      setDangtai(false);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -114,53 +120,60 @@ const Cuahang = () => {
           </div>
 
           {/* Danh sách sản phâm */}
-          <div className="row g-4">
-            {sanPhamHienTai.map((sp) => (
-              <div key={sp.id} className="col-md-6 col-lg-4 col-xl-3 d-flex">
-                <div className="rounded position-relative fruite-item card h-100 w-100">
-                  <div className="fruite-img card-img-top">
-                    <Link to={`/shop/${sp.id}`}>
-                      <img
-                        src={`${process.env.REACT_APP_BASEURL}/storage/${sp.hinhanh}`}
-                        className="img-fluid w-100 rounded-top"
-                        alt={sp.tieude}
-                        style={{ height: 250, objectFit: 'cover' }}
-                      />
-                    </Link>
-                    {/* Kiểm tra trạng thái Hết hàng và hiển thị thông báo */}
-                    {sp.trangthai === 'Hết hàng' && (
-                      <div
-                        className="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center bg-dark bg-opacity-50"
-                        style={{ zIndex: 1, padding: '5px 10px', borderRadius: '5px' }}
-                      >
-                        <span className="text-white small fw-bold">Hết hàng</span>
+                {dangtai ? (
+                  <div className="text-center">
+                    <Spinner animation="border" variant="primary"/>
+                    <p>Đang tải dữ liệu</p>
+                  </div>
+                ) : (
+                  <div className="row g-4">
+                  {sanPhamHienTai.map((sp) => (
+                    <div key={sp.id} className="col-md-6 col-lg-4 col-xl-3 d-flex">
+                      <div className="rounded position-relative fruite-item card h-100 w-100">
+                        <div className="fruite-img card-img-top">
+                          <Link to={`/shop/${sp.id}`}>
+                            <img
+                              src={`${process.env.REACT_APP_BASEURL}/storage/${sp.hinhanh}`}
+                              className="img-fluid w-100 rounded-top"
+                              alt={sp.tieude}
+                              style={{ height: 250, objectFit: 'cover' }}
+                            />
+                          </Link>
+                          {/* Kiểm tra trạng thái Hết hàng và hiển thị thông báo */}
+                          {sp.trangthai === 'Hết hàng' && (
+                            <div
+                              className="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center bg-dark bg-opacity-50"
+                              style={{ zIndex: 1, padding: '5px 10px', borderRadius: '5px' }}
+                            >
+                              <span className="text-white small fw-bold">Hết hàng</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="text-white bg-secondary px-3 py-1 rounded position-absolute" style={{ top: 10, left: 10 }}>
+                        {layTenDanhMuc(sp.danhmucsanpham_id)}
+                        </div>
+                        <div className="card-body d-flex flex-column rounded-bottom">
+                          <h4 className="card-title">{sp.tieude}</h4>
+                          <div className="d-flex justify-content-between mt-auto">
+                             <p className="text-dark fs-5 fw-bold mb-0">{sp.giatien} vnđ /{sp.don_vi_tinh}</p>
+                            
+                            {/* Ẩn nút Thêm vào giỏ nếu sản phẩm hết hàng */}
+                            {sp.trangthai !== 'Hết hàng' && (
+                              <button
+                                onClick={() => addToCart(sp)}
+                                className="btn border border-secondary rounded-pill px-3 text-primary"
+                              >
+                                <i className="fa fa-shopping-bag me-2 text-primary" />
+                                Thêm vào giỏ
+                              </button>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    )}
-                  </div>
-                  <div className="text-white bg-secondary px-3 py-1 rounded position-absolute" style={{ top: 10, left: 10 }}>
-                  {layTenDanhMuc(sp.danhmucsanpham_id)}
-                  </div>
-                  <div className="card-body d-flex flex-column rounded-bottom">
-                    <h4 className="card-title">{sp.tieude}</h4>
-                    <div className="d-flex justify-content-between mt-auto">
-                       <p className="text-dark fs-5 fw-bold mb-0">{sp.giatien} vnđ /{sp.don_vi_tinh}</p>
-                      
-                      {/* Ẩn nút Thêm vào giỏ nếu sản phẩm hết hàng */}
-                      {sp.trangthai !== 'Hết hàng' && (
-                        <button
-                          onClick={() => addToCart(sp)}
-                          className="btn border border-secondary rounded-pill px-3 text-primary"
-                        >
-                          <i className="fa fa-shopping-bag me-2 text-primary" />
-                          Thêm vào giỏ
-                        </button>
-                      )}
                     </div>
-                  </div>
+                  ))}
                 </div>
-              </div>
-            ))}
-          </div>
+                )}
 
           {/* Phân trang */}
           <div className="d-flex justify-content-center mt-5">

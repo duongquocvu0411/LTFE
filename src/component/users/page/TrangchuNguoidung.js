@@ -5,13 +5,14 @@ import HeaderUsers from '../HeaderUsers';
 import { CartContext } from './CartContext';
 import { Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import { Spinner } from 'react-bootstrap';
 
 const TrangchuNguoidung = () => {
   const [danhMuc, setDanhMuc] = useState([]); // Khởi tạo state lưu trữ danh mục
   const [sanPham, setSanPham] = useState([]); // Khởi tạo state lưu trữ sản phẩm
   const [danhMucDuocChon, setDanhMucDuocChon] = useState(""); // Danh mục được chọn
   const { addToCart } = useContext(CartContext); // Lấy hàm thêm vào giỏ hàng từ context
-
+  const [dangtai,setDangtai] = useState(false);
   const [trangHienTai, datTrangHienTai] = useState(1); // Trang hiện tại
   const sanPhamMoiTrang = 8; // Số sản phẩm hiển thị mỗi trang
   // Phân trang
@@ -41,6 +42,7 @@ const TrangchuNguoidung = () => {
   };
 
   const laySanPham = async () => {
+    setDangtai(true);
     try {
       const url = danhMucDuocChon
         ? `${process.env.REACT_APP_BASEURL}/api/sanphams?danhmucsanpham_id=${danhMucDuocChon}` // Nếu có danh mục thì lọc
@@ -48,6 +50,7 @@ const TrangchuNguoidung = () => {
 
       const phanHoi = await axios.get(url);
       setSanPham(phanHoi.data);
+      setDangtai(false);
 
     } catch (loi) {
       console.error('Lỗi khi lấy sản phẩm:', loi);
@@ -96,7 +99,61 @@ const TrangchuNguoidung = () => {
         </div>
       </div>
       {/* Hero End */}
+      <div className="container-fluid featurs py-5">
+        <div className="container py-5">
+          <div className="row g-4">
+            <div className="col-md-6 col-lg-3">
+              <div className="featurs-item text-center rounded bg-light p-4">
+                <div className="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                  <i className="fas fa-car-side fa-3x text-white" />
+                </div>
+                <div className="featurs-content text-center">
+                  <h5>Miễn phí vận chuyển</h5>
+                  <p className="mb-0">Miễn phí cho đơn hàng trên $300</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-lg-3">
+              <div className="featurs-item text-center rounded bg-light p-4">
+                <div className="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                  <i className="fas fa-user-shield fa-3x text-white" />
+                </div>
+                <div className="featurs-content text-center">
+                  <h5>Thanh toán bảo mật</h5>
+                  <p className="mb-0">Thanh toán bảo đảm 100%</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-lg-3">
+              <div className="featurs-item text-center rounded bg-light p-4">
+                <div className="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                  <i className="fas fa-exchange-alt fa-3x text-white" />
+                </div>
+                <div className="featurs-content text-center">
+                  <h5>Hoàn trả trong 30 ngày</h5>
+                  <p className="mb-0">Hoàn trả nếu hàng ko</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-lg-3">
+              <div className="featurs-item text-center rounded bg-light p-4">
+                <div className="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                  <i className="fa fa-phone-alt fa-3x text-white" />
+                </div>
+                <div className="featurs-content text-center">
+                  <h5>Hỗ trợ 24/7</h5>
+                  <p className="mb-0">Hỗ trợ nhanh chóng mọi lúc</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Featurs Section End */}
 
+
+
+      
       {/* Sản phẩm của chúng tôi */}
       <div className="container-fluid fruite py-5 OurProduct">
         <div className="container py-5">
@@ -128,49 +185,56 @@ const TrangchuNguoidung = () => {
             {/* Hiển thị sản phẩm */}
             <div className="tab-content mt-4">
               <div className="tab-pane fade show p-0 active">
+               {dangtai ? (
+                <div className='text-center'>
+                  <Spinner animation='border' variant='primary'/>
+                  <p>Đang tải dữ liệu...</p>
+                </div>
+               ) : (
                 <div className="row g-4">
-                  {sanPhamHienTai.map((sanPham) => (
-                    <div className="col-md-6 col-lg-4 col-xl-3" key={sanPham.id}>
-                      <div className="rounded position-relative fruite-item shadow-sm">
-                        <div className="fruite-img position-relative">
-                          <Link to={`/shop/${sanPham.id}`} className="btn btn-link">
-                            <img
-                              src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
-                              className="img-fluid w-100 rounded-top"
-                              alt={sanPham.tieude}
-                              style={{ height: 250, objectFit: 'cover' }}
-                            />
-                          </Link>
-                          {sanPham.trangthai === 'Hết hàng' && (
-                            <div className="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center bg-dark bg-opacity-50"
-                              style={{ zIndex: 1, padding: '5px 10px', borderRadius: '5px' }}>
-                              <span className="text-white small fw-bold">Hết hàng</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="text-white bg-secondary px-2 py-1 rounded position-absolute"
-                          style={{ top: 10, left: 10 }}>
-                          {layTenDanhMuc(sanPham.danhmucsanpham_id)}
-                        </div>
-                        <div className="p-3  rounded-bottom">
-                          <p className="h5 fw-bold">{sanPham.tieude}</p>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <p className="text-dark fs-5 fst-italic mb-0">{sanPham.giatien} vnđ/ {sanPham.don_vi_tinh}</p>
-                            {sanPham.trangthai !== 'Hết hàng' && (
-                              <button
-                                onClick={() => addToCart(sanPham)}
-                                className="btn border border-secondary rounded-pill px-3 text-primary"
-                              >
-                                <i className="fa fa-shopping-bag me-2 text-primary" />
-                                Thêm vào giỏ
-                              </button>
-                            )}
+                {sanPhamHienTai.map((sanPham) => (
+                  <div className="col-md-6 col-lg-4 col-xl-3" key={sanPham.id}>
+                    <div className="rounded position-relative fruite-item shadow-sm">
+                      <div className="fruite-img position-relative">
+                        <Link to={`/shop/${sanPham.id}`} className="btn btn-link">
+                          <img
+                            src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
+                            className="img-fluid w-100 rounded-top"
+                            alt={sanPham.tieude}
+                            style={{ height: 250, objectFit: 'cover' }}
+                          />
+                        </Link>
+                        {sanPham.trangthai === 'Hết hàng' && (
+                          <div className="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center bg-dark bg-opacity-50"
+                            style={{ zIndex: 1, padding: '5px 10px', borderRadius: '5px' }}>
+                            <span className="text-white small fw-bold">Hết hàng</span>
                           </div>
+                        )}
+                      </div>
+                      <div className="text-white bg-secondary px-2 py-1 rounded position-absolute"
+                        style={{ top: 10, left: 10 }}>
+                        {layTenDanhMuc(sanPham.danhmucsanpham_id)}
+                      </div>
+                      <div className="p-3  rounded-bottom">
+                        <p className="h5 fw-bold">{sanPham.tieude}</p>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <p className="text-dark fs-5 fst-italic mb-0">{sanPham.giatien} vnđ/ {sanPham.don_vi_tinh}</p>
+                          {sanPham.trangthai !== 'Hết hàng' && (
+                            <button
+                              onClick={() => addToCart(sanPham)}
+                              className="btn border border-secondary rounded-pill px-3 text-primary"
+                            >
+                              <i className="fa fa-shopping-bag me-2 text-primary" />
+                              Thêm vào giỏ
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
+              </div>
+               )}
 
                 {/* Phân trang (Cập nhật) */}
                 <div className="d-flex justify-content-center mt-4">

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import Footerusers from "../Footerusers";
 import HeaderUsers from "../HeaderUsers";
 import { CartContext } from "./CartContext";
-import { Modal, Button, Form } from "react-bootstrap"; // Sử dụng modal từ react-bootstrap
+import { Modal, Button, Form, Spinner } from "react-bootstrap"; // Sử dụng modal từ react-bootstrap
 import { toast, ToastContainer } from "react-toastify";
 import {Lightbox} from "react-modal-image"; // Sử dụng thư viện Lightbox để phóng to ảnh
 
@@ -23,10 +23,11 @@ const CuahangChitiet = () => {
   const [noiDung, setNoiDung] = useState(""); // Nội dung đánh giá
   const [hinhanhPhu, setHinhanhPhu] = useState([]); // Danh sách hình ảnh phụ của sản phẩm
   const [largeImage, setLargeImage] = useState(null); // Hình ảnh lớn để hiển thị khi click vào
-
+  const [dangtai,setDangtai]= useState(false);
   useEffect(() => {
     // Lấy thông tin sản phẩm và chi tiết
     const layThongTinSanPham = async () => {
+      setDangtai(true);
       try {
         const response = await fetch(`${process.env.REACT_APP_BASEURL}/api/sanphams/${id}`);
         const data = await response.json();
@@ -37,6 +38,7 @@ const CuahangChitiet = () => {
         if (data.images) {
           setHinhanhPhu(data.images); // Lưu hình ảnh phụ
         }
+        setDangtai(false)
       } catch (error) {
         console.error("Lỗi khi lấy thông tin sản phẩm:", error);
       }
@@ -138,9 +140,17 @@ const CuahangChitiet = () => {
       console.error("Lỗi khi gửi đánh giá:", error);
     }
   };
+  if (dangtai) {
+    return (
+      <div className="text-center mt-5">
+        <Spinner animation="border" variant="primary" />
+        <p>Đang tải dữ liệu...</p>
+      </div>
+    );
+  }
 
   if (!sanPham) {
-    return <div>Đang tải...</div>;
+    return <div>Không tìm thấy sản phẩm.</div>;
   }
 
   return (

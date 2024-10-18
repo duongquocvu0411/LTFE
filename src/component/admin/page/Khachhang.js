@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Button } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import { nanoid } from 'nanoid';
 
 
@@ -23,6 +23,7 @@ const Khachhangs = () => {
   const [khachHangHienThi, setKhachHangHienThi] = useState([]);
   const [thangNamTimKiem, setThangNamTimKiem] = useState(''); // Lưu tháng và năm  13/10/2024
   const [ngayTimKiem, setNgayTimKiem] = useState(''); // Lưu ngày tháng năm cụ thể
+  const [dangtai,setDangtai]= useState(false);
 
 
   // Tính toán các phần tử hiện tại để hiển thị dựa trên trang hiện tại
@@ -36,11 +37,13 @@ const Khachhangs = () => {
 
   // Hàm lấy danh sách khách hàng từ API
   const layDanhSachKhachHang = async () => {
+    setDangtai(true);
     try{
       const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/khachhangs`);
       // cập nhật danh sách khách hàng
       setDanhSachKhachHang(response.data);
       setKhachHangHienThi(response.data); // khi admin dùng chức năng tìm kiếm
+      setDangtai(false);
     }
     catch(error){
       console.log('có lỗi khi lấy danh sách khách hàng',error);
@@ -334,56 +337,63 @@ const xuLyLocTheoThangNam = () => {
 
                 {/* Bảng danh sách khách hàng */}
                 <div className="card-body table-responsive" style={{ maxHeight: '400px' }}>
+                 {dangtai ? (
+                    <div className='text-center'>
+                      <Spinner animation='border' variant='primary'/>
+                      <p>Đang tải dữ liệu...</p>
+                    </div>
+                 ) : (
                   <table className="table table-bordered table-hover table-striped">
-                    <thead>
+                  <thead>
+                    <tr>
+                      <th scope="col">STT</th>
+                      <th scope="col">Họ Tên</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Số Điện Thoại</th>
+                      <th scope='col'>Địa chỉ chi tiết</th>
+                      <th scope='col'>Thành phố</th>
+                      <th scope='col'>Ghi chú</th>
+                      <th scope='col'>Trạng thái</th>
+                      <th scope="col">Chức Năng</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {/* Kiểm tra nếu không có dữ liệu */}
+                    {danhSachKhachHang.length === 0 ? (
                       <tr>
-                        <th scope="col">STT</th>
-                        <th scope="col">Họ Tên</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Số Điện Thoại</th>
-                        <th scope='col'>Địa chỉ chi tiết</th>
-                        <th scope='col'>Thành phố</th>
-                        <th scope='col'>Ghi chú</th>
-                        <th scope='col'>Trạng thái</th>
-                        <th scope="col">Chức Năng</th>
+                        <td colSpan="9" className="text-center">Hiện tại chưa có khách hàng</td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {/* Kiểm tra nếu không có dữ liệu */}
-                      {danhSachKhachHang.length === 0 ? (
-                        <tr>
-                          <td colSpan="9" className="text-center">Hiện tại chưa có khách hàng</td>
+                    ) : cacPhanTuHienTai.length > 0 ? (
+                      cacPhanTuHienTai.map((item, index) => (
+                        <tr key={nanoid()}>
+                          <td>{chiSoPhanTuDau + index + 1}</td>
+                          <td>{item.ho} {item.ten}</td>
+                          <td>{item.Emaildiachi}</td>
+                          <td>{item.sdt}</td>
+                          <td>{item.diachicuthe}</td>
+                          <td>{item.thanhpho}</td>
+                          <td>{item.ghichu}</td>
+                          <td>{layTrangThaiDonHang(item.hoadons)}</td>
+                          <td>
+                            <Button variant="info" onClick={() => hienThiChiTiet(item.id)}>
+                              Xem chi tiết
+                            </Button>{' '}
+                            {kiemTraTrangThaiHoaDon(item.hoadons) && (
+                              <Button variant="danger" onClick={() => xoaKhachHang(item.id,item.ten)}>
+                                Xóa
+                              </Button>
+                            )}
+                          </td>
                         </tr>
-                      ) : cacPhanTuHienTai.length > 0 ? (
-                        cacPhanTuHienTai.map((item, index) => (
-                          <tr key={nanoid()}>
-                            <td>{chiSoPhanTuDau + index + 1}</td>
-                            <td>{item.ho} {item.ten}</td>
-                            <td>{item.Emaildiachi}</td>
-                            <td>{item.sdt}</td>
-                            <td>{item.diachicuthe}</td>
-                            <td>{item.thanhpho}</td>
-                            <td>{item.ghichu}</td>
-                            <td>{layTrangThaiDonHang(item.hoadons)}</td>
-                            <td>
-                              <Button variant="info" onClick={() => hienThiChiTiet(item.id)}>
-                                Xem chi tiết
-                              </Button>{' '}
-                              {kiemTraTrangThaiHoaDon(item.hoadons) && (
-                                <Button variant="danger" onClick={() => xoaKhachHang(item.id,item.ten)}>
-                                  Xóa
-                                </Button>
-                              )}
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="9" className="text-center">Không tìm thấy khách hàng</td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="9" className="text-center">Không tìm thấy khách hàng</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+                 )}
                 </div>
 
                 {/* Phân trang */}

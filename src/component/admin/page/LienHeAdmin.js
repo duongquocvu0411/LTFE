@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import Footer from '../Footer';
 import axios from 'axios';
-import { Button, Modal, Form } from 'react-bootstrap';
+import { Button, Modal, Form, Spinner } from 'react-bootstrap';
 import { nanoid } from 'nanoid';
 import { toast, ToastContainer } from 'react-toastify';
 import HeaderAdmin from '../HeaderAdmin';
@@ -17,6 +17,7 @@ const LienHeAdmin = () => {
   const [hienThiModal, setHienThiModal] = useState(false);
   const [noiDungChiTiet, setNoiDungChiTiet] = useState('');
   const [ngayLoc, setNgayLoc] = useState('');
+  const [dangtai,setDangtai] = useState(false);
 
   // Logic phân trang
   const chiSoPhanTuCuoi = trangHienTai * soPhanTuMotTrang;
@@ -28,10 +29,12 @@ const LienHeAdmin = () => {
 
   // Lấy danh sách liên hệ từ API
   const layDanhSachLienHe = async () => {
+    setDangtai(true);
    try{
       const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/lienhe`);
       setDanhSachLienHe(response.data);
       setDanhSachLienHeLoc(response.data);
+      setDangtai(false);
    }
    catch(error){
     console.log('có lỗi khi lấy lien hệ' , error);
@@ -125,7 +128,13 @@ const LienHeAdmin = () => {
 
               {/* Bảng hiển thị liên hệ */}
               <div className="card-body table-responsive" style={{ maxHeight: '400px' }}>
-                <table className="table table-bordered table-hover table-striped">
+                {dangtai ? (
+                  <div className='text-center'>
+                    <Spinner animation='border' variant='primary'/>
+                      <p>Đang tải dữ liệu...</p>
+                  </div>
+                ) : (
+                  <table className="table table-bordered table-hover table-striped">
                   <thead>
                     <tr>
                       <th scope="col">STT</th>
@@ -169,6 +178,7 @@ const LienHeAdmin = () => {
                     ))}
                   </tbody>
                 </table>
+                )}
               </div>
 
               {/* Phân trang */}
