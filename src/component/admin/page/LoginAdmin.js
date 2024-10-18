@@ -138,11 +138,9 @@ const Login = () => {
         localStorage.setItem('adminToken', phanHoi.data.token);
         localStorage.setItem('isAdminLoggedIn', 'true'); // Lưu trạng thái đăng nhập thành công
 
-        // Hiển thị thông báo đăng nhập thành công
-        toast.success('Đăng nhập thành công!', {
-          position: 'top-center',
-          autoClose: 3000,
-        });
+        console.log('đăng nhập thành công :', phanHoi.data.token);
+       
+       
 
         // Điều hướng người dùng đến trang chủ admin
         dieuHuong('/admin/trangchu');

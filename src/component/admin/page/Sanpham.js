@@ -22,6 +22,9 @@ const SanPham = () => {
   const [danhSachSanPham, setDanhSachSanPham] = useState([]);
   const [showModalDanhGia, setShowModalDanhGia] = useState(false); // Quản lý hiển thị modal đánh giá
   const [sanphamIdXemDanhGia, setSanphamIdXemDanhGia] = useState(null); // Lưu trữ sanphams_id cho modal đánh giá
+    // State hiển thị modal chi tiết sản phẩm
+    const [hienThiModalChiTiet, setHienThiModalChiTiet] = useState(false);
+    const [noiDungChiTiet, setNoiDungChiTiet] = useState({});
   // State quản lý trang hiện tại của phân trang
   const [trangHienTai, setTrangHienTai] = useState(1);
 
@@ -52,12 +55,12 @@ const SanPham = () => {
   const layDanhSachSanPham = async () => {
     try {
       const url = danhMucDuocChon
-        ? `${process.env.REACT_APP_BASEURL}/api/products?danhsachsanpham_id=${danhMucDuocChon}`
-        : `${process.env.REACT_APP_BASEURL}/api/products`;
+        ? `${process.env.REACT_APP_BASEURL}/api/sanphams?danhmucsanpham_id=${danhMucDuocChon}`
+        : `${process.env.REACT_APP_BASEURL}/api/sanphams`;
 
       const response = await axios.get(url);
       setDanhSachSanPham(response.data); // Lưu danh sách sản phẩm vào state
-      setTrangHienTai(1); // Đặt lại trang hiện tại về 1 khi thay đổi danh mục
+      // setTrangHienTai(1); // Đặt lại trang hiện tại về 1 khi thay đổi danh mục
     } catch (error) {
       console.log('Có lỗi khi lấy API:', error);
       toast.error('Có lỗi khi lấy danh sách sản phẩm', {
@@ -69,7 +72,7 @@ const SanPham = () => {
   // Hàm gọi API để lấy danh sách danh mục sản phẩm
   const layDanhMuc = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhsachsanpham`);
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhmucsanphams`);
       setDanhMuc(response.data); // Lưu danh mục sản phẩm vào state
     } catch (error) {
       console.error('Lỗi khi lấy danh mục sản phẩm:', error);
@@ -81,66 +84,68 @@ const SanPham = () => {
   // Hàm mở modal để thêm sản phẩm
   const moModalThemSanPham = () => {
     setChinhSua(false); // Đặt trạng thái không phải chỉnh sửa
-    setSanPhamHienTai(null); // Đặt sản phẩm hiện tại về null
+    // setSanPhamHienTai(null); // Đặt sản phẩm hiện tại về null bỏ đi dòng code vẫn được vì bên trong component con đã có reset from khi add 
     setHienThiModal(true); // Hiển thị modal
   };
 
   // Hàm mở modal để chỉnh sửa sản phẩm
-const moModalSuaSanPham = (sanPham) => {
-  axios.get(`${process.env.REACT_APP_BASEURL}/api/products/${sanPham.id}`)
-    .then((response) => {
+  const moModalSuaSanPham = async (sanPham) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/sanphams/${sanPham.id}`);
       const productData = response.data;
+      
       setSanPhamHienTai(productData); // Lưu sản phẩm hiện tại với chi tiết đầy đủ
       setChinhSua(true); // Đặt trạng thái chỉnh sửa
       setHienThiModal(true); // Hiển thị modal
-    })
-    .catch((error) => {
+      
+    } catch (error) {
       console.log('Lỗi khi lấy dữ liệu sản phẩm:', error);
       toast.error('Không thể lấy dữ liệu sản phẩm', {
         position: 'top-right',
         autoClose: 3000,
       });
-    });
-};
+    }
+  };
+  
 
   // Hàm xóa sản phẩm
-  const xoaSanPham = (id) => {
+  const xoaSanPham = async (id) => {
     const SanphamXoa = danhSachSanPham.find((sanpham) => sanpham.id === id);
-    axios.delete(`${process.env.REACT_APP_BASEURL}/api/products/${id}`)
-      .then(() => {
-        toast.success(`Sản phẩm ${SanphamXoa.tieude} đã được xóa thành công!`, {
-          position: 'top-right',
-          autoClose: 3000,
-        });
-        layDanhSachSanPham(); // Cập nhật danh sách sản phẩm sau khi xóa
-      })
-      .catch(error => {
-        console.log('Lỗi khi xóa sản phẩm:', error);
-        toast.error(`Sản phẩm ${SanphamXoa.tieude} chưa xóa được, vui lòng thử lại!`, {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+    
+    try {
+      await axios.delete(`${process.env.REACT_APP_BASEURL}/api/sanphams/${id}`);
+      
+      toast.success(`Sản phẩm ${SanphamXoa.tieude} đã được xóa thành công!`, {
+        position: 'top-right',
+        autoClose: 3000,
       });
+  
+      layDanhSachSanPham(); // Cập nhật danh sách sản phẩm sau khi xóa
+      
+    } catch (error) {
+      console.log('Lỗi khi xóa sản phẩm:', error);
+      toast.error(`Sản phẩm ${SanphamXoa.tieude} chưa xóa được, vui lòng thử lại!`, {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+    }
   };
+  
 
-  // State hiển thị modal chi tiết sản phẩm
-  const [hienThiModalChiTiet, setHienThiModalChiTiet] = useState(false);
-  const [noiDungChiTiet, setNoiDungChiTiet] = useState({});
 
   // Hàm mở modal để xem chi tiết sản phẩm (gọi API lấy dữ liệu chi tiết)
-  const moModalChiTiet = (sanphams_id) => {
-    axios.get(`${process.env.REACT_APP_BASEURL}/api/chitiets/${sanphams_id}`)
-      .then((response) => {
-        setNoiDungChiTiet(response.data); // Lưu dữ liệu chi tiết sản phẩm
-        setHienThiModalChiTiet(true); // Hiển thị modal chi tiết
-      })
-      .catch(error => {
-        console.log('Lỗi khi lấy chi tiết sản phẩm:', error);
-        toast.error('Không thể lấy chi tiết sản phẩm', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+  const moModalChiTiet = async (sanphams_id) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/chitiets/${sanphams_id}`);
+      setNoiDungChiTiet(response.data); // Lưu dữ liệu chi tiết sản phẩm
+      setHienThiModalChiTiet(true); // Hiển thị modal chi tiết
+    } catch (error) {
+      console.log('Lỗi khi lấy chi tiết sản phẩm:', error);
+      toast.error('Không thể lấy chi tiết sản phẩm', {
+        position: 'top-right',
+        autoClose: 3000,
       });
+    }
   };
   const moModalDanhGia = (sanphams_id) => {
     setSanphamIdXemDanhGia(sanphams_id); // Lưu trữ sanphams_id
@@ -321,7 +326,7 @@ const moModalSuaSanPham = (sanPham) => {
 
 
         {/* Modal chi tiết sản phẩm */}
-        <Modal show={hienThiModalChiTiet} onHide={() => setHienThiModalChiTiet(false)}>
+        <Modal show={hienThiModalChiTiet} onHide={() => setHienThiModalChiTiet(false)} size='lg'>
           <Modal.Header closeButton>
             <Modal.Title>Chi Tiết Sản Phẩm</Modal.Title>
           </Modal.Header>

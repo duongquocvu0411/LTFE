@@ -35,7 +35,7 @@ const Cuahang = () => {
   // Hàm `fetchDanhMuc` để lấy danh sách danh mục sản phẩm từ API
   const fetchDanhMuc = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhsachsanpham`);
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhmucsanphams`);
       setDanhMuc(response.data); // Lưu danh mục vào state `danhMuc`
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -47,8 +47,8 @@ const Cuahang = () => {
     try {
       // Nếu `danhMucDuocChon` có giá trị, gọi API lấy sản phẩm thuộc danh mục đó, ngược lại lấy tất cả sản phẩm
       const url = danhMucDuocChon
-        ? `${process.env.REACT_APP_BASEURL}/api/products?danhsachsanpham_id=${danhMucDuocChon}`
-        : `${process.env.REACT_APP_BASEURL}/api/products`;
+        ? `${process.env.REACT_APP_BASEURL}/api/sanphams?danhmucsanpham_id=${danhMucDuocChon}`
+        : `${process.env.REACT_APP_BASEURL}/api/sanphams`;
       const response = await axios.get(url);
       setSanPham(response.data); // Lưu danh sách sản phẩm vào state `sanPham`
     } catch (error) {
@@ -138,12 +138,13 @@ const Cuahang = () => {
                     )}
                   </div>
                   <div className="text-white bg-secondary px-3 py-1 rounded position-absolute" style={{ top: 10, left: 10 }}>
-                  {layTenDanhMuc(sp.danhsachsanpham_id)}
+                  {layTenDanhMuc(sp.danhmucsanpham_id)}
                   </div>
                   <div className="card-body d-flex flex-column rounded-bottom">
                     <h4 className="card-title">{sp.tieude}</h4>
                     <div className="d-flex justify-content-between mt-auto">
                        <p className="text-dark fs-5 fw-bold mb-0">{sp.giatien} vnđ /{sp.don_vi_tinh}</p>
+                      
                       {/* Ẩn nút Thêm vào giỏ nếu sản phẩm hết hàng */}
                       {sp.trangthai !== 'Hết hàng' && (
                         <button

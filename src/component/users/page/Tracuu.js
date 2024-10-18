@@ -5,28 +5,28 @@ import Footerusers from './../Footerusers';
 import { toast, ToastContainer } from "react-toastify";
 
 const Tracuu = () => {
-  const [orderCode, setOrderCode] = useState("");
-  const [orderDetails, setOrderDetails] = useState(null);
+  const [madonhang, setmadonhang] = useState("");
+  const [dathangchitiet, setDathangchitiet] = useState(null);
   const [error, setError] = useState("");
 
   // Hàm xử lý tra cứu đơn hàng
   const handleLookupOrder = async (e) => {
     e.preventDefault();
 
-      if (!orderCode) {
+      if (!madonhang) {
         setError("Vui lòng nhập mã đơn hàng.");
         return;
       }
 
     try {
       // Gửi yêu cầu tra cứu đơn hàng tới API
-      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/orders/${orderCode}`);
-      setOrderDetails(response.data);
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/dathang/${madonhang}`);
+      setDathangchitiet(response.data);
       setError(""); // Xóa thông báo lỗi nếu có
     } catch (error) {
       console.error("Lỗi khi tra cứu đơn hàng:", error);
       setError("Không tìm thấy đơn hàng với mã này.");
-      setOrderDetails(null); // Xóa dữ liệu đơn hàng nếu có lỗi
+      setDathangchitiet(null); // Xóa dữ liệu đơn hàng nếu có lỗi
     }
   };
 
@@ -34,8 +34,8 @@ const Tracuu = () => {
   const handleCancelOrder = async () => {
     try {
       // Gửi yêu cầu hủy đơn hàng tới API
-      await axios.put(`${process.env.REACT_APP_BASEURL}/api/orders/${orderCode}/cancel`);
-      setOrderDetails({ ...orderDetails, status: "Hủy đơn" }); // Cập nhật trạng thái đơn hàng trong state
+      await axios.put(`${process.env.REACT_APP_BASEURL}/api/dathang/${madonhang}/huydon`);
+      setDathangchitiet({ ...dathangchitiet, status: "Hủy đơn" }); // Cập nhật trạng thái đơn hàng trong state
      toast.success("Đơn hàng của bạn đã hủy thành công",
       {
         position:'top-right',
@@ -66,8 +66,8 @@ const Tracuu = () => {
               type="text"
               className="form-control"
               placeholder="Nhập mã đơn hàng"
-              value={orderCode}
-              onChange={(e) => setOrderCode(e.target.value)}
+              value={madonhang}
+              onChange={(e) => setmadonhang(e.target.value)}
             />
             <button className="btn btn-primary" type="submit">
               Tra cứu
@@ -79,13 +79,13 @@ const Tracuu = () => {
         {error && <div className="alert alert-danger">{error}</div>}
 
         {/* Hiển thị chi tiết đơn hàng nếu có */}
-        {orderDetails && (
+        {dathangchitiet && (
           <div className="card">
-            <div className="card-header">Chi tiết đơn hàng: {orderDetails.order_code}</div>
+            <div className="card-header">Chi tiết đơn hàng: {dathangchitiet.order_code}</div>
             <div className="card-body">
-              {/* <h5 className="card-title">Tổng giá: {orderDetails.total_price} VND</h5> */}
-              <p className="card-text">Ngày đặt hàng: {new Date(orderDetails.created_at).toLocaleDateString()}</p>
-              <p className="card-text"><strong>Trạng thái đơn hàng:</strong> {orderDetails.status}</p>
+              {/* <h5 className="card-title">Tổng giá: {dathangchitiet.total_price} VND</h5> */}
+              <p className="card-text">Ngày đặt hàng: {new Date(dathangchitiet.created_at).toLocaleDateString()}</p>
+              <p className="card-text"><strong>Trạng thái đơn hàng:</strong> {dathangchitiet.status}</p>
 
               <h6 className="mt-4">Chi tiết sản phẩm:</h6>
               <div className="table-responsive">
@@ -98,7 +98,7 @@ const Tracuu = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {orderDetails.hoadonchitiets.map((item, index) => (
+                    {dathangchitiet.hoadonchitiets.map((item, index) => (
                       <tr key={index}>
                         <td>{item.sanpham_names}</td>
                         <td>{item.quantity}</td>
@@ -109,10 +109,10 @@ const Tracuu = () => {
                 </table>
               </div>
 
-              <p className="card-text"><strong>Tổng giá trị đơn hàng:</strong> {orderDetails.total_price} VND</p>
+              <p className="card-text"><strong>Tổng giá trị đơn hàng:</strong> {dathangchitiet.total_price} VND</p>
 
               {/* Nút hủy đơn hàng và kiểm trả status nếu là Chờ xử lý thì hiện nút  */}
-              {orderDetails.status === "Chờ xử lý" && (
+              {dathangchitiet.status === "Chờ xử lý" && (
                 <button className="btn btn-danger mt-3" onClick={handleCancelOrder}>
                   Hủy đơn hàng
                 </button>

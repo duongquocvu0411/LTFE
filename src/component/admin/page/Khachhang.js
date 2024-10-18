@@ -21,6 +21,9 @@ const Khachhangs = () => {
   const [timKiem, setTimKiem] = useState('');
   const [timKiemTrangThai, setTimKiemTrangThai] = useState('');
   const [khachHangHienThi, setKhachHangHienThi] = useState([]);
+  const [thangNamTimKiem, setThangNamTimKiem] = useState(''); // Lưu tháng và năm  13/10/2024
+  const [ngayTimKiem, setNgayTimKiem] = useState(''); // Lưu ngày tháng năm cụ thể
+
 
   // Tính toán các phần tử hiện tại để hiển thị dựa trên trang hiện tại
   const chiSoPhanTuCuoi = trangHienTai * soPhanTuMotTrang;
@@ -32,20 +35,21 @@ const Khachhangs = () => {
   const thayDoiTrang = (soTrang) => setTrangHienTai(soTrang);
 
   // Hàm lấy danh sách khách hàng từ API
-  const layDanhSachKhachHang = () => {
-    axios.get(`${process.env.REACT_APP_BASEURL}/api/khachhangs`)
-      .then(response => {
-        // Cập nhật danh sách khách hàng
-        setDanhSachKhachHang(response.data);
-        setKhachHangHienThi(response.data);
-      })
-      .catch(error => {
-        console.log('Có lỗi khi lấy danh sách khách hàng:', error);
-        toast.error('Có lỗi khi lấy danh sách khách hàng', {
-          position: 'top-right',
-          autoClose: 3000
-        });
+  const layDanhSachKhachHang = async () => {
+    try{
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/khachhangs`);
+      // cập nhật danh sách khách hàng
+      setDanhSachKhachHang(response.data);
+      setKhachHangHienThi(response.data); // khi admin dùng chức năng tìm kiếm
+    }
+    catch(error){
+      console.log('có lỗi khi lấy danh sách khách hàng',error);
+
+      toast.error('có lỗi khi lấy danh sách', {
+        position:'top-right',
+        autoClose:3000
       });
+    }
   };
 
   // Lấy danh sách khách hàng khi component được mount
@@ -81,81 +85,90 @@ const Khachhangs = () => {
   };
 
   // Hàm xóa khách hàng
-  const xoaKhachHang = (id) => {
-    axios.delete(`${process.env.REACT_APP_BASEURL}/api/khachhangs/${id}`)
-      .then(() => {
-        toast.success('Xóa khách hàng thành công!', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
-        layDanhSachKhachHang(); // Lấy lại danh sách sau khi xóa
-        setHienThiModal(false);
-      })
-      .catch(error => {
-        console.log('Có lỗi khi xóa khách hàng:', error);
-        toast.error('Có lỗi khi xóa khách hàng!', {
-          position: 'top-right',
-          autoClose: 3000
-        });
+  const xoaKhachHang = async (id,ten) => {
+
+    try{
+      await axios.delete(`${process.env.REACT_APP_BASEURL}/api/khachhangs/${id}`);
+      toast.success(` xóa khách hàng " ${ten}" thành công`,{
+        position:'top-right',
+        autoClose:3000
       });
+      layDanhSachKhachHang();
+      setHienThiModal(false);
+    }
+    catch(error){
+      console.log('có lỗi khi xóa khách hàng',error);
+
+      toast.error( `có lỗi khi xóa khách hàng "${ten}"`,{
+        position:'top-right',
+        autoClose:3000
+      });
+    }
   };
 
   // Hàm hiển thị chi tiết khách hàng
-  const hienThiChiTiet = (id) => {
-    axios.get(`${process.env.REACT_APP_BASEURL}/api/khachhangs/${id}`)
-      .then(response => {
-        setChiTietKhachHang(response.data);
-        setHienThiModal(true);
-      })
-      .catch(error => {
-        console.log('Có lỗi khi lấy chi tiết khách hàng:', error);
-        toast.error('Có lỗi khi lấy chi tiết khách hàng', {
-          position: 'top-right',
-          autoClose: 3000
-        });
+  const hienThiChiTiet = async (id) => {
+
+    try{
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/khachhangs/${id}`);
+       
+      setChiTietKhachHang(response.data);
+     
+      setHienThiModal(true);
+    }
+    catch(error){
+      console.log('có lỗi khi lấy chi tiết khách hàng',error);
+      toast.error(' có lỗi khi lấy chi tiết khách hàng',{
+        position:'top-right',
+        autoClose:300
       });
+    }
   };
 
   // Hàm cập nhật trạng thái đơn hàng
-  const capNhatTrangThai = (billId, newStatus) => {
-    axios.put(`${process.env.REACT_APP_BASEURL}/api/orders/${billId}/status`, { status: newStatus })
-      .then(() => {
-        toast.success('Đã cập nhật trạng thái đơn hàng thành công!', {
-          position: 'top-right',
-          autoClose: 3000
-        });
+  const capNhatTrangThai = async (billId, trangthaimoi) => {
+    try {
+      // Gọi API cập nhật trạng thái đơn hàng
+      await axios.put(`${process.env.REACT_APP_BASEURL}/api/dathang/${billId}/trangthai`, { status: trangthaimoi });
+      
+      toast.success('Đã cập nhật trạng thái đơn hàng thành công!', {
+        position: 'top-right',
+        autoClose: 3000
+      });
   
-        // Cập nhật trạng thái đơn hàng trong danh sách khách hàng hiện tại
-        setKhachHangHienThi(trangThaiTruoc  => {
-          // Sử dụng map để duyệt qua danh sách khách hàng hiện tại
-          return trangThaiTruoc.map(khachHang => {
-            // Kiểm tra nếu khách hàng này có đơn hàng với mã billId
-            if (khachHang.hoadons.some(hoadon => hoadon.id === billId)) {
-              // Nếu tìm thấy, tạo một bản sao của khách hàng và cập nhật trạng thái hóa đơn trong hoadons
-              return {
-                ...khachHang,  // Giữ nguyên các thông tin khác của khách hàng
-                hoadons: khachHang.hoadons.map(hoadon => 
-                  // Kiểm tra nếu id hóa đơn trùng với billId
-                  hoadon.id === billId 
-                  ? { ...hoadon, status: newStatus }  // Cập nhật trạng thái đơn hàng
-                  : hoadon  // Nếu không trùng, giữ nguyên hóa đơn
-                )
-              };
-            }
-            // Nếu khách hàng không có hóa đơn với mã billId, trả về khách hàng mà không thay đổi gì
-            return khachHang;
-          });
-        });
-        setHienThiModal(false);  // Đóng modal 
-      })
-      .catch(error => {
-        console.log('Có lỗi khi cập nhật trạng thái đơn hàng:', error);
-        toast.error('Có lỗi khi cập nhật trạng thái đơn hàng!', {
-          position: 'top-right',
-          autoClose: 3000
+      // Cập nhật trạng thái đơn hàng trong danh sách khách hàng hiện tại
+      setKhachHangHienThi(trangThaiTruoc  => {
+        // Sử dụng map để duyệt qua danh sách khách hàng hiện tại
+        return trangThaiTruoc.map(khachHang => {
+          // Kiểm tra nếu khách hàng này có đơn hàng với mã billId
+          if (khachHang.hoadons.some(hoadon => hoadon.id === billId)) {
+            // Nếu tìm thấy, tạo một bản sao của khách hàng và cập nhật trạng thái hóa đơn trong hoadons
+            return {
+              ...khachHang,  // Giữ nguyên các thông tin khác của khách hàng
+              hoadons: khachHang.hoadons.map(hoadon => 
+                // Kiểm tra nếu id hóa đơn trùng với billId
+                hoadon.id === billId 
+                ? { ...hoadon, status: trangthaimoi }  // Cập nhật trạng thái đơn hàng
+                : hoadon  // Nếu không trùng, giữ nguyên hóa đơn
+              )
+            };
+          }
+          // Nếu khách hàng không có hóa đơn với mã billId, trả về khách hàng mà không thay đổi gì
+          return khachHang;
         });
       });
+      
+      setHienThiModal(false);  // Đóng modal 
+  
+    } catch (error) {
+      console.log('Có lỗi khi cập nhật trạng thái đơn hàng:', error);
+      toast.error('Có lỗi khi cập nhật trạng thái đơn hàng!', {
+        position: 'top-right',
+        autoClose: 3000
+      });
+    }
   };
+  
   
 // Kiểm tra xem hóa đơn của khách hàng có trạng thái "Đã hủy" hoặc "Giao không thành công" hay không
 const kiemTraTrangThaiHoaDon = (hoadons) => {
@@ -177,6 +190,10 @@ const layTrangThaiDonHang = (hoadons) => {
   if (hoadonGiaoThanhCong) {
     return 'Đã xử lý (thành công)';
   }
+  const hoadonHuy = hoadons?.find(h => h.status === 'Hủy đơn');
+  if (hoadonHuy) {
+    return 'Đã xử lý (Hủy đơn)';
+  }
     
   // Kiểm tra nếu có đơn hàng giao không thành công
   const hoadonKhongGiaoThanhCong = hoadons?.find(h => h.status === 'Giao không thành công');
@@ -189,7 +206,44 @@ const layTrangThaiDonHang = (hoadons) => {
   return hoadonChoXuLy ? hoadonChoXuLy.status : 'Đã xử lý';
 };
 
+// Chức năng lọc theo tháng và năm 13/10/2024
+const xuLyLocTheoThangNam = () => {
+  if (!thangNamTimKiem) {
+    toast.error('Vui lòng chọn tháng và năm để lọc.', {
+      position: 'top-right',
+      autoClose: 3000,
+    });
+    return;
+  }
+// 13/10/2024
+  const [year, month] = thangNamTimKiem.split('-'); // Tách tháng và năm từ chuỗi yyyy-MM
+  const ketQuaLoc = danhSachKhachHang.filter(khachHang => {
+    const ngayTao = new Date(khachHang.created_at);
+    return (
+      ngayTao.getFullYear().toString() === year && (ngayTao.getMonth() + 1).toString().padStart(2, '0') === month
+    );
+  });
 
+  setKhachHangHienThi(ketQuaLoc);
+};
+
+ // Chức năng lọc theo ngày tháng năm
+ const xuLyLocTheoNgayThangNam = () => {
+  if (!ngayTimKiem) {
+    toast.error('Vui lòng chọn ngày cụ thể để lọc.', {
+      position: 'top-right',
+      autoClose: 3000,
+    });
+    return;
+  }
+
+  const ketQuaLoc = danhSachKhachHang.filter(khachHang => {
+    const ngayTao = new Date(khachHang.created_at).toISOString().slice(0, 10); // Lấy định dạng yyyy-mm-dd
+    return ngayTao === ngayTimKiem; // So sánh ngày
+  });
+
+  setKhachHangHienThi(ketQuaLoc);
+};
   return (
     <div id="wrapper">
       <SiderbarAdmin />
@@ -234,8 +288,34 @@ const layTrangThaiDonHang = (hoadons) => {
               <div className="card shadow mb-4">
                 <div className="card-header py-3 d-flex justify-content-between align-items-center">
                   <h3 className="m-0 font-weight-bold text-primary">Danh Sách Khách Hàng</h3>
+                  {/* // 13/10/2024 */}
+                  <div>
+                    <input
+                      type="month"
+                      value={thangNamTimKiem}
+                      onChange={(e) => setThangNamTimKiem(e.target.value)}
+                      className="form-control"
+                      style={{ display: 'inline-block', width: '150px', marginRight: '10px' }}
+                    />
+                    <Button onClick={xuLyLocTheoThangNam} variant="primary" className='me-2'>
+                      Lọc theo tháng
+                    </Button>
+                    <input
+                      type="date"
+                      value={ngayTimKiem}
+                      onChange={(e) => setNgayTimKiem(e.target.value)}
+                      className="form-control"
+                      style={{ display: 'inline-block', width: '150px', marginRight: '10px' }}
+                    />
+                    <Button onClick={xuLyLocTheoNgayThangNam} variant="primary">
+                      Lọc theo ngày
+                    </Button>
+                  </div>
                   
                  
+                   {/* end 13/10/2024 */}
+
+                   
                   {/* Lọc theo trạng thái đơn hàng */}
                   <select
                     className="form-control"
@@ -246,7 +326,7 @@ const layTrangThaiDonHang = (hoadons) => {
                     <option value="">Lọc theo trạng thái</option>
                     <option value="đang giao">Đang giao</option>
                     <option value="thành công">Thành công</option>
-                    <option value="hủy đơn">hủy đơn</option>
+                    <option value="Hủy đơn">hủy đơn</option>
                     <option value="Không thành công">Không thành công</option>
                     <option value="chờ xử lý">Chờ xử lý</option>
                   </select>
@@ -290,7 +370,7 @@ const layTrangThaiDonHang = (hoadons) => {
                                 Xem chi tiết
                               </Button>{' '}
                               {kiemTraTrangThaiHoaDon(item.hoadons) && (
-                                <Button variant="danger" onClick={() => xoaKhachHang(item.id)}>
+                                <Button variant="danger" onClick={() => xoaKhachHang(item.id,item.ten)}>
                                   Xóa
                                 </Button>
                               )}

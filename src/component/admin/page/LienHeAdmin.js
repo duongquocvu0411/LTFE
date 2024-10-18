@@ -27,15 +27,15 @@ const LienHeAdmin = () => {
   const thayDoiTrang = (soTrang) => setTrangHienTai(soTrang);
 
   // Lấy danh sách liên hệ từ API
-  const layDanhSachLienHe = () => {
-    axios.get('http://127.0.0.1:8000/api/lienhe')
-      .then(response => {
-        setDanhSachLienHe(response.data);
-        setDanhSachLienHeLoc(response.data);
-      })
-      .catch(error => {
-        console.error('Lỗi khi lấy danh sách liên hệ:', error);
-      });
+  const layDanhSachLienHe = async () => {
+   try{
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/lienhe`);
+      setDanhSachLienHe(response.data);
+      setDanhSachLienHeLoc(response.data);
+   }
+   catch(error){
+    console.log('có lỗi khi lấy lien hệ' , error);
+   }
   };
 
   useEffect(() => {
@@ -43,22 +43,24 @@ const LienHeAdmin = () => {
   }, []);
 
   // Xóa liên hệ
-  const xoaLienHe = (id) => {
-    axios.delete(`http://127.0.0.1:8000/api/lienhe/${id}`)
-      .then(() => {
-        toast.success("Đã xóa liên hệ thành công", {
-          position: 'top-right',
-          autoClose: 3000,
-        });
-        layDanhSachLienHe();
-      })
-      .catch(error => {
-        console.log("Có lỗi xảy ra khi xóa liên hệ:", error);
-        toast.error('Có lỗi xảy ra khi xóa liên hệ. Vui lòng thử lại.', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+  const xoaLienHe = async (id) => {
+    try{
+      await axios.delete(`${process.env.REACT_APP_BASEURL}/api/lienhe/${id}`);
+
+      toast.success('đã xóa liên hệ thành công',{
+        position:'top-right',
+        autoClose:3000
       });
+      layDanhSachLienHe(); // cập nhật danh sách liên hệ sau khi xóa thành công 
+
+    } catch(error){
+      console.log('có lỗi khi xóa liên hệ', error);
+      
+      toast.error('có lỗi khi xóa liên hệ. vui lòng thử lại',{
+        position:'top-right',
+        autoClose:3000
+      });
+    }
   };
 
   // Hiển thị modal với nội dung chi tiết

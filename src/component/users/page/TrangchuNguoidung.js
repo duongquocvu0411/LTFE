@@ -33,7 +33,7 @@ const TrangchuNguoidung = () => {
 
   const layDanhMuc = async () => {
     try {
-      const phanHoi = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhsachsanpham`);
+      const phanHoi = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhmucsanphams`);
       setDanhMuc(phanHoi.data);
     } catch (loi) {
       console.error('Lỗi khi lấy danh mục:', loi);
@@ -43,12 +43,12 @@ const TrangchuNguoidung = () => {
   const laySanPham = async () => {
     try {
       const url = danhMucDuocChon
-        ? `${process.env.REACT_APP_BASEURL}/api/products?danhsachsanpham_id=${danhMucDuocChon}` // Nếu có danh mục thì lọc
-        : `${process.env.REACT_APP_BASEURL}/api/products`; // Nếu không, lấy tất cả sản phẩm
+        ? `${process.env.REACT_APP_BASEURL}/api/sanphams?danhmucsanpham_id=${danhMucDuocChon}` // Nếu có danh mục thì lọc
+        : `${process.env.REACT_APP_BASEURL}/api/sanphams`; // Nếu không, lấy tất cả sản phẩm
 
       const phanHoi = await axios.get(url);
       setSanPham(phanHoi.data);
-      datTrangHienTai(1);
+
     } catch (loi) {
       console.error('Lỗi khi lấy sản phẩm:', loi);
     }
@@ -150,9 +150,9 @@ const TrangchuNguoidung = () => {
                         </div>
                         <div className="text-white bg-secondary px-2 py-1 rounded position-absolute"
                           style={{ top: 10, left: 10 }}>
-                          {layTenDanhMuc(sanPham.danhsachsanpham_id)}
+                          {layTenDanhMuc(sanPham.danhmucsanpham_id)}
                         </div>
-                        <div className="p-3 border border-secondary border-top-0 rounded-bottom">
+                        <div className="p-3  rounded-bottom">
                           <p className="h5 fw-bold">{sanPham.tieude}</p>
                           <div className="d-flex justify-content-between align-items-center">
                             <p className="text-dark fs-5 fst-italic mb-0">{sanPham.giatien} vnđ/ {sanPham.don_vi_tinh}</p>
@@ -201,8 +201,8 @@ const TrangchuNguoidung = () => {
               <div className="py-4">
                 <h1 className="display-3 text-white">Trái cây tươi kỳ lạ</h1>
                 <p className="fw-normal display-3 text-dark mb-4">trong cửa hàng của chúng tôi</p>
-                <p className="mb-4 text-dark"> Chúng tôi cung cấp các loại rau củ và trái cây tươi ngon, chất lượng, được trồng theo phương pháp hữu cơ. 
-                Đến với cửa hàng của chúng tôi, bạn sẽ tìm thấy nguồn thực phẩm sạch, giàu dinh dưỡng cho bữa ăn hàng ngày của gia đình..</p>
+                <p className="mb-4 text-dark"> Chúng tôi cung cấp các loại rau củ và trái cây tươi ngon, chất lượng, được trồng theo phương pháp hữu cơ.
+                  Đến với cửa hàng của chúng tôi, bạn sẽ tìm thấy nguồn thực phẩm sạch, giàu dinh dưỡng cho bữa ăn hàng ngày của gia đình..</p>
 
               </div>
             </div>

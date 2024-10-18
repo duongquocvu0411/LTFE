@@ -4,7 +4,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 const MoadlChitietsanpham = ({ show, handleClose, chiTiet, setChiTiet, handleSaveChiTiet }) => {
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} size="xl">
       <Modal.Header closeButton>
         <Modal.Title>Chi tiết sản phẩm</Modal.Title>
       </Modal.Header>
@@ -116,8 +116,17 @@ const MoadlChitietsanpham = ({ show, handleClose, chiTiet, setChiTiet, handleSav
           <Form.Group className="mb-3">
             <Form.Label>Bài viết</Form.Label>
             <CKEditor
+            
               editor={ClassicEditor}
               data={chiTiet.bai_viet || ""}
+              config={{
+                ckfinder: {
+                  uploadUrl: `${process.env.REACT_APP_BASEURL}/api/upload-image`,  // Đường dẫn API upload ảnh
+                },
+                mediaEmbed: {
+                  previewsInData: true // Hiển thị preview media trong CKEditor
+                }
+              }}
               onChange={(event, editor) => {
                 const data = editor.getData();
                 setChiTiet({ ...chiTiet, bai_viet: data });

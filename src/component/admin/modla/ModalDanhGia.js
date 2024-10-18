@@ -34,24 +34,28 @@ const ModalDanhGia = ({ show, handleClose, sanphamId }) => {
   }, [sanphamId, show]);
 
   const phanTrang = (soTrang) => setTrangHienTai(soTrang);
-
-  const xoaDanhGia = (id) => {
-    axios
-      .delete(`${process.env.REACT_APP_BASEURL}/api/danhgia/${id}`)
-      .then(() => {
-        toast.success("Đánh giá đã được xóa thành công!", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        setDanhGias(danhGias.filter((danhGia) => danhGia.id !== id));
+  
+  const xoaDanhGia = async (id) => {
+    try{
+      await axios.delete(`${process.env.REACT_APP_BASEURL}/api/danhgia/${id}`);
+  
+      toast.success('xóa đánh giá thành công',{
+        position:'top-right',
+        autoClose:3000
       })
-      .catch((error) => {
-        console.error("Lỗi khi xóa đánh giá:", error);
-        toast.error("Không thể xóa đánh giá", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-      });
+      setDanhGias(danhGias.filter((danhGia) => danhGia.id !== id));
+      //filter tạo ra một mảng mới chứa tất cả các phần tử của mảng danhGias mà id của chúng khác với id 
+      // của đánh giá vừa bị xóa. Phần tử có id khớp với id đã xóa sẽ bị loại bỏ khỏi mảng mới này.
+      
+  }
+  catch(error){
+    console.log('có lỗi khi xóa đánh giá', error);
+  
+    toast.error('có lỗi khi xóa đánh giá',{
+      position:'top-right',
+      autoClose:3000
+    });
+  }
   };
 
   return (

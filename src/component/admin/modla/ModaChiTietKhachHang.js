@@ -38,7 +38,7 @@ const ModalChiTietKhachHang = ({ show, handleClose, chiTietKhachHang, capNhatTra
                   <Form.Group controlId="formTrangThai">
                     <Form.Label>Trạng thái đơn hàng:</Form.Label>
                     <Form.Control
-                      as="select"
+                      as="select"    
                       value={bill.status}
                       onChange={(e) => capNhatTrangThai(bill.id, e.target.value)}
                     >

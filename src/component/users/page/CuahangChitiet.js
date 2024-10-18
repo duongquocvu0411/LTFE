@@ -5,6 +5,8 @@ import HeaderUsers from "../HeaderUsers";
 import { CartContext } from "./CartContext";
 import { Modal, Button, Form } from "react-bootstrap"; // Sử dụng modal từ react-bootstrap
 import { toast, ToastContainer } from "react-toastify";
+import {Lightbox} from "react-modal-image"; // Sử dụng thư viện Lightbox để phóng to ảnh
+
 
 const CuahangChitiet = () => {
   const { id } = useParams(); // Lấy ID sản phẩm từ URL
@@ -17,18 +19,23 @@ const CuahangChitiet = () => {
   const [soSao, setSoSao] = useState(0); // Số sao được chọn khi viết đánh giá
   const [showModal, setShowModal] = useState(false); // Hiển thị modal nhập đánh giá
   const [hoTen, setHoTen] = useState(""); // Họ tên của khách hàng
-  const [tieude, setTieude] = useState(""); // Họ tên của khách hàng
+  const [tieude, setTieude] = useState(""); // Tiêu đề đánh giá của khách hàng
   const [noiDung, setNoiDung] = useState(""); // Nội dung đánh giá
+  const [hinhanhPhu, setHinhanhPhu] = useState([]); // Danh sách hình ảnh phụ của sản phẩm
+  const [largeImage, setLargeImage] = useState(null); // Hình ảnh lớn để hiển thị khi click vào
 
   useEffect(() => {
     // Lấy thông tin sản phẩm và chi tiết
     const layThongTinSanPham = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_BASEURL}/api/products/${id}`);
+        const response = await fetch(`${process.env.REACT_APP_BASEURL}/api/sanphams/${id}`);
         const data = await response.json();
         setSanPham(data); // Lưu thông tin sản phẩm
         if (data.chitiet) {
           setChiTiet(data.chitiet); // Lưu chi tiết sản phẩm
+        }
+        if (data.images) {
+          setHinhanhPhu(data.images); // Lưu hình ảnh phụ
         }
       } catch (error) {
         console.error("Lỗi khi lấy thông tin sản phẩm:", error);
@@ -58,6 +65,31 @@ const CuahangChitiet = () => {
 
   // Hàm gửi đánh giá
   const guiDanhGia = async () => {
+
+     // Kiểm tra nếu các trường bị bỏ trống
+  if (!hoTen.trim()) {
+    toast.error('Họ tên không được bỏ trống!', {
+      position: 'top-right',
+      autoClose: 3000,
+    });
+    return; // Dừng lại nếu tên bị bỏ trống
+  }
+
+  if (!tieude.trim()) {
+    toast.error('Tiêu đề không được bỏ trống!', {
+      position: 'top-right',
+      autoClose: 3000,
+    });
+    return; // Dừng lại nếu tiêu đề bị bỏ trống
+  }
+
+  if (!noiDung.trim()) {
+    toast.error('Nội dung không được bỏ trống!', {
+      position: 'top-right',
+      autoClose: 3000,
+    });
+    return; // Dừng lại nếu nội dung bị bỏ trống
+  }
     const danhGiaMoi = {
       sanphams_id: id,
       ho_ten: hoTen,
@@ -95,20 +127,17 @@ const CuahangChitiet = () => {
         toast.success('Đánh giá của bạn đã được gửi!', {
           position: 'top-right',
           autoClose: 3000
-        })
+        });
       } else {
         toast.warning('Có lỗi xảy ra, vui lòng thử lại!', {
           position: 'top-right',
           autoClose: 3000
-        })
-
+        });
       }
     } catch (error) {
       console.error("Lỗi khi gửi đánh giá:", error);
-
     }
   };
-
 
   if (!sanPham) {
     return <div>Đang tải...</div>;
@@ -135,13 +164,29 @@ const CuahangChitiet = () => {
                         src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
                         className="img-fluid rounded square-image"
                         alt={sanPham.tieude}
+                        style={{ cursor: 'pointer' }} // Thêm con trỏ chỉ tay
+                        onClick={() => setLargeImage(`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`)} // Mở lightbox khi click vào ảnh
                       />
+                    </div>
+                    <div className="mt-3">
+                      <h5>Hình ảnh khác của sản phẩm:</h5>
+                      <div className="d-flex flex-wrap">
+                        {hinhanhPhu.map((img, index) => (
+                          <img
+                            key={index}
+                            src={`${process.env.REACT_APP_BASEURL}/storage/${img.hinhanh}`}
+                            className="img-thumbnail me-2"
+                            alt={`Hình ảnh phụ ${index + 1}`}
+                            style={{ width: '100px', height: '100px', cursor: 'pointer' }} // Thêm con trỏ chỉ tay
+                            onClick={() => setLargeImage(`${process.env.REACT_APP_BASEURL}/storage/${img.hinhanh}`)} // Mở lightbox khi click vào ảnh phụ
+                          />
+                        ))}
+                      </div>
                     </div>
                   </div>
                   <div className="col-lg-6">
                     <h4 className="fw-bold mb-3">{sanPham.tieude}</h4>
                     <p className="mb-3">Danh Mục: {sanPham.danhsachsanpham?.name}</p>
-
                     <h5 className="fw-bold mb-3">{sanPham.giatien} vnđ / {sanPham.don_vi_tinh}</h5>
 
                     {/* Kiểm tra trạng thái Hết hàng */}
@@ -158,6 +203,14 @@ const CuahangChitiet = () => {
                 </div>
               </div>
             </div>
+
+            {/* Lightbox để hiển thị hình ảnh lớn */}
+            {largeImage && (
+              <Lightbox
+                large={largeImage}
+                onClose={() => setLargeImage(null)} // Đóng lightbox khi nhấn nút đóng
+              />
+            )}
 
             {/* Tabs để chọn xem chi tiết sản phẩm, bài viết hoặc đánh giá */}
             <div className="d-flex justify-content-start mb-3">
@@ -236,14 +289,11 @@ const CuahangChitiet = () => {
                       <div key={index} className="mb-3">
                         <h5>{dg.ho_ten}</h5>
                         <p>
-                          {/* Array(dg.so_sao).fill().map((_, i) => ...): Hiển thị số ngôi sao đã chọn màu vàng. */}
                           {Array(dg.so_sao)
                             .fill()
                             .map((_, i) => (
                               <span key={i} className="fa fa-star text-warning"></span>
                             ))}
-                          {/* 
-                          Array(5 - dg.so_sao).fill().map((_, i) => ...): Hiển thị các ngôi sao trống (chưa chọn) */}
                           {Array(5 - dg.so_sao)
                             .fill()
                             .map((_, i) => (
@@ -262,11 +312,11 @@ const CuahangChitiet = () => {
               </div>
             )}
 
-
             {/* Modal viết đánh giá */}
-            <Modal show={showModal}
+            <Modal
+              show={showModal}
               onHide={() => {
-                setShowModal(false); // tắt modald khi ấn hủy 
+                setShowModal(false); // tắt modal khi ấn hủy 
                 setSoSao(0);
               }}
             >
@@ -291,7 +341,7 @@ const CuahangChitiet = () => {
                       type="text"
                       value={tieude}
                       onChange={(e) => setTieude(e.target.value)}
-                      placeholder="Nhập họ và tên của bạn"
+                      placeholder="Nhập tiêu đề đánh giá của bạn"
                       required
                     />
                   </Form.Group>

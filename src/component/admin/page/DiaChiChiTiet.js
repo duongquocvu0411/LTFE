@@ -21,18 +21,16 @@ const DiaChiChiTiet = () => {
   }, []);
 
   // Hàm lấy danh sách địa chỉ từ API
-  const layDanhSachDiaChi = () => {
-    axios.get(`${process.env.REACT_APP_BASEURL}/api/diachichitiet`)
-      .then(response => {
-        setDanhSachDiaChi(response.data); // Lưu dữ liệu vào state
-      })
-      .catch(error => {
-        console.log('Lỗi khi lấy danh sách địa chỉ:', error);
-        toast.error('có lỗi khi lấy danh sách  địa chỉ',{
-          position:'top-right',
-          autoClose:3000
-        });
-      });
+  const layDanhSachDiaChi = async () => {
+    try{
+        const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/diachichitiet`)
+        setDanhSachDiaChi(response.data);
+    }
+    catch(error){
+      console.log('có lỗi khi lấy danh sách địa chỉ', error);
+    }
+
+  
   };
 
   // Hàm mở modal để chỉnh sửa địa chỉ
@@ -43,25 +41,20 @@ const DiaChiChiTiet = () => {
   };
 
   // Hàm xóa địa chỉ
-  const xoaDiaChi = (id) => {
-    axios.delete(`${process.env.REACT_APP_BASEURL}/api/diachichitiet/${id}`)
-      .then(() => {
-       toast.success('xóa địa chỉ thành công',{
-        position:'top-right',
-        autoClose:3000
-       })
-        layDanhSachDiaChi();
-      })
-      .catch(error => {console.log('Lỗi khi xóa:', error)
-        toast.error('có lỗi khi xóa địa chỉ',{
+  const xoaDiaChi = async (id) => {
+    try{
+        await axios.delete(`${process.env.REACT_APP_BASEURL}/api/diachichitiet/${id}`)
+        toast.success('xóa địa chỉ thành công',{
           position:'top-right',
           autoClose:3000
         });
-      }
-            
-    )
-    
-  }
+        layDanhSachDiaChi(); // lấy lại danh sách khi xóa thành công
+    }
+    catch(error){
+      console.log('có lỗi khi xóa ', error)
+    }
+
+  };
 
   // Hàm mở modal để thêm địa chỉ mới
   const themDiaChi = () => {
@@ -71,24 +64,23 @@ const DiaChiChiTiet = () => {
   };
 
   // Hàm chọn địa chỉ làm địa chỉ đang sử dụng
-  const suDungDiaChi = (id) => {
-    axios.post(`${process.env.REACT_APP_BASEURL}/api/diachichitiet/setDiaChiHien/${id}`)
-      .then(() => {
-       toast.success('sử dụng địa chỉ mới thành công',{
+  const suDungDiaChi = async (id) => {
+    try{
+      await axios.post(`${process.env.REACT_APP_BASEURL}/api/diachichitiet/setDiaChiHien/${id}`)
+
+      toast.success('sử dụng dịa chỉ mới thành công',{
         position:'top-right',
         autoClose:3000
-       })
-        layDanhSachDiaChi(); // Cập nhật danh sách địa chỉ
-      })
-      .catch(error => {
-        console.log('Lỗi khi cập nhật địa chỉ:', error);
-        toast.error('có lỗi khi sử dụng địa chỉ',{
+      });
+      layDanhSachDiaChi(); // lấy lại danh sách khi sử dụng thành công
+    }
+    catch(error){
+        console.log('có lỗi khi sử dụng địa chỉ', error);
+        toast.error('có lỗi khi sử dụng dịa chỉ ',{
           position:'top-right',
           autoClose:3000
-        })
-      }
-    );
-      
+        });
+    }
   };
 
   return (
@@ -162,6 +154,8 @@ const DiaChiChiTiet = () => {
                             >
                               <i className="fas fa-trash"></i>
                             </Button>
+
+                            {/* kiểm tra xem status của dia chỉ khác đang sử dụng không nếu khác thì hiện nút ngược lại đang sử dụng thì ẩn nút đi */}
                             {diaChi.status !== 'đang sử dụng' && (
                               <Button
                                 variant="success"

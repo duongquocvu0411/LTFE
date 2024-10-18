@@ -5,17 +5,16 @@ import HeaderAdmin from '../HeaderAdmin'; // Import HeaderAdmin component
 
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
-import ModalThemDanhMucSanPham from '../modla/ModlaDanhsachsanpham';
+import ModalThemDanhMucSanPham from '../modla/ModlaDanhmucsanpham';
 import { nanoid } from 'nanoid';
 import { toast, ToastContainer } from 'react-toastify';
 import SiderbarAdmin from '../SidebarAdmin';
 import { Link } from 'react-router-dom';
 
-const DanhSachSanPham = () => {
+const Danhmucsanpham = () => {
   const [danhSachDanhMuc, setDanhSachDanhMuc] = useState([]);
   const [trangHienTai, setTrangHienTai] = useState(1);
   const danhMucMoiTrang = 4;
-
 
   // Thêm state để lưu trữ giá trị tìm kiếm
   const [timKiem, setTimKiem] = useState('');
@@ -37,18 +36,22 @@ const DanhSachSanPham = () => {
   const [danhMucHienTai, setDanhMucHienTai] = useState(null);
 
   // Lấy danh sách danh mục từ API
-  const layDanhSachDanhMuc = () => {
-    axios.get(`${process.env.REACT_APP_BASEURL}/api/danhsachsanpham`)
-      .then(response => {
-        setDanhSachDanhMuc(response.data);
+  const layDanhSachDanhMuc = async () => {
+
+    try{
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhmucsanphams`)
+
+      setDanhSachDanhMuc(response.data);
+    } 
+    catch(error){
+      console.log('có lỗi khi lấy danh sách danh mục', error);
+
+      toast.error('có lỗi khi lấy danh sách ',{
+        position:'top-right',
+        autoClose:3000
       })
-      .catch(error => {
-        console.log('Lỗi khi lấy danh sách danh mục:', error);
-        toast.error('Lỗi khi lấy danh sách danh mục:', {
-          position: 'top-right',
-          autoClose: 3000
-        });
-      });
+    }
+
   };
 
   useEffect(() => {
@@ -70,22 +73,22 @@ const DanhSachSanPham = () => {
   };
 
   // Xóa danh mục
-  const xoaDanhMuc = (id) => {
-    axios.delete(`${process.env.REACT_APP_BASEURL}/api/danhsachsanpham/${id}`)
-      .then(() => {
-        toast.success('Đã xóa danh mục thành công!', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
-        layDanhSachDanhMuc();
-      })
-      .catch(error => {
-        console.log('Có lỗi khi xóa danh mục:', error);
-        toast.error('Có lỗi khi xóa danh mục!', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+  const xoaDanhMuc = async (id,name) => {
+    try{
+      await axios.delete(`${process.env.REACT_APP_BASEURL}/api/danhmucsanphams/${id}`);
+      toast.success(`xóa danh muc "${name} " thành công`,{
+        position:'top-right',
+        autoClose:3000
       });
+      layDanhSachDanhMuc(); // lấy lại danh mục khi xóa thành công
+    }
+    catch(error){
+      console.log('có lỗi khi xóa danh mục', error);
+      toast.error('có lỗi khi xóa danh mục',{
+        position:'top-right',
+        autoClose:3000
+      });
+    }
   };
 
   return (
@@ -167,7 +170,7 @@ const DanhSachSanPham = () => {
                         </Button>
                         <Button
                           variant="danger"
-                          onClick={() => xoaDanhMuc(danhMuc.id)}
+                          onClick={() => xoaDanhMuc(danhMuc.id, danhMuc.name)}
                         >
                           <i className="fas fa-trash"></i>
                         </Button>
@@ -216,4 +219,4 @@ const DanhSachSanPham = () => {
   );
 };
 
-export default DanhSachSanPham;
+export default Danhmucsanpham;
