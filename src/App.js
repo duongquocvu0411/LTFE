@@ -94,11 +94,11 @@ function App() {
 
             {/* Router người dùng */}
             <Route path="/" element={<TrangchuNguoidung />} />
-            <Route path="/shop" element={<Cuahang />} />
-            <Route path="/checkout" element={<Thanhtoan />} />
-            <Route path="/shop/:id" element={<CuahangChitiet />} />
-            <Route path="/cart" element={<Giohang />} />
-            <Route path="/Testimonial" element={<Gioithieu />} />
+            <Route path="/cuahang" element={<Cuahang />} />
+            <Route path="/thanhtoan" element={<Thanhtoan />} />
+            <Route path="/sanpham/:id" element={<CuahangChitiet />} />
+            <Route path="/giohang" element={<Giohang />} />
+            <Route path="/gioithieu" element={<Gioithieu />} />
            
             <Route path="/lienhe" element={<LienHe />} />
             <Route path="/tracuu" element={<Tracuu />} />

@@ -3,32 +3,32 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const ModlaAdddanhsachsanpham = ({ show, handleClose, isEdit, product, fetchProducts }) => {
+const ModlaAdddanhsachsanpham = ({ show, handleClose, isEdit, danhmuc, fetchdanhmucs }) => {
   const [name, setName] = useState('');
   
 
   useEffect(() => {
-    if (isEdit && product) {
-      setName(product.name);
+    if (isEdit && danhmuc) {
+      setName(danhmuc.name);
      
     } else {    
       setName('');
      
     }
-  }, [isEdit, product]);
+  }, [isEdit, danhmuc]);
 
   const handleSubmit = async () => {
     try {
       if (isEdit) {
         // Cập nhật danh mục hiện tại
-        await axios.put(`${process.env.REACT_APP_BASEURL}/api/danhmucsanphams/${product.id}`, { name });
+        await axios.put(`${process.env.REACT_APP_BASEURL}/api/danhmucsanphams/${danhmuc.id}`, { name });
   
         toast.success(`Danh mục ${name} đã được cập nhật thành công!`, {
           position: 'top-right',
           autoClose: 3000,
         });
   
-        fetchProducts(); // Làm mới danh sách
+        fetchdanhmucs(); // Làm mới danh sách
         handleClose(); // Đóng modal
   
       } else {
@@ -40,7 +40,7 @@ const ModlaAdddanhsachsanpham = ({ show, handleClose, isEdit, product, fetchProd
           autoClose: 3000,
         });
   
-        fetchProducts(); // Làm mới danh sách
+        fetchdanhmucs(); // Làm mới danh sách
         handleClose(); // Đóng modal
       }
     } catch (error) {

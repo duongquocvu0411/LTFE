@@ -19,38 +19,34 @@ const ModalDiaChiChiTiet = ({ show, handleClose, isEdit, detail, fetchDetails })
       setEmail('');
       setSdt('');
     }
-  }, [isEdit, detail]);
+  }, [isEdit, detail]);     
 
   // Xử lý khi nhấn nút "Save"
   const handleSave = () => {
     if (isEdit) {
       // Chỉnh sửa chi tiết địa chỉ
       axios.put(`${process.env.REACT_APP_BASEURL}/api/diachichitiet/${detail.id}`, { diachi, email, sdt })
-          .then(() => {
-              toast.success("Địa chỉ đã được sửa thành công", {
-                  position: "top-right",
-                  autoClose: 3000,
-              });
-              fetchDetails(); // Cập nhật danh sách sau khi chỉnh sửa
-              handleClose();
-          })
-          .catch(loi => {
-              if (loi.response && loi.response.status === 422) {
-                  const loiXacThuc = loi.response.data.errors;
-                  if (loiXacThuc.email) {
-                      toast.error("Email đã tồn tại. Vui lòng sử dụng email khác.", {
-                          position: "top-right",
-                          autoClose: 3000,
-                      });
-                  } else {
-                      console.error('Lỗi khi sửa chi tiết địa chỉ:', loi);
-                      toast.error("Có lỗi xảy ra khi sửa địa chỉ. Vui lòng thử lại.", {
-                          position: "top-right",
-                          autoClose: 3000,
-                      });
-                  }
-              }
-          });
+      .then(() => {
+        toast.success("Địa chỉ đã được sửa thành công", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        fetchDetails(); // Cập nhật danh sách sau khi chỉnh sửa
+        handleClose();
+      })
+      .catch((loi) => {
+        if (loi.response?.status === 422) {
+          const errors = loi.response.data.errors || {};
+          if (errors.email) {
+            toast.error("Email đã tồn tại. Vui lòng sử dụng email khác.", {
+              position: "top-right",
+              autoClose: 3000,
+            });
+          }
+        } else {
+          console.error("Có lỗi xảy ra khi sửa địa chỉ:", loi); // Ghi lỗi vào console để kiểm tra
+        }
+      });
   } else {
       // Thêm mới chi tiết địa chỉ
       axios.post(`${process.env.REACT_APP_BASEURL}/api/diachichitiet`, { diachi, email, sdt })

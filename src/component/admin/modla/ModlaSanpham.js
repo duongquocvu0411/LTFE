@@ -21,7 +21,7 @@ const ModlaSanpham = ({
   const [trangthai, setTrangthai] = useState("");
 
   // Quản lý ảnh phụ
-  const [inputFields, setInputFields] = useState([{}]);
+  const [Fileanhphu, setFileanhphu] = useState([{}]);
   const [hinhanhPhu, setHinhanhPhu] = useState([]); // Hình ảnh phụ mới chọn
   const [existingHinhanhPhu, setExistingHinhanhPhu] = useState([]); // Ảnh phụ hiện có từ API
 
@@ -67,7 +67,7 @@ const ModlaSanpham = ({
       // Hiển thị ảnh phụ từ API
       if (product.images) {
         setExistingHinhanhPhu(product.images);
-        setInputFields(product.images.map(() => ({}))); // Tạo input tương ứng với số ảnh phụ
+        setFileanhphu(product.images.map(() => ({}))); // Tạo input tương ứng với số ảnh phụ
       }
 
       if (product.chitiet) {
@@ -93,7 +93,7 @@ const ModlaSanpham = ({
       resetChiTiet();
       setHinhanhPhu([]); // Reset ảnh phụ
       setExistingHinhanhPhu([]); // Reset danh sách ảnh phụ hiện có
-      setInputFields([{}]); // Reset input fields
+      setFileanhphu([{}]); // Reset input fields
     }
   }, [isEdit, product]);
 
@@ -112,7 +112,7 @@ const ModlaSanpham = ({
   };
 
   // Xử lý thay đổi ảnh phụ
-  const handleFileChange = (index, e) => {
+  const handleDoianhphu = (index, e) => {
     const file = e.target.files[0];
     const updatedHinhanhs = [...hinhanhPhu];
     updatedHinhanhs[index] = file;
@@ -121,13 +121,13 @@ const ModlaSanpham = ({
   };
 
   // Thêm một input mới cho ảnh phụ
-  const handleAddInputField = () => {
-    setInputFields((prevFields) => [...prevFields, {}]);
+  const handleThemanhphu = () => {
+    setFileanhphu((Fileanh) => [...Fileanh, {}]);
   };
 
-  const handleRemoveInputField = (index) => {
-    const updatedFields = inputFields.filter((_, i) => i !== index);
-    setInputFields(updatedFields);
+  const handleXoaanhphu = (index) => {
+    const capnhatFile = Fileanhphu.filter((_, i) => i !== index);
+    setFileanhphu(capnhatFile);
 
     const updatedHinhanhs = hinhanhPhu.filter((_, i) => i !== index);
     setHinhanhPhu(updatedHinhanhs);
@@ -218,7 +218,7 @@ const ModlaSanpham = ({
     setXemtruocHinhAnh("");
     setDanhmucsanphamID("");
     setHinhanhPhu([]); // Reset ảnh phụ
-    setInputFields([{}]); // Reset input fields
+    setFileanhphu([{}]); // Reset input fields
   };
   const resetChiTiet = () => {
     setChiTiet({
@@ -249,8 +249,8 @@ const ModlaSanpham = ({
       const updatedExistingImages = existingHinhanhPhu.filter((img) => img.id !== imageId);
       setExistingHinhanhPhu(updatedExistingImages);
 
-      const updatedFields = inputFields.filter((_, i) => i !== index);
-      setInputFields(updatedFields);
+      const capnhatFile = Fileanhphu.filter((_, i) => i !== index);
+      setFileanhphu(capnhatFile);
     } catch (error) {
       console.error("Có lỗi khi xóa ảnh phụ:", error);
       toast.error("Không thể xóa ảnh phụ. Vui lòng thử lại!", {
@@ -358,14 +358,14 @@ const ModlaSanpham = ({
             ))}
 
             {/* Hiển thị input cho ảnh phụ mới */}
-            {inputFields.map((input, index) => (
+            {Fileanhphu.map((input, index) => (
               <Form.Group key={index} className="mb-3">
                 <Form.Label>Hình ảnh phụ {index + 1}</Form.Label>
-                <Form.Control type="file" onChange={(e) => handleFileChange(index, e)} />
+                <Form.Control type="file" onChange={(e) => handleDoianhphu(index, e)} />
                 {hinhanhPhu[index] && (
                   <div>
                     <img src={URL.createObjectURL(hinhanhPhu[index])} alt={`Ảnh phụ ${index + 1}`} width="200" />
-                    <Button variant="danger" onClick={() => handleRemoveInputField(index)}>
+                    <Button variant="danger" onClick={() => handleXoaanhphu(index)}>
                       Xóa ảnh phụ
                     </Button>
                   </div>
@@ -373,7 +373,7 @@ const ModlaSanpham = ({
               </Form.Group>
             ))}
 
-            <Button onClick={handleAddInputField}>Thêm ảnh phụ</Button>
+            <Button onClick={handleThemanhphu}>Thêm ảnh phụ</Button>
 
             <Button
               variant="info"

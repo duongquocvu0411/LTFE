@@ -196,7 +196,7 @@ const CuahangChitiet = () => {
                   </div>
                   <div className="col-lg-6">
                     <h4 className="fw-bold mb-3">{sanPham.tieude}</h4>
-                    <p className="mb-3">Danh Mục: {sanPham.danhsachsanpham?.name}</p>
+                    <p className="mb-3">Danh Mục: {sanPham.danhmucsanpham?.name}</p>
                     <h5 className="fw-bold mb-3">{sanPham.giatien} vnđ / {sanPham.don_vi_tinh}</h5>
 
                     {/* Kiểm tra trạng thái Hết hàng */}

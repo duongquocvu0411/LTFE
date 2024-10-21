@@ -1,25 +1,35 @@
 import React, { useContext } from "react";
 import Footerusers from "../Footerusers";
 import HeaderUsers from "../HeaderUsers";
-import { Link } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom";
 import { CartContext } from "./CartContext";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 const Giohang = () => {
-  const { giohang, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong } = useContext(CartContext);
-
+  const { giohang, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong,Xoatoanbogiohang } = useContext(CartContext);
+  const navigate  = useNavigate();
   // Tính tổng giá trị của giỏ hàng và định dạng theo kiểu tiền tệ Việt Nam
   const tongTienGioHang = giohang.reduce((tong, item) => tong + parseFloat(item.giatien) * item.soLuong, 0);
   
 // reduce là một phương thức (method) của mảng trong JavaScript, cho phép lặp qua tất cả các phần tử của mảng và "rút gọn" chúng lại thành một giá trị duy nhất.
 // parseFloat là một hàm trong JavaScript dùng để chuyển đổi một chuỗi ký tự (string) thành một số thập phân (floating-point number).
+const handleThanhtoan = () =>{
+  if( giohang.length === 0){
+    toast.warning('giỏ hàng trống, không thể thanh toán',{
+      position:'top-right',
+      autoClose:3000,
+    });
+  }else{
+    navigate("/thanhtoan");
+  }
+}
   return (
     <>
       <div>
         <HeaderUsers />    
         {/* Single Page Header start */}
         <div className="container-fluid page-header py-5">
-          <h1 className="text-center text-white display-6">Cart</h1>
+          <h1 className="text-center text-white display-6">Giỏ hàng</h1>
           {/* <ol className="breadcrumb justify-content-center mb-0">
             <li className="breadcrumb-item"><a href="#">Home</a></li>
             <li className="breadcrumb-item"><a href="#">Pages</a></li>
@@ -90,7 +100,7 @@ const Giohang = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="6" className="text-center">Giỏ hàng của bạn trống</td>
+                      <td colSpan="6" className="text-center">Giỏ hàng của bạn trống vui lòng nhấn vào <Link to="/cuahang" > cửa hàng</Link> để mua hàng</td>
                     </tr>
                   )}
                 </tbody>
@@ -108,9 +118,23 @@ const Giohang = () => {
                     <h5 className="mb-0 ps-4 me-4">Tổng</h5>
                     <p className="mb-0 pe-4">{tongTienGioHang.toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ</p>
                   </div>
-                  <Link to="/checkout" className="btn btn-primary btn-sm w-100 text-uppercase mb-4" >
+                  {/* <Link to="/thanhtoan" className="btn btn-primary btn-sm w-100 text-uppercase mb-4" >
                     Thanh toán
-                  </Link>
+                  </Link> */}
+                 <button
+                    className="btn btn-primary btn-sm w-100 text-uppercase mb-4"
+                    onClick={handleThanhtoan}  // Đổi từ Link thành button và sử dụng handleThanhToan
+                  >
+                    Thanh toán
+                  </button>
+                  <div className="text-center mb-4">
+                    <button 
+                      className="btn btn-danger btn-sm w-100 text-uppercase" 
+                      onClick={Xoatoanbogiohang}
+                    >
+                      Xóa hết tất cả sản phẩm
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

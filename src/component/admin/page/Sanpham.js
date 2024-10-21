@@ -179,27 +179,39 @@ const SanPham = () => {
                     <li className="breadcrumb-item"><Link to="/admin/trangchu">Home</Link></li>
                     <li className="breadcrumb-item active">Sản Phẩm</li>
                   </ol>
-                </div>
-                <div className='col-sm-2'>
-                  {/* <label htmlFor="categoryFilter" className="form-label">Chọn danh mục sản phẩm:</label> */}
-                  <select
-                    id="categoryFilter"
-                    className="form-control"
-                    value={danhMucDuocChon}
-                    onChange={(e) => setDanhMucDuocChon(e.target.value)}
-                  >
-                    <option value="">Tất cả sản phẩm</option>
-                    {danhMuc.map((dm) => (
-                      <option key={dm.id} value={dm.id}>
-                        {dm.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-
+                  </div>
+                  <div className='col-sm-2'>
+  <div className="dropdown">
+    <button
+      className="btn btn-secondary dropdown-toggle"
+      type="button"
+      id="dropdownCategoryButton"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+    {danhMucDuocChon 
+        ? (danhMuc.find(dm => dm.id === danhMucDuocChon)?.name || "Danh mục không rõ")
+        : "Tất cả sản phẩm"}
+    </button>
+    <ul className="dropdown-menu" aria-labelledby="dropdownCategoryButton">
+      <li>
+        <button className="dropdown-item" type="button" onClick={() => setDanhMucDuocChon('')}>
+          Tất cả sản phẩm
+        </button>
+      </li>
+      {danhMuc.map((dm) => (
+        <li key={dm.id}>
+          <button className="dropdown-item" type="button" onClick={() => setDanhMucDuocChon(dm.id)}>
+            {dm.name}
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
+</div>
+</div>
+</div>  
 
           {/* Bảng danh sách sản phẩm */}
           <div className="container-fluid">

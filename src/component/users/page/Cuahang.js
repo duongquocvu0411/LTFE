@@ -89,7 +89,7 @@ const Cuahang = () => {
 
       {/* Page Header */}
       <div className="container-fluid page-header py-5">
-        <h1 className="text-center text-white display-6">Shop</h1>
+        <h1 className="text-center text-white display-6">Cửa hàng</h1>
         {/* <ol className="breadcrumb justify-content-center mb-0">
           <li className="breadcrumb-item"><Link to="/">Home</Link></li>
           <li className="breadcrumb-item active text-white">Shop</li>
@@ -102,20 +102,34 @@ const Cuahang = () => {
           <h1 className="mb-4">Cửa hàng trái cây tươi</h1>
           <div className="d-flex justify-content-end mb-4">
             <div className="bg-light ps-3 py-3 rounded d-flex align-items-center">
-              <label htmlFor="fruits" className="me-2">Sắp xếp theo danh mục:</label>
-              <select
-                id="fruits"
-                className="border-0 form-select-sm bg-light"
-                value={danhMucDuocChon} // Giá trị danh mục đang được chọn
-                onChange={(e) => setDanhMucDuocChon(e.target.value)} // Cập nhật `danhMucDuocChon` khi người dùng chọn danh mục mới
-              >
-                <option value="">Tất cả danh mục</option>
-                {danhMuc.map((dm) => (
-                  <option key={dm.id} value={dm.id}>
-                    {dm.name}
-                  </option>
-                ))}
-              </select>
+              <div className="dropdown">
+                <button className="btn btn-secondary dropdown-toggle"
+                  type="button"
+                  id="dropdownCategoryButton"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  >
+                    {danhMucDuocChon
+                    ? (danhMuc.find(dm => dm.id === danhMucDuocChon)?.name || 'danh mục khong rõ')
+                  : 'tất cả sản phẩm'}
+                  </button>
+                  <ul className="dropdown-menu" aria-labelledby="dropdownCategoryButton">
+                    <li>
+                      <button className="dropdown-item" type="button" 
+                        onClick={() => setDanhMucDuocChon('')}>
+                            Tất cả sản phẩm
+                      </button>
+                    </li>
+                    {danhMuc.map((dm) => (
+                      <li key={dm.id}>
+                        <button className="dropdown-item" type="button" 
+                          onClick={() => setDanhMucDuocChon(dm.id)}>
+                              {dm.name}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+              </div>
             </div>
           </div>
 
@@ -131,7 +145,7 @@ const Cuahang = () => {
                     <div key={sp.id} className="col-md-6 col-lg-4 col-xl-3 d-flex">
                       <div className="rounded position-relative fruite-item card h-100 w-100">
                         <div className="fruite-img card-img-top">
-                          <Link to={`/shop/${sp.id}`}>
+                          <Link to={`/sanpham/${sp.id}`}>
                             <img
                               src={`${process.env.REACT_APP_BASEURL}/storage/${sp.hinhanh}`}
                               className="img-fluid w-100 rounded-top"
@@ -150,7 +164,7 @@ const Cuahang = () => {
                           )}
                         </div>
                         <div className="text-white bg-secondary px-3 py-1 rounded position-absolute" style={{ top: 10, left: 10 }}>
-                        {layTenDanhMuc(sp.danhmucsanpham_id)}
+                          {sp.danhmucsanpham?.name}
                         </div>
                         <div className="card-body d-flex flex-column rounded-bottom">
                           <h4 className="card-title">{sp.tieude}</h4>

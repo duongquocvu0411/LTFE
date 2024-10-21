@@ -13,14 +13,14 @@ const Tracuu = () => {
   const handleLookupOrder = async (e) => {
     e.preventDefault();
 
-      if (!madonhang) {
-        setError("Vui lòng nhập mã đơn hàng.");
-        return;
-      }
+    if (!madonhang) {
+      setError("Vui lòng nhập mã đơn hàng.");
+      return;
+    }
 
     try {
       // Gửi yêu cầu tra cứu đơn hàng tới API
-      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/dathang/${madonhang}`);
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/tracuu/${madonhang}`);
       setDathangchitiet(response.data);
       setError(""); // Xóa thông báo lỗi nếu có
     } catch (error) {
@@ -34,24 +34,24 @@ const Tracuu = () => {
   const handleCancelOrder = async () => {
     try {
       // Gửi yêu cầu hủy đơn hàng tới API
-      await axios.put(`${process.env.REACT_APP_BASEURL}/api/dathang/${madonhang}/huydon`);
+      await axios.put(`${process.env.REACT_APP_BASEURL}/api/tracuu/${madonhang}/huydon`);
       setDathangchitiet({ ...dathangchitiet, status: "Hủy đơn" }); // Cập nhật trạng thái đơn hàng trong state
-     toast.success("Đơn hàng của bạn đã hủy thành công",
-      {
-        position:'top-right',
-        autoClose:3000
-      }
-     )
+      toast.success("Đơn hàng của bạn đã hủy thành công",
+        {
+          position: 'top-right',
+          autoClose: 3000
+        }
+      )
     } catch (error) {
       console.error("Lỗi khi hủy đơn hàng:", error);
-     toast.error('có lỗi khi hủy đơn hàng của bạn vui lòng thử lại',
-      {
-        position: 'top-right',
-        autoClose:3000
-      }
-     )
+      toast.error('có lỗi khi hủy đơn hàng của bạn vui lòng thử lại',
+        {
+          position: 'top-right',
+          autoClose: 3000
+        }
+      )
     }
-  };   
+  };
 
   return (
     <>
@@ -101,7 +101,12 @@ const Tracuu = () => {
                     {dathangchitiet.hoadonchitiets.map((item, index) => (
                       <tr key={index}>
                         <td>{item.sanpham_names}</td>
-                        <td>{item.quantity}</td>
+                        <td>
+                          {item.quantity} 
+                          {item.sanphamDonvitinh && item.sanphamDonvitinh.map((dvt, idx) => (
+                            <span key={idx}> {dvt.don_vi_tinh}</span>
+                          ))}
+                        </td>
                         <td>{item.price} VND</td>
                       </tr>
                     ))}
@@ -121,7 +126,7 @@ const Tracuu = () => {
           </div>
         )}
       </div>
-      <ToastContainer/>
+      <ToastContainer />
       <Footerusers />
     </>
   );

@@ -18,6 +18,7 @@ const ModalDanhGia = ({ show, handleClose, sanphamId }) => {
         .get(`${process.env.REACT_APP_BASEURL}/api/danhgia?sanphams_id=${sanphamId}`)
         .then((response) => {
           setDanhGias(Array.isArray(response.data) ? response.data : []);
+          
         })
         .catch((error) => {
           if (error.response && error.response.status === 404) {

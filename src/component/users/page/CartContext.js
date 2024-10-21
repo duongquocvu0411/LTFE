@@ -105,14 +105,35 @@ export const CartProvider = ({ children }) => {
     );
   };
 
-   // Hàm clearCart để xóa sạch giỏ hàng
-   const clearCart = () => {
+   // Hàm xoagiohangthanhtoanthanhcong để xóa sạch giỏ hàng
+   const xoagiohangthanhtoanthanhcong = () => {
     setGiohang([]); // Đặt giỏ hàng về mảng rỗng
     localStorage.removeItem('giohang'); // Xóa giỏ hàng khỏi localStorage
   };
+
+  // hàm xóa toàn bộ giỏ hàng
+
+  const Xoatoanbogiohang = () => {
+    if (giohang.length === 0) {
+      // Nếu giỏ hàng trống, hiển thị thông báo
+      toast.warn("Giỏ hàng hiện tại không có sản phẩm!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } else {
+      // Nếu giỏ hàng không trống, thực hiện xóa giỏ hàng
+      setGiohang([]); // Đặt giỏ hàng về mảng rỗng
+      localStorage.removeItem('giohang'); // Xóa giỏ hàng khỏi localStorage
+      toast.info("Giỏ hàng đã được xóa hết!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
+  };
+  
   
   return (
-    <CartContext.Provider value={{ giohang, addToCart, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong,clearCart  }}>
+    <CartContext.Provider value={{ giohang, addToCart, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong,xoagiohangthanhtoanthanhcong,Xoatoanbogiohang  }}>
       {children}
     </CartContext.Provider>
   );

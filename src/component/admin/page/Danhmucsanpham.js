@@ -19,6 +19,7 @@ const Danhmucsanpham = () => {
 
   // Thêm state để lưu trữ giá trị tìm kiếm
   const [timKiem, setTimKiem] = useState('');
+  
   // Logic tìm kiếm danh mục theo tên
   const danhMucDaLoc = danhSachDanhMuc.filter((danhMuc) =>
     danhMuc.name.toLowerCase().includes(timKiem.toLowerCase())
@@ -36,6 +37,9 @@ const Danhmucsanpham = () => {
   const [chinhSua, setChinhSua] = useState(false);
   const [danhMucHienTai, setDanhMucHienTai] = useState(null);
 
+  useEffect(() => {
+    layDanhSachDanhMuc();
+  }, []);
   // Lấy danh sách danh mục từ API
   const layDanhSachDanhMuc = async () => {
     setDangtai(true); // bật trạng thái đang load để lấy dữ liệu 
@@ -55,9 +59,7 @@ const Danhmucsanpham = () => {
     }
   };
 
-  useEffect(() => {
-    layDanhSachDanhMuc();
-  }, []);
+
 
   // Mở modal để thêm danh mục mới
   const moModalThemDanhMuc = () => {
@@ -82,6 +84,7 @@ const Danhmucsanpham = () => {
         autoClose:3000
       });
       layDanhSachDanhMuc(); // lấy lại danh mục khi xóa thành công
+      setTrangHienTai(1);
     }
     catch(error){
       console.log('có lỗi khi xóa danh mục', error);
@@ -217,8 +220,8 @@ const Danhmucsanpham = () => {
       show={hienThiModal} // Hiển thị hoặc ẩn modal dựa trên trạng thái hienThiModal
       handleClose={() => setHienThiModal(false)} // Hàm đóng modal
       isEdit={chinhSua}  // Truyền trạng thái chỉnh sửa hay không
-      product={danhMucHienTai}  // Truyền danh mục hiện tại cần chỉnh sửa
-      fetchProducts={layDanhSachDanhMuc} // Hàm để lấy lại danh sách sản phẩm sau khi chỉnh sửa
+      danhmuc={danhMucHienTai}  // Truyền danh mục hiện tại cần chỉnh sửa
+      fetchdanhmucs={layDanhSachDanhMuc} // Hàm để lấy lại danh sách sản phẩm sau khi chỉnh sửa
     />
   
     <ToastContainer />

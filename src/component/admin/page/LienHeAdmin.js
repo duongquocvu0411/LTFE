@@ -75,10 +75,12 @@ const LienHeAdmin = () => {
   // Lọc danh sách liên hệ theo ngày
   const locTheoNgay = (ngay) => {
     setNgayLoc(ngay);
+    // kiểm tra có ngày được chọn thì truyền ngay vào hook 
     if (ngay) {
       const danhSachLoc = danhSachLienHe.filter(item => item.created_at.startsWith(ngay));
       setDanhSachLienHeLoc(danhSachLoc);
     } else {
+      //ngược lại k có ngày được chọn thì truyền vào hook là danhsachLieHe
       setDanhSachLienHeLoc(danhSachLienHe);
     }
   };

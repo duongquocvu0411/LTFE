@@ -7,7 +7,7 @@ import { toast, ToastContainer } from 'react-toastify';
 
 const Thanhtoan = () => {
   const [thanhpho, setThanhpho] = useState("");
-  const { giohang,clearCart } = useContext(CartContext);
+  const { giohang,xoagiohangthanhtoanthanhcong } = useContext(CartContext);
   const [sdt, setSdt] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -148,7 +148,7 @@ const handleInput = (e) => {
         autoClose:10000,
       })
        // Xóa giỏ hàng sau khi đặt hàng thành công
-       clearCart();
+       xoagiohangthanhtoanthanhcong();
       // Làm sạch dữ liệu trong form
       setFirstName("");
       setLastName("");

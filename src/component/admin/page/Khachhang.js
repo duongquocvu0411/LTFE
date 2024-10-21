@@ -176,7 +176,7 @@ const Khachhangs = () => {
 // Kiểm tra xem hóa đơn của khách hàng có trạng thái "Đã hủy" hoặc "Giao không thành công" hay không
 const kiemTraTrangThaiHoaDon = (hoadons) => {
   return hoadons?.some(hoadon => 
-    hoadon.status === 'Hủy đơn' || hoadon.status === 'Giao không thành công' || hoadon.status === 'Giao không thành công'
+    hoadon.status === 'Hủy đơn'  
   );
 };
 
@@ -247,6 +247,8 @@ const xuLyLocTheoThangNam = () => {
 
   setKhachHangHienThi(ketQuaLoc);
 };
+
+
   return (
     <div id="wrapper">
       <SiderbarAdmin />
@@ -383,6 +385,7 @@ const xuLyLocTheoThangNam = () => {
                                 Xóa
                               </Button>
                             )}
+                           
                           </td>
                         </tr>
                       ))

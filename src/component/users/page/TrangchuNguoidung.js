@@ -12,7 +12,7 @@ const TrangchuNguoidung = () => {
   const [sanPham, setSanPham] = useState([]); // Khởi tạo state lưu trữ sản phẩm
   const [danhMucDuocChon, setDanhMucDuocChon] = useState(""); // Danh mục được chọn
   const { addToCart } = useContext(CartContext); // Lấy hàm thêm vào giỏ hàng từ context
-  const [dangtai,setDangtai] = useState(false);
+  const [dangtai, setDangtai] = useState(false);
   const [trangHienTai, datTrangHienTai] = useState(1); // Trang hiện tại
   const sanPhamMoiTrang = 8; // Số sản phẩm hiển thị mỗi trang
   // Phân trang
@@ -58,10 +58,10 @@ const TrangchuNguoidung = () => {
   };
 
   // Hàm lấy tên danh mục dựa trên id
-  const layTenDanhMuc = (idDanhMuc) => {
-    const danhMucTimDuoc = danhMuc.find(dm => dm.id === idDanhMuc);
-    return danhMucTimDuoc ? danhMucTimDuoc.name : 'Không rõ';
-  };
+  // const layTenDanhMuc = (idDanhMuc) => {
+  //   const danhMucTimDuoc = danhMuc.find(dm => dm.id === idDanhMuc);
+  //   return danhMucTimDuoc ? danhMucTimDuoc.name : 'Không rõ';
+  // };
 
   return (
     <>
@@ -153,7 +153,7 @@ const TrangchuNguoidung = () => {
 
 
 
-      
+
       {/* Sản phẩm của chúng tôi */}
       <div className="container-fluid fruite py-5 OurProduct">
         <div className="container py-5">
@@ -164,77 +164,91 @@ const TrangchuNguoidung = () => {
                 <h1 className="text-uppercase fw-bold">Sản phẩm của chúng tôi</h1>
               </div>
               {/* Bộ lọc danh mục sản phẩm */}
-              <div className="col-lg-8 text-end">
-                <div className="form-group">
-                  <select
-                    className="form-select form-select-sm mb-3 w-50 d-inline-block"
-                    value={danhMucDuocChon}
-                    onChange={(e) => setDanhMucDuocChon(e.target.value)}
-                  >
-                    <option value="">Tất cả sản phẩm</option>
-                    {danhMuc.map((dm) => (
-                      <option key={dm.id} value={dm.id}>
-                        {dm.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
+              <div className='col-sm-2'>
+  <div className="dropdown">
+    <button
+      className="btn btn-secondary dropdown-toggle"
+      type="button"
+      id="dropdownCategoryButton"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      {danhMucDuocChon 
+        ? (danhMuc.find(dm => dm.id === danhMucDuocChon)?.name || "Danh mục không rõ")
+        : "Tất cả sản phẩm"}
+    </button>
+    <ul className="dropdown-menu" aria-labelledby="dropdownCategoryButton">
+      <li>
+        <button className="dropdown-item" type="button" onClick={() => setDanhMucDuocChon('')}>
+          Tất cả sản phẩm
+        </button>
+      </li>
+      {danhMuc.map((dm) => (
+        <li key={dm.id}>
+          <button className="dropdown-item" type="button" onClick={() => setDanhMucDuocChon(dm.id)}>
+            {dm.name}
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
+</div>
+
 
             {/* Hiển thị sản phẩm */}
             <div className="tab-content mt-4">
               <div className="tab-pane fade show p-0 active">
-               {dangtai ? (
-                <div className='text-center'>
-                  <Spinner animation='border' variant='primary'/>
-                  <p>Đang tải dữ liệu...</p>
-                </div>
-               ) : (
-                <div className="row g-4">
-                {sanPhamHienTai.map((sanPham) => (
-                  <div className="col-md-6 col-lg-4 col-xl-3" key={sanPham.id}>
-                    <div className="rounded position-relative fruite-item shadow-sm">
-                      <div className="fruite-img position-relative">
-                        <Link to={`/shop/${sanPham.id}`} className="btn btn-link">
-                          <img
-                            src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
-                            className="img-fluid w-100 rounded-top"
-                            alt={sanPham.tieude}
-                            style={{ height: 250, objectFit: 'cover' }}
-                          />
-                        </Link>
-                        {sanPham.trangthai === 'Hết hàng' && (
-                          <div className="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center bg-dark bg-opacity-50"
-                            style={{ zIndex: 1, padding: '5px 10px', borderRadius: '5px' }}>
-                            <span className="text-white small fw-bold">Hết hàng</span>
+                {dangtai ? (
+                  <div className='text-center'>
+                    <Spinner animation='border' variant='primary' />
+                    <p>Đang tải dữ liệu...</p>
+                  </div>
+                ) : (
+                  <div className="row g-4">
+                    {sanPhamHienTai.map((sanPham) => (
+                      <div className="col-md-6 col-lg-4 col-xl-3" key={sanPham.id}>
+                        <div className="rounded position-relative fruite-item shadow-sm">
+                          <div className="fruite-img position-relative">
+                            <Link to={`/sanpham/${sanPham.id}`} className="btn btn-link">
+                              <img
+                                src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
+                                className="img-fluid w-100 rounded-top"
+                                alt={sanPham.tieude}
+                                style={{ height: 250, objectFit: 'cover' }}
+                              />
+                            </Link>
+                            {sanPham.trangthai === 'Hết hàng' && (
+                              <div className="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center bg-dark bg-opacity-50"
+                                style={{ zIndex: 1, padding: '5px 10px', borderRadius: '5px' }}>
+                                <span className="text-white small fw-bold">Hết hàng</span>
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                      <div className="text-white bg-secondary px-2 py-1 rounded position-absolute"
-                        style={{ top: 10, left: 10 }}>
-                        {layTenDanhMuc(sanPham.danhmucsanpham_id)}
-                      </div>
-                      <div className="p-3  rounded-bottom">
-                        <p className="h5 fw-bold">{sanPham.tieude}</p>
-                        <div className="d-flex justify-content-between align-items-center">
-                          <p className="text-dark fs-5 fst-italic mb-0">{sanPham.giatien} vnđ/ {sanPham.don_vi_tinh}</p>
-                          {sanPham.trangthai !== 'Hết hàng' && (
-                            <button
-                              onClick={() => addToCart(sanPham)}
-                              className="btn border border-secondary rounded-pill px-3 text-primary"
-                            >
-                              <i className="fa fa-shopping-bag me-2 text-primary" />
-                              Thêm vào giỏ
-                            </button>
-                          )}
+                          <div className="text-white bg-secondary px-2 py-1 rounded position-absolute"
+                            style={{ top: 10, left: 10 }}>
+                            {sanPham.danhmucsanpham?.name}
+                          </div>
+                          <div className="p-3  rounded-bottom">
+                            <p className="h5 fw-bold">{sanPham.tieude}</p>
+                            <div className="d-flex justify-content-between align-items-center">
+                              <p className="text-dark fs-5 fst-italic mb-0">{sanPham.giatien} vnđ/ {sanPham.don_vi_tinh}</p>
+                              {sanPham.trangthai !== 'Hết hàng' && (
+                                <button
+                                  onClick={() => addToCart(sanPham)}
+                                  className="btn border border-secondary rounded-pill px-3 text-primary"
+                                >
+                                  <i className="fa fa-shopping-bag me-2 text-primary" />
+                                  Thêm vào giỏ
+                                </button>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-               )}
+                )}
 
                 {/* Phân trang (Cập nhật) */}
                 <div className="d-flex justify-content-center mt-4">

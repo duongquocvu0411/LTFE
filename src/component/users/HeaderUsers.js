@@ -37,23 +37,29 @@ const HeaderUsers = () => {
   return (
     <>
 <div className="container-fluid fixed-top">
-  <div className="container topbar bg-primary d-flex justify-content-between">
-    {/* Address section */}
-    <div className="top-info p-2 rounded">
-      <small className="me-3 text-white">
-        <i className="fas fa-map-marker-alt me-2 text-white" />
-        {diachichitiet.diachi}
-      </small>
-    </div>
+  <div className="container topbar bg-primary">
+    <div className="row d-flex justify-content-between">
+      {/* Address section */}
+      <div className="col-6 col-sm-auto p-2">
+        <small className="text-white d-flex align-items-center">
+          <i className="fas fa-map-marker-alt me-2" />
+          {diachichitiet.diachi}
+        </small>
+      </div>
 
-    {/* Email section - now aligned to the right */}
-    <div className="top-link p-2 rounded ms-auto">
-      <small className="me-3 text-white">
-        <i className="fas fa-envelope me-2 text-white" />
-        {diachichitiet.email}
-      </small>
+      {/* Email section - now aligned to the right */}
+      <div className="col-6 col-sm-auto p-2">
+        <small className="text-white d-flex align-items-center justify-content-end">
+          <i className="fas fa-envelope me-2" />
+          {diachichitiet.email}
+        </small>
+      </div>
     </div>
   </div>
+
+
+
+
 
   <div className="container px-0">
     <nav className="navbar navbar-light bg-white navbar-expand-xl">
@@ -78,8 +84,8 @@ const HeaderUsers = () => {
             Trang chủ
           </Link>
           <Link
-            to="/shop"
-            className={`nav-item nav-link ${vitriRoute.pathname === "/shop" ? "active" : ""}`}
+            to="/cuahang"
+            className={`nav-item nav-link ${vitriRoute.pathname === "/cuahang" ? "active" : ""}`}
           >
             Cửa hàng
           </Link>
@@ -88,13 +94,13 @@ const HeaderUsers = () => {
               Trang khác
             </Link>
             <div className="dropdown-menu m-0 bg-secondary rounded-0">
-              <Link to="/cart" className="dropdown-item">
+              <Link to="/giohang" className="dropdown-item">
                 Giỏ hàng
               </Link>
-              <Link to="/checkout" className="dropdown-item">
+              {/* <Link to="/thanhtoan" className="dropdown-item">
                 Thanh toán
-              </Link>
-              <Link to="/Testimonial" className="dropdown-item">
+              </Link> */}
+              <Link to="/gioithieu" className="dropdown-item">
                 Giới thiệu
               </Link>
             </div>
@@ -113,7 +119,7 @@ const HeaderUsers = () => {
           </Link>
         </div>
         <div className="d-flex m-3 me-0">
-          <Link to="/cart" className="position-relative me-4 my-auto">
+          <Link to="/giohang" className="position-relative me-4 my-auto">
             <i className="fa fa-shopping-bag fa-2x" />
             {tongSoLuong > 0 && (
               <span
