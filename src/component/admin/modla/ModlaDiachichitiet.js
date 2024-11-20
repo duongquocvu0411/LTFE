@@ -96,7 +96,7 @@ const handleSdtChange = (e) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>{isEdit ? 'Chỉnh sửa Địa chỉ' : 'Add Detail'}</Modal.Title>
+        <Modal.Title>{isEdit ? 'Chỉnh sửa Địa chỉ' : 'Thêm địa chỉ'}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
@@ -134,10 +134,10 @@ const handleSdtChange = (e) => {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          Close
+          Đóng
         </Button>
         <Button variant="primary" onClick={handleSave}>
-          Save
+          Lưu
         </Button>
       </Modal.Footer>
     </Modal>

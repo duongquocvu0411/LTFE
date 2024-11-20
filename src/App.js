@@ -20,6 +20,10 @@ import CuahangChitiet from "./component/users/page/CuahangChitiet";
 import Gioithieu from "./component/users/page/Gioithieu";
 import TrangChuAdmin from "./component/admin/page/TrangchuAdmin";
 import Danhmucsanpham from "./component/admin/page/Danhmucsanpham";
+import Dactrung from "./component/admin/page/Dactrung";
+import Banners from "./component/admin/page/Banners";
+import Tencuahang from "./component/admin/page/Tencuahang";
+import Menu from "./component/admin/page/Menu";
 function App() {
   return (
 
@@ -39,6 +43,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <DiaChiChiTiet />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/tencuahang"
+              element={
+                <ProtectedRoute>
+                  <Tencuahang />
                 </ProtectedRoute>
               }
             />
@@ -66,6 +78,22 @@ function App() {
                 </ProtectedRoute>
               }
             />
+             <Route
+              path="/admin/dactrung"
+              element={
+                <ProtectedRoute>
+                  <Dactrung />
+                </ProtectedRoute>
+              }
+            />
+                 <Route
+              path="/admin/Banners"
+              element={
+                <ProtectedRoute>
+                  <Banners />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/admin/lienhe"
               element={
@@ -82,7 +110,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
+   <Route
+              path="/admin/menu"
+              element={
+                <ProtectedRoute>
+                  <Menu />
+                </ProtectedRoute>
+              }
+            />
              <Route
               path="/admin/Trangchu"
               element={

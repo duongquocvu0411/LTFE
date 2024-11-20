@@ -1,40 +1,38 @@
 import React, { useContext } from "react";
 import Footerusers from "../Footerusers";
 import HeaderUsers from "../HeaderUsers";
-import { Link, useNavigate  } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CartContext } from "./CartContext";
 import { toast, ToastContainer } from "react-toastify";
 
 const Giohang = () => {
-  const { giohang, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong,Xoatoanbogiohang } = useContext(CartContext);
-  const navigate  = useNavigate();
+  const { giohang, XoaGioHang, TangSoLuong, GiamSoLuong, CapnhatSoLuong, Xoatoanbogiohang } = useContext(CartContext);
+  const navigate = useNavigate();
+
   // Tính tổng giá trị của giỏ hàng và định dạng theo kiểu tiền tệ Việt Nam
-  const tongTienGioHang = giohang.reduce((tong, item) => tong + parseFloat(item.giatien) * item.soLuong, 0);
-  
-// reduce là một phương thức (method) của mảng trong JavaScript, cho phép lặp qua tất cả các phần tử của mảng và "rút gọn" chúng lại thành một giá trị duy nhất.
-// parseFloat là một hàm trong JavaScript dùng để chuyển đổi một chuỗi ký tự (string) thành một số thập phân (floating-point number).
-const handleThanhtoan = () =>{
-  if( giohang.length === 0){
-    toast.warning('giỏ hàng trống, không thể thanh toán',{
-      position:'top-right',
-      autoClose:3000,
-    });
-  }else{
-    navigate("/thanhtoan");
-  }
-}
+  const tongTienGioHang = giohang.reduce(
+    (tong, item) => tong + parseFloat(item.gia) * item.soLuong, // Sử dụng `gia` thay vì `giatien`
+    0
+  );
+
+  const handleThanhtoan = () => {
+    if (giohang.length === 0) {
+      toast.warning("Giỏ hàng trống, không thể thanh toán", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } else {
+      navigate("/thanhtoan");
+    }
+  };
+
   return (
     <>
       <div>
-        <HeaderUsers />    
+        <HeaderUsers />
         {/* Single Page Header start */}
         <div className="container-fluid page-header py-5">
           <h1 className="text-center text-white display-6">Giỏ hàng</h1>
-          {/* <ol className="breadcrumb justify-content-center mb-0">
-            <li className="breadcrumb-item"><a href="#">Home</a></li>
-            <li className="breadcrumb-item"><a href="#">Pages</a></li>
-            <li className="breadcrumb-item active text-white">Cart</li>
-          </ol> */}
         </div>
         {/* Single Page Header End */}
         {/* Cart Page Start */}
@@ -48,7 +46,7 @@ const handleThanhtoan = () =>{
                     <th scope="col">Tên</th>
                     <th scope="col">Gía</th>
                     <th scope="col">Số lượng</th>
-                    <th scope="col">Tổng tiền </th>
+                    <th scope="col">Tổng tiền</th>
                     <th scope="col">Chức năng</th>
                   </tr>
                 </thead>
@@ -58,39 +56,39 @@ const handleThanhtoan = () =>{
                       <tr key={index}>
                         <td>
                           <img
-                            src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
+                            src={sanPham.hinhanh}
                             className="img-fluid rounded"
                             style={{ width: "60px", height: "60px" }}
                             alt={sanPham.tieude}
                           />
                         </td>
                         <td>{sanPham.tieude}</td>
-                        <td>{parseFloat(sanPham.giatien).toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ / {sanPham.don_vi_tinh}</td>
-                        <td> 
+                        <td>
+                          {parseFloat(sanPham.gia).toLocaleString("vi-VN", { minimumFractionDigits: 3 })}{" "}
+                          vnđ / {sanPham.donViTinh}
+                        </td>
+                        <td>
                           <div className="d-flex">
-                            <button 
-                              className="btn btn-warning btn-sm" 
-                              onClick={() => GiamSoLuong(sanPham.id)}
-                            >
+                            <button className="btn btn-warning btn-sm" onClick={() => GiamSoLuong(sanPham.id)}>
                               <i className="fa fa-minus"></i>
                             </button>
-                            <input 
-                              type="number" 
-                              className="form-control text-center mx-2" 
-                              value={sanPham.soLuong || 1}  // Đảm bảo hiển thị giá trị hợp lệ
+                            <input
+                              type="number"
+                              className="form-control text-center mx-2"
+                              value={sanPham.soLuong || 1} // Đảm bảo hiển thị giá trị hợp lệ
                               min="1"
                               onChange={(e) => CapnhatSoLuong(sanPham.id, e.target.value)}
-                              style={{ width: '60px', minWidth: '50px' }}  // Đặt chiều rộng tối thiểu
+                              style={{ width: "60px", minWidth: "50px" }} // Đặt chiều rộng tối thiểu
                             />
-                            <button 
-                              className="btn btn-warning btn-sm" 
-                              onClick={() => TangSoLuong(sanPham.id)}
-                            >
+                            <button className="btn btn-warning btn-sm" onClick={() => TangSoLuong(sanPham.id)}>
                               <i className="fa fa-plus"></i>
                             </button>
                           </div>
                         </td>
-                        <td>{(parseFloat(sanPham.giatien) * sanPham.soLuong).toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ</td>
+                        <td>
+                          {(parseFloat(sanPham.gia) * sanPham.soLuong).toLocaleString("vi-VN", { minimumFractionDigits: 3 })}{" "}
+                          vnđ
+                        </td>
                         <td>
                           <button className="btn btn-danger btn-sm" onClick={() => XoaGioHang(sanPham.id)}>
                             <i className="bi bi-trash3-fill"></i>
@@ -100,7 +98,10 @@ const handleThanhtoan = () =>{
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="6" className="text-center">Giỏ hàng của bạn trống vui lòng nhấn vào <Link to="/cuahang" > cửa hàng</Link> để mua hàng</td>
+                      <td colSpan="6" className="text-center">
+                        Giỏ hàng của bạn trống vui lòng nhấn vào{" "}
+                        <Link to="/cuahang"> cửa hàng</Link> để mua hàng
+                      </td>
                     </tr>
                   )}
                 </tbody>
@@ -116,22 +117,15 @@ const handleThanhtoan = () =>{
                   </div>
                   <div className="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                     <h5 className="mb-0 ps-4 me-4">Tổng</h5>
-                    <p className="mb-0 pe-4">{tongTienGioHang.toLocaleString('vi-VN', { minimumFractionDigits: 3 })} vnđ</p>
+                    <p className="mb-0 pe-4">
+                      {tongTienGioHang.toLocaleString("vi-VN", { minimumFractionDigits: 3 })} vnđ
+                    </p>
                   </div>
-                  {/* <Link to="/thanhtoan" className="btn btn-primary btn-sm w-100 text-uppercase mb-4" >
-                    Thanh toán
-                  </Link> */}
-                 <button
-                    className="btn btn-primary btn-sm w-100 text-uppercase mb-4"
-                    onClick={handleThanhtoan}  // Đổi từ Link thành button và sử dụng handleThanhToan
-                  >
+                  <button className="btn btn-primary btn-sm w-100 text-uppercase mb-4" onClick={handleThanhtoan}>
                     Thanh toán
                   </button>
                   <div className="text-center mb-4">
-                    <button 
-                      className="btn btn-danger btn-sm w-100 text-uppercase" 
-                      onClick={Xoatoanbogiohang}
-                    >
+                    <button className="btn btn-danger btn-sm w-100 text-uppercase" onClick={Xoatoanbogiohang}>
                       Xóa hết tất cả sản phẩm
                     </button>
                   </div>
@@ -142,7 +136,7 @@ const handleThanhtoan = () =>{
         </div>
       </div>
       <Footerusers />
-      <ToastContainer/>
+      <ToastContainer />
     </>
   );
 };

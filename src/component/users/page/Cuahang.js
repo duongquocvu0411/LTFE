@@ -2,223 +2,235 @@ import React, { useContext, useEffect, useState } from "react";
 import Footerusers from "../Footerusers";
 import axios from "axios";
 import HeaderUsers from "../HeaderUsers";
-import { CartContext } from "./CartContext"; 
+import { CartContext } from "./CartContext";
 import { Link } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { Spinner } from "react-bootstrap";
+import Countdown from "react-countdown";
 
 const Cuahang = () => {
-  // Khởi tạo state `danhMuc` để lưu trữ danh mục sản phẩm
   const [danhMuc, setDanhMuc] = useState([]);
-  
-  // Khởi tạo state `sanPham` để lưu trữ danh sách sản phẩm
   const [sanPham, setSanPham] = useState([]);
-  
-  // Khởi tạo state `danhMucDuocChon` để lưu trữ danh mục sản phẩm được chọn
   const [danhMucDuocChon, setDanhMucDuocChon] = useState("");
-
-  // Sử dụng context `CartContext` để lấy hàm `addToCart` nhằm thêm sản phẩm vào giỏ hàng
   const { addToCart } = useContext(CartContext);
-
-  // Pagination (phân trang)
-  // Khởi tạo state `trangHienTai` để lưu trữ trang hiện tại, mặc định là trang 1
   const [trangHienTai, setTrangHienTai] = useState(1);
-  
-  // Số lượng sản phẩm hiển thị trên mỗi trang
   const sanPhamMoiTrang = 8;
+  const [dangtai, setDangtai] = useState(false);
 
-  const [dangtai,setDangtai] = useState(false);
-  // useEffect: Gọi hàm `fetchDanhMuc` và `fetchSanPham` mỗi khi `danhMucDuocChon` thay đổi
   useEffect(() => {
     fetchDanhMuc();
     fetchSanPham();
   }, [danhMucDuocChon]);
 
-  // Hàm `fetchDanhMuc` để lấy danh sách danh mục sản phẩm từ API
   const fetchDanhMuc = async () => {
-    
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhmucsanphams`);
-      setDanhMuc(response.data); // Lưu danh mục vào state `danhMuc`
-     
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhmucsanpham`);
+      setDanhMuc(response.data);
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching categories:", error);
     }
   };
 
-  // Hàm `fetchSanPham` để lấy danh sách sản phẩm từ API
   const fetchSanPham = async () => {
     setDangtai(true);
     try {
-      // Nếu `danhMucDuocChon` có giá trị, gọi API lấy sản phẩm thuộc danh mục đó, ngược lại lấy tất cả sản phẩm
       const url = danhMucDuocChon
-        ? `${process.env.REACT_APP_BASEURL}/api/sanphams?danhmucsanpham_id=${danhMucDuocChon}`
-        : `${process.env.REACT_APP_BASEURL}/api/sanphams`;
-      const response = await axios.get(url);
-      setSanPham(response.data); // Lưu danh sách sản phẩm vào state `sanPham`
-      setDangtai(false);
+        ? `${process.env.REACT_APP_BASEURL}/api/sanpham/danhmuc/${danhMucDuocChon}`
+        : `${process.env.REACT_APP_BASEURL}/api/sanpham`;
+
+      const phanHoi = await axios.get(url);
+      setSanPham(phanHoi.data);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      toast.error("Có lỗi khi lấy danh sách sản phẩm", { position: "top-right", autoClose: 3000 });
+    } finally {
+      setDangtai(false);
     }
   };
 
-  // Pagination logic (Xử lý phân trang)
-  // Tính vị trí sản phẩm cuối cùng trên trang hiện tại
   const indexOfLastProduct = trangHienTai * sanPhamMoiTrang;
-  
-  // Tính vị trí sản phẩm đầu tiên trên trang hiện tại
   const indexOfFirstProduct = indexOfLastProduct - sanPhamMoiTrang;
-  
-  // Lấy danh sách sản phẩm hiển thị trên trang hiện tại
   const sanPhamHienTai = sanPham.slice(indexOfFirstProduct, indexOfLastProduct);
-  
-  // Tính tổng số trang
   const tongSoTrang = Math.ceil(sanPham.length / sanPhamMoiTrang);
-  
-  // Hàm `thayDoiTrang` để thay đổi trang hiện tại
   const thayDoiTrang = (soTrang) => setTrangHienTai(soTrang);
 
-    // Hàm lấy tên danh mục dựa trên id
-    const layTenDanhMuc = (idDanhMuc) => {
-      const danhMucTimDuoc = danhMuc.find(dm => dm.id === idDanhMuc);
-      return danhMucTimDuoc ? danhMucTimDuoc.name : 'Không rõ';
-    };
   return (
     <div>
       <HeaderUsers />
-
-      {/* Page Header */}
       <div className="container-fluid page-header py-5">
         <h1 className="text-center text-white display-6">Cửa hàng</h1>
-        {/* <ol className="breadcrumb justify-content-center mb-0">
-          <li className="breadcrumb-item"><Link to="/">Home</Link></li>
-          <li className="breadcrumb-item active text-white">Shop</li>
-        </ol> */}
       </div>
-
-      {/* Shop Section */}
       <div className="container-fluid fruite py-5">
         <div className="container py-5">
           <h1 className="mb-4">Cửa hàng trái cây tươi</h1>
+          
+          {/* Category Dropdown for Filtering */}
           <div className="d-flex justify-content-end mb-4">
             <div className="bg-light ps-3 py-3 rounded d-flex align-items-center">
               <div className="dropdown">
-                <button className="btn btn-secondary dropdown-toggle"
+                <button
+                  className="btn btn-secondary dropdown-toggle"
                   type="button"
                   id="dropdownCategoryButton"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
-                  >
-                    {danhMucDuocChon
-                    ? (danhMuc.find(dm => dm.id === danhMucDuocChon)?.name || 'danh mục khong rõ')
-                  : 'tất cả sản phẩm'}
-                  </button>
-                  <ul className="dropdown-menu" aria-labelledby="dropdownCategoryButton">
-                    <li>
-                      <button className="dropdown-item" type="button" 
-                        onClick={() => setDanhMucDuocChon('')}>
-                            Tất cả sản phẩm
+                >
+                  {danhMucDuocChon
+                    ? danhMuc.find((dm) => dm.id === danhMucDuocChon)?.name || "Danh mục không rõ"
+                    : "Tất cả sản phẩm"}
+                </button>
+                <ul className="dropdown-menu" aria-labelledby="dropdownCategoryButton">
+                  <li>
+                    <button className="dropdown-item" type="button" onClick={() => setDanhMucDuocChon("")}>
+                      Tất cả sản phẩm
+                    </button>
+                  </li>
+                  {danhMuc.map((dm) => (
+                    <li key={dm.id}>
+                      <button className="dropdown-item" type="button" onClick={() => setDanhMucDuocChon(dm.id)}>
+                        {dm.name}
                       </button>
                     </li>
-                    {danhMuc.map((dm) => (
-                      <li key={dm.id}>
-                        <button className="dropdown-item" type="button" 
-                          onClick={() => setDanhMucDuocChon(dm.id)}>
-                              {dm.name}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
 
-          {/* Danh sách sản phâm */}
-                {dangtai ? (
-                  <div className="text-center">
-                    <Spinner animation="border" variant="primary"/>
-                    <p>Đang tải dữ liệu</p>
-                  </div>
-                ) : (
-                  <div className="row g-4">
-                  {sanPhamHienTai.map((sp) => (
-                    <div key={sp.id} className="col-md-6 col-lg-4 col-xl-3 d-flex">
-                      <div className="rounded position-relative fruite-item card h-100 w-100">
-                        <div className="fruite-img card-img-top">
-                          <Link to={`/sanpham/${sp.id}`}>
-                            <img
-                              src={`${process.env.REACT_APP_BASEURL}/storage/${sp.hinhanh}`}
-                              className="img-fluid w-100 rounded-top"
-                              alt={sp.tieude}
-                              style={{ height: 250, objectFit: 'cover' }}
-                            />
-                          </Link>
-                          {/* Kiểm tra trạng thái Hết hàng và hiển thị thông báo */}
-                          {sp.trangthai === 'Hết hàng' && (
-                            <div
-                              className="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center bg-dark bg-opacity-50"
-                              style={{ zIndex: 1, padding: '5px 10px', borderRadius: '5px' }}
-                            >
-                              <span className="text-white small fw-bold">Hết hàng</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="text-white bg-secondary px-3 py-1 rounded position-absolute" style={{ top: 10, left: 10 }}>
-                          {sp.danhmucsanpham?.name}
-                        </div>
-                        <div className="card-body d-flex flex-column rounded-bottom">
-                          <h4 className="card-title">{sp.tieude}</h4>
-                          <div className="d-flex justify-content-between mt-auto">
-                             <p className="text-dark fs-5 fw-bold mb-0">{sp.giatien} vnđ /{sp.don_vi_tinh}</p>
-                            
-                            {/* Ẩn nút Thêm vào giỏ nếu sản phẩm hết hàng */}
-                            {sp.trangthai !== 'Hết hàng' && (
-                              <button
-                                onClick={() => addToCart(sp)}
-                                className="btn border border-secondary rounded-pill px-3 text-primary"
-                              >
-                                <i className="fa fa-shopping-bag me-2 text-primary" />
-                                Thêm vào giỏ
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+          <div className="tab-content mt-4">
+            <div className="tab-pane fade show p-0 active">
+              {dangtai ? (
+                <div className="text-center">
+                  <Spinner animation="border" variant="primary" />
+                  <p>Đang tải dữ liệu...</p>
                 </div>
-                )}
+              ) : sanPham.length > 0 ? (
+                <>
+                  {sanPham.length === 0 ? (
+                    <div className="text-center">
+                      <p>Không có sản phẩm trong danh mục này.</p>
+                    </div>
+                  ) : (
+                    <div className="row g-4">
+                      {sanPhamHienTai.map((sanPham) => {
+                        const activeSale = sanPham.sanphamSales?.find(
+                          (sale) =>
+                            sale.trangthai === "Đang áp dụng" &&
+                            new Date(sale.thoigianbatdau) <= new Date() &&
+                            new Date(sale.thoigianketthuc) >= new Date()
+                        );
 
-          {/* Phân trang */}
-          <div className="d-flex justify-content-center mt-5">
-            <nav aria-label="Page navigation">
-              <ul className="pagination pagination-sm m-0">
-                    {/* Các nút phân trang */}
-                <li className={`page-item ${trangHienTai === 1 ? 'disabled' : ''}`}>
-                  <button className="page-link" onClick={() => thayDoiTrang(1)}>«</button>
+                        const saleExpired = sanPham.sanphamSales?.some(
+                          (sale) =>
+                            sale.trangthai === "Đang áp dụng" &&
+                            new Date(sale.thoigianketthuc) < new Date()
+                        );
+
+                        return (
+                          <div className="col-md-6 col-lg-4 col-xl-3" key={sanPham.id}>
+                            <div className="rounded position-relative fruite-item shadow-sm">
+                              <div className="fruite-img position-relative">
+                                <Link to={`/sanpham/${sanPham.id}`} className="btn btn-link">
+                                  <img
+                                    src={sanPham.hinhanh}
+                                    className="img-fluid w-100 rounded-top"
+                                    alt={sanPham.tieude}
+                                    style={{ height: 250, objectFit: "cover" }}
+                                  />
+                                </Link>
+                                {sanPham.trangthai === "Hết hàng" && (
+                                  <div className="position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center bg-dark bg-opacity-50"
+                                    style={{ zIndex: 1, padding: "5px 10px", borderRadius: "5px" }}>
+                                    <span className="text-white small fw-bold">Hết hàng</span>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="text-white bg-secondary px-2 py-1 rounded position-absolute" style={{ top: 10, left: 10 }}>
+                                {sanPham.danhmucsanphamName}
+                              </div>
+                              <div className="p-3 rounded-bottom">
+                                <p className="h5 fw-bold">{sanPham.tieude}</p>
+                                <div className="d-flex flex-column align-items-start">
+                                  {activeSale ? (
+                                    <>
+                                      <p className="text-muted mb-1" style={{ textDecoration: "line-through" }}>
+                                        {parseFloat(sanPham.giatien).toLocaleString("vi-VN", { minimumFractionDigits: 3 })}{" "}
+                                        vnđ / {sanPham.don_vi_tinh}
+                                      </p>
+                                      <p className="text-danger fw-bold mb-2">
+                                        {parseFloat(activeSale.giasale).toLocaleString("vi-VN", { minimumFractionDigits: 3 })}{" "}
+                                        vnđ / {sanPham.don_vi_tinh}
+                                      </p>
+                                      <p className="text-warning mb-2">
+                                        <Countdown
+                                          date={new Date(activeSale.thoigianketthuc)}
+                                          renderer={({ days, hours, minutes, seconds, completed }) =>
+                                            completed ? (
+                                              <span>Khuyến mãi đã kết thúc</span>
+                                            ) : (
+                                              <span>
+                                                Còn lại: {days} ngày {hours} giờ {minutes} phút {seconds} giây
+                                              </span>
+                                            )
+                                          }
+                                        />
+                                      </p>
+                                    </>
+                                  ) : saleExpired ? (
+                                    <p className="text-danger fw-bold">Khuyến mãi đã kết thúc</p>
+                                  ) : (
+                                    <p className="text-dark fs-5 fst-italic mb-0">
+                                      {parseFloat(sanPham.giatien).toLocaleString("vi-VN", { minimumFractionDigits: 3 })}{" "}
+                                      vnđ / {sanPham.don_vi_tinh}
+                                    </p>
+                                  )}
+                                </div>
+                                {/* Add to Cart Button */}
+                                {sanPham.trangthai !== "Hết hàng" && !saleExpired && (
+                                  <button
+                                    onClick={() => addToCart(sanPham)}
+                                    className="btn btn-warning w-100 mt-3"
+                                  >
+                                    Thêm vào giỏ
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-center">
+                  <p>Không có sản phẩm nào trong danh mục này.</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Pagination */}
+          <div className="d-flex justify-content-center mt-4">
+            <ul className="pagination">
+              <li className="page-item" onClick={() => thayDoiTrang(trangHienTai - 1)}>
+                <button className="page-link" disabled={trangHienTai === 1}>
+                  Previous
+                </button>
+              </li>
+              {[...Array(tongSoTrang)].map((_, index) => (
+                <li key={index} className="page-item" onClick={() => thayDoiTrang(index + 1)}>
+                  <button className="page-link">{index + 1}</button>
                 </li>
-                <li className={`page-item ${trangHienTai === 1 ? 'disabled' : ''}`}>
-                  <button className="page-link" onClick={() => thayDoiTrang(trangHienTai - 1)}>‹</button>
-                </li>
-                {[...Array(tongSoTrang)].map((_, i) => (
-                  <li key={i} className={`page-item ${trangHienTai === i + 1 ? 'active' : ''}`}>
-                    <button className="page-link" onClick={() => thayDoiTrang(i + 1)}>
-                      {i + 1}
-                    </button>
-                  </li>
-                ))}
-                <li className={`page-item ${trangHienTai === tongSoTrang ? 'disabled' : ''}`}>
-                  <button className="page-link" onClick={() => thayDoiTrang(trangHienTai + 1)}>›</button>
-                </li>
-                <li className={`page-item ${trangHienTai === tongSoTrang ? 'disabled' : ''}`}>
-                  <button className="page-link" onClick={() => thayDoiTrang(tongSoTrang)}>»</button>
-                </li>
-              </ul>
-            </nav>
+              ))}
+              <li className="page-item" onClick={() => thayDoiTrang(trangHienTai + 1)}>
+                <button className="page-link" disabled={trangHienTai === tongSoTrang}>
+                  Next
+                </button>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
-
       <Footerusers />
       <ToastContainer />
     </div>

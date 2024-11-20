@@ -3,6 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
 import MoadlChitietsanpham from "./ModlaSanphamchitiet";
+import ModlaSanphamsale from './ModlaSanphamsale';
 
 const ModlaSanpham = ({
   show,
@@ -19,49 +20,64 @@ const ModlaSanpham = ({
   const [danhmucsanphamID, setDanhmucsanphamID] = useState("");
   const [danhmuc, setDanhmuc] = useState([]);
   const [trangthai, setTrangthai] = useState("");
-
+  const [showSaleModal, setShowSaleModal] = useState(false);
   // Quản lý ảnh phụ
   const [Fileanhphu, setFileanhphu] = useState([{}]);
   const [hinhanhPhu, setHinhanhPhu] = useState([]); // Hình ảnh phụ mới chọn
   const [existingHinhanhPhu, setExistingHinhanhPhu] = useState([]); // Ảnh phụ hiện có từ API
-
+  const [saleData, setSaleData] = useState(null);
   // Modal chi tiết sản phẩm
   const [showChiTietModal, setShowChiTietModal] = useState(false);
   const [chiTiet, setChiTiet] = useState({
-    mo_ta_chung: "",
-    hinh_dang: "",
-    cong_dung: "",
-    xuat_xu: "",
-    khoi_luong: "",
-    bao_quan: "",
-    thanh_phan_dinh_duong: "",
-    ngay_thu_hoach: "",
-    huong_vi: "",
-    nong_do_duong: "",
-    bai_viet: "",
+    moTaChung: "",
+    hinhDang: "",
+    congDung: "",
+    xuatXu: "",
+    khoiLuong: "",
+    baoQuan: "",
+    thanhPhanDinhDuong: "",
+    ngayThuHoach: "",
+    huongVi: "",
+    nongDoDuong: "",
+    baiViet: "",
   });
 
   useEffect(() => {
+
     axios
-      .get(`${process.env.REACT_APP_BASEURL}/api/danhmucsanphams`)
+      .get(`${process.env.REACT_APP_BASEURL}/api/danhmucsanpham`)
       .then((response) => {
         setDanhmuc(response.data);
       })
       .catch((error) => {
         console.log("Có lỗi khi lấy dữ liệu từ API ", error);
       });
-
+    console.log("Product data:", product); // Kiểm tra giá trị của `product`
     if (isEdit && product) {
-      setTieude(product.tieude);
-      setTrangthai(product.trangthai);
-      setGiatien(product.giatien);
-      setDvt(product.don_vi_tinh);
-      setHinhanh(null); // Đặt lại hình ảnh chính khi bắt đầu
-      setDanhmucsanphamID(product.danhmucsanpham_id);
+      setTieude(product.tieude || "");
+      setTrangthai(product.trangthai || "");
+      setGiatien(product.giatien || "");
+      setDvt(product.don_vi_tinh || ""); // Đảm bảo `dvt` có giá trị mặc định
+      setDanhmucsanphamID(product.danhmucsanpham_id || "");
+
+      setSaleData(
+        product.sanphamSales && product.sanphamSales.length > 0
+          ? {
+              ...product.sanphamSales[0],
+              thoigianbatdau: product.sanphamSales[0].thoigianbatdau
+                ? product.sanphamSales[0].thoigianbatdau.substring(0, 16)
+                : "",
+              thoigianketthuc: product.sanphamSales[0].thoigianketthuc
+                ? product.sanphamSales[0].thoigianketthuc.substring(0, 16)
+                : "",
+            }
+          : null
+      );
+
 
       // Hiển thị ảnh chính
       if (product.hinhanh) {
-        setXemtruocHinhAnh(`${process.env.REACT_APP_BASEURL}/storage/${product.hinhanh}`);
+        setXemtruocHinhAnh(`${process.env.REACT_APP_BASEURL}/${product.hinhanh}`);
       }
 
       // Hiển thị ảnh phụ từ API
@@ -70,19 +86,19 @@ const ModlaSanpham = ({
         setFileanhphu(product.images.map(() => ({}))); // Tạo input tương ứng với số ảnh phụ
       }
 
-      if (product.chitiet) {
+      if (product.chiTiet) {
         setChiTiet({
-          mo_ta_chung: product.chitiet.mo_ta_chung || "",
-          hinh_dang: product.chitiet.hinh_dang || "",
-          cong_dung: product.chitiet.cong_dung || "",
-          xuat_xu: product.chitiet.xuat_xu || "",
-          khoi_luong: product.chitiet.khoi_luong || "",
-          bao_quan: product.chitiet.bao_quan || "",
-          thanh_phan_dinh_duong: product.chitiet.thanh_phan_dinh_duong || "",
-          ngay_thu_hoach: product.chitiet.ngay_thu_hoach || "",
-          huong_vi: product.chitiet.huong_vi || "",
-          nong_do_duong: product.chitiet.nong_do_duong || "",
-          bai_viet: product.chitiet.bai_viet || "",
+          moTaChung: product.chiTiet.mo_ta_chung || "",
+          hinhDang: product.chiTiet.hinh_dang || "",
+          congDung: product.chiTiet.cong_dung || "",
+          xuatXu: product.chiTiet.xuat_xu || "",
+          khoiLuong: product.chiTiet.khoi_luong || "",
+          baoQuan: product.chiTiet.bao_quan || "",
+          thanhPhanDinhDuong: product.chiTiet.thanh_phan_dinh_duong || "",
+          ngayThuHoach: product.chiTiet.ngay_thu_hoach || "",
+          huongVi: product.chiTiet.huong_vi || "",
+          nongDoDuong: product.chiTiet.nong_do_duong || "",
+          baiViet: product.chiTiet.bai_viet || "",
         });
       } else {
         resetChiTiet();
@@ -96,6 +112,7 @@ const ModlaSanpham = ({
       setFileanhphu([{}]); // Reset input fields
     }
   }, [isEdit, product]);
+
 
 
 
@@ -134,80 +151,110 @@ const ModlaSanpham = ({
   };
 
   const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append("tieude", tieude);
-    formData.append("trangthai", trangthai);
-    formData.append("giatien", giatien);
-    formData.append("don_vi_tinh", dvt);
-    formData.append("danhmucsanpham_id", danhmucsanphamID);
+    let hasError = false;
 
-    // Thêm ảnh phụ
-    hinhanhPhu.forEach((file, index) => {
-      formData.append(`images[${index}]`, file);
+    // Validation cho các trường bắt buộc
+    if (!tieude) {
+      toast.error("Vui lòng nhập tiêu đề sản phẩm.", { autoClose: 3000 });
+      hasError = true;
+    }
+
+    if (!giatien) {
+      toast.error("Vui lòng nhập giá sản phẩm.", { autoClose: 3000 });
+      hasError = true;
+    }
+
+    if (!dvt) {
+      toast.error("Vui lòng chọn đơn vị tính.", { autoClose: 3000 });
+      hasError = true;
+    }
+
+    if (!danhmucsanphamID) {
+      toast.error("Vui lòng chọn danh mục sản phẩm.", { autoClose: 3000 });
+      hasError = true;
+    }
+
+    if (!trangthai) {
+      toast.error("Vui lòng chọn trạng thái sản phẩm.", { autoClose: 3000 });
+      hasError = true;
+    }
+
+    if (!isEdit && !hinhanh) {
+      toast.error("Vui lòng chọn hình ảnh chính.", { autoClose: 3000 });
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    // Tạo FormData và thêm tất cả các trường
+    const formData = new FormData();
+    formData.append("Tieude", tieude);
+    formData.append("Giatien", giatien);
+    formData.append("Trangthai", trangthai);
+    formData.append("DonViTinh", dvt);
+    formData.append("DanhmucsanphamId", danhmucsanphamID);
+
+    // Thêm hình ảnh chính nếu có hình ảnh mới
+    if (hinhanh) {
+      formData.append("Hinhanh", hinhanh);
+    }
+    if (saleData) {
+      formData.append("Sale.Giasale", saleData.giasale || "");
+      formData.append("Sale.Thoigianbatdau", saleData.thoigianbatdau || "");
+      formData.append("Sale.Thoigianketthuc", saleData.thoigianketthuc || "");
+      formData.append("Sale.Trangthai", saleData.trangthai || "");
+    }
+
+
+    // Thêm ảnh phụ nếu có ảnh mới
+    hinhanhPhu.forEach((file) => {
+      if (file) formData.append("Images", file);
     });
 
-    if (hinhanh instanceof File) {
-      formData.append("hinhanh", hinhanh);
+    // Thêm chi tiết sản phẩm nếu có bất kỳ trường nào được nhập
+    if (Object.keys(chiTiet).some((key) => chiTiet[key])) {
+      formData.append("ChiTiet.MoTaChung", chiTiet.moTaChung || "");
+      formData.append("ChiTiet.HinhDang", chiTiet.hinhDang || "");
+      formData.append("ChiTiet.CongDung", chiTiet.congDung || "");
+      formData.append("ChiTiet.XuatXu", chiTiet.xuatXu || "");
+      formData.append("ChiTiet.KhoiLuong", chiTiet.khoiLuong || "");
+      formData.append("ChiTiet.BaoQuan", chiTiet.baoQuan || "");
+      formData.append("ChiTiet.ThanhPhanDinhDuong", chiTiet.thanhPhanDinhDuong || "");
+      formData.append("ChiTiet.NgayThuHoach", chiTiet.ngayThuHoach || "");
+      formData.append("ChiTiet.HuongVi", chiTiet.huongVi || "");
+      formData.append("ChiTiet.NongDoDuong", chiTiet.nongDoDuong || "");
+      formData.append("ChiTiet.BaiViet", chiTiet.baiViet || "");
     }
 
-    for (const key in chiTiet) {
-      formData.append(key, chiTiet[key]);
-    }
+    try {
+      const method = isEdit ? "put" : "post";
+      const url = isEdit
+        ? `${process.env.REACT_APP_BASEURL}/api/sanpham/${product.id}`
+        : `${process.env.REACT_APP_BASEURL}/api/sanpham`;
 
-    if (isEdit) {
-      axios
-        .post(
-          `${process.env.REACT_APP_BASEURL}/api/sanphams/${product.id}?_method=PUT`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
-        .then(() => {
-          toast.success("Sản phẩm đã được cập nhật thành công!", {
-            position: "top-right",
-            autoClose: 3000,
-          });
-          fetchSanpham();
-          handleClose();
-          resetForm();
-          resetChiTiet();
-        })
-        .catch((error) => {
-          console.log("Error updating product:", error);
-          toast.error("Có lỗi xảy ra khi cập nhật sản phẩm. Vui lòng thử lại.", {
-            position: "top-right",
-            autoClose: 3000,
-          });
-        });
-    } else {
-      axios
-        .post(`${process.env.REACT_APP_BASEURL}/api/sanphams`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then(() => {
-          toast.success("Sản phẩm đã được thêm thành công!", {
-            position: "top-right",
-            autoClose: 3000,
-          });
-          fetchSanpham();
-          handleClose();
-          resetForm();
-          resetChiTiet();
-        })
-        .catch((error) => {
-          console.log("Error adding product:", error);
-          toast.error("Có lỗi xảy ra khi thêm sản phẩm. Vui lòng thử lại.", {
-            position: "top-right",
-            autoClose: 3000,
-          });
-        });
+
+      const response = await axios({
+        method,
+        url,
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      toast.success(`Sản phẩm đã được ${isEdit ? "cập nhật" : "thêm"} thành công!`, { autoClose: 3000 });
+      fetchSanpham();
+      handleClose();
+      resetForm();
+      resetChiTiet();
+    } catch (error) {
+      console.error("Error while submitting product:", error);
+      if (error.response) {
+        console.error("Error details:", error.response.data);
+      }
+      toast.error(`Có lỗi khi ${isEdit ? "cập nhật" : "thêm"} sản phẩm. Vui lòng thử lại.`, { autoClose: 3000 });
     }
   };
+
+
 
   const resetForm = () => {
     setTieude("");
@@ -219,44 +266,37 @@ const ModlaSanpham = ({
     setDanhmucsanphamID("");
     setHinhanhPhu([]); // Reset ảnh phụ
     setFileanhphu([{}]); // Reset input fields
+    setSaleData(null);
+
   };
   const resetChiTiet = () => {
     setChiTiet({
-      mo_ta_chung: "",
-      hinh_dang: "",
-      cong_dung: "",
-      xuat_xu: "",
-      khoi_luong: "",
-      bao_quan: "",
-      thanh_phan_dinh_duong: "",
-      ngay_thu_hoach: "",
-      huong_vi: "",
-      nong_do_duong: "",
-      bai_viet: "",
+      moTaChung: "",
+      hinhDang: "",
+      congDung: "",
+      xuatXu: "",
+      khoiLuong: "",
+      baoQuan: "",
+      thanhPhanDinhDuong: "",
+      ngayThuHoach: "",
+      huongVi: "",
+      nongDoDuong: "",
+      baiViet: "",
     });
   };
 
   // Hàm xử lý xóa ảnh phụ khi người dùng nhấn nút xóa
   const handleRemoveImage = async (imageId, index) => {
     try {
-      await axios.delete(`${process.env.REACT_APP_BASEURL}/api/sanphams/images/${imageId}`);
-
-      toast.success("Đã xóa ảnh phụ thành công!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-
+      await axios.delete(`${process.env.REACT_APP_BASEURL}/api/sanpham/images/${imageId}`);
+      toast.success("Đã xóa ảnh phụ thành công!", { autoClose: 3000 });
       const updatedExistingImages = existingHinhanhPhu.filter((img) => img.id !== imageId);
       setExistingHinhanhPhu(updatedExistingImages);
-
       const capnhatFile = Fileanhphu.filter((_, i) => i !== index);
       setFileanhphu(capnhatFile);
     } catch (error) {
       console.error("Có lỗi khi xóa ảnh phụ:", error);
-      toast.error("Không thể xóa ảnh phụ. Vui lòng thử lại!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      toast.error("Không thể xóa ảnh phụ. Vui lòng thử lại!", { autoClose: 3000 });
     }
   };
 
@@ -298,20 +338,19 @@ const ModlaSanpham = ({
                 onChange={(e) => setGiatien(e.target.value)}
               />
             </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Label>Đơn vị tính</Form.Label>
               <Form.Control
                 as="select"
-                value={dvt}
-                onChange={(e) => setDvt(e.target.value)}
+                value={dvt} // Make sure this is exactly `dvt` with fallback to an empty string
+                onChange={(e) => setDvt(e.target.value)} // Ensure this is updating the `dvt` state
               >
                 <option value="">Chọn Đơn vị tính</option>
-                <option value="Kg">kg</option>
-                <option value="Phần">phần</option>
+                <option value="kg">kg</option>
+                <option value="phần">phần</option>
+                {/* Add more options as needed */}
               </Form.Control>
             </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Label>Danh mục sản phẩm</Form.Label>
               <Form.Control
@@ -350,7 +389,7 @@ const ModlaSanpham = ({
             {existingHinhanhPhu.map((img, index) => (
               <Form.Group key={img.id} className="mb-3">
                 <Form.Label>Hình ảnh phụ {index + 1}</Form.Label>
-                <img src={`${process.env.REACT_APP_BASEURL}/storage/${img.hinhanh}`} alt={`Ảnh phụ ${index + 1}`} width="200" />
+                <img src={`${process.env.REACT_APP_BASEURL}/${img.hinhanh}`} alt={`Ảnh phụ ${index + 1}`} width="200" />
                 <Button variant="danger" className="mt-2" onClick={() => handleRemoveImage(img.id, index)}>
                   Xóa ảnh phụ
                 </Button>
@@ -382,6 +421,14 @@ const ModlaSanpham = ({
             >
               Thêm/Sửa Chi tiết sản phẩm
             </Button>
+            <Button
+              variant="info"
+              className="mt-3"
+              onClick={() => setShowSaleModal(true)}
+            >
+              {saleData ? "Chỉnh sửa khuyến mãi" : "Thêm khuyến mãi"}
+            </Button>
+
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -402,6 +449,15 @@ const ModlaSanpham = ({
         setChiTiet={setChiTiet}
         handleSaveChiTiet={handleSaveChiTiet}
       />
+        {/* Modal sale */}
+        <ModlaSanphamsale
+        show={showSaleModal}
+        handleClose={() => setShowSaleModal(false)}
+        saleData={saleData}
+        setSaleData={setSaleData}
+      />
+
+
     </>
   );
 };

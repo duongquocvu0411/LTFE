@@ -10,9 +10,10 @@ import ModlaSanpham from './../modla/ModlaSanpham';
 import SiderbarAdmin from '../SidebarAdmin';
 import ModalDanhGia from '../modla/ModalDanhGia';
 import { Link } from 'react-router-dom';
+import Countdown from 'react-countdown';
 
 const SanPham = () => {
-  // State lưu trữ danh mục sản phẩm
+  // State lưu trữ danh mục sản phẩma
   const [danhMuc, setDanhMuc] = useState([]);
 
 
@@ -40,8 +41,13 @@ const SanPham = () => {
   // Tính toán vị trí sản phẩm để phân trang
   const viTriSanPhamCuoi = trangHienTai * sanPhamMoiTrang;
   const viTriSanPhamDau = viTriSanPhamCuoi - sanPhamMoiTrang;
-  const sanPhamTheoTrang = danhSachSanPham.slice(viTriSanPhamDau, viTriSanPhamCuoi);
-  const tongSoTrang = Math.ceil(danhSachSanPham.length / sanPhamMoiTrang);
+  const sanPhamTheoTrang = Array.isArray(danhSachSanPham)
+  ? danhSachSanPham.slice(viTriSanPhamDau, viTriSanPhamCuoi)
+  : [];
+const tongSoTrang = Array.isArray(danhSachSanPham)
+  ? Math.ceil(danhSachSanPham.length / sanPhamMoiTrang)
+  : 0;
+
 
   // Hàm thay đổi trang hiện tại khi người dùng bấm nút phân trang
   const phanTrang = (soTrang) => setTrangHienTai(soTrang);
@@ -52,30 +58,35 @@ const SanPham = () => {
     layDanhMuc();
   }, [danhMucDuocChon]);
 
-  // Hàm gọi API để lấy danh sách sản phẩm
   const layDanhSachSanPham = async () => {
-    setDangtai(true); //bắt đầu hiện đang tải
+    setDangtai(true); // Bắt đầu trạng thái đang tải
     try {
       const url = danhMucDuocChon
-        ? `${process.env.REACT_APP_BASEURL}/api/sanphams?danhmucsanpham_id=${danhMucDuocChon}`
-        : `${process.env.REACT_APP_BASEURL}/api/sanphams`;
+        ? `${process.env.REACT_APP_BASEURL}/api/Sanpham/danhmuc/${danhMucDuocChon}`
+        : `${process.env.REACT_APP_BASEURL}/api/sanpham`;
 
       const response = await axios.get(url);
-      setDanhSachSanPham(response.data); // Lưu danh sách sản phẩm vào state
-      // setTrangHienTai(1); // Đặt lại trang hiện tại về 1 khi thay đổi danh mục
-      setDangtai(false); // kết thúc trạng thái đang tải lấy dữ liệu
+      setDanhSachSanPham(response.data || []); // Lưu danh sách sản phẩm vào state
+      setTrangHienTai(1); // Đặt lại trang hiện tại về 1 khi thay đổi danh mục
     } catch (error) {
-      console.log('Có lỗi khi lấy API:', error);
-      toast.error('Có lỗi khi lấy danh sách sản phẩm', {
-        position: 'top-right',
-        autoClose: 3000,
-      });
+      if (error.response && error.response.status === 404) {
+        setDanhSachSanPham([]); // Khi API trả về 404, đặt danh sách sản phẩm là mảng rỗng
+      } else {
+        console.log("Có lỗi khi lấy API:", error);
+        toast.error("Có lỗi khi lấy danh sách sản phẩm", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
+    } finally {
+      setDangtai(false); // Kết thúc trạng thái đang tải
     }
   };
+
   // Hàm gọi API để lấy danh sách danh mục sản phẩm
   const layDanhMuc = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhmucsanphams`);
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhmucsanpham`);
       setDanhMuc(response.data); // Lưu danh mục sản phẩm vào state
     } catch (error) {
       console.error('Lỗi khi lấy danh mục sản phẩm:', error);
@@ -94,7 +105,7 @@ const SanPham = () => {
   // Hàm mở modal để chỉnh sửa sản phẩm
   const moModalSuaSanPham = async (sanPham) => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/sanphams/${sanPham.id}`);
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/sanpham/${sanPham.id}`);
       const productData = response.data;
 
       setSanPhamHienTai(productData); // Lưu sản phẩm hiện tại với chi tiết đầy đủ
@@ -116,7 +127,7 @@ const SanPham = () => {
     const SanphamXoa = danhSachSanPham.find((sanpham) => sanpham.id === id);
 
     try {
-      await axios.delete(`${process.env.REACT_APP_BASEURL}/api/sanphams/${id}`);
+      await axios.delete(`${process.env.REACT_APP_BASEURL}/api/sanpham/${id}`);
 
       toast.success(`Sản phẩm ${SanphamXoa.tieude} đã được xóa thành công!`, {
         position: 'top-right',
@@ -140,16 +151,23 @@ const SanPham = () => {
   const moModalChiTiet = async (sanphams_id) => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/chitiets/${sanphams_id}`);
+      console.log(response.data);  // Xem dữ liệu có đầy đủ thông tin không
       setNoiDungChiTiet(response.data); // Lưu dữ liệu chi tiết sản phẩm
       setHienThiModalChiTiet(true); // Hiển thị modal chi tiết
     } catch (error) {
-      console.log('Lỗi khi lấy chi tiết sản phẩm:', error);
-      toast.error('Không thể lấy chi tiết sản phẩm', {
-        position: 'top-right',
-        autoClose: 3000,
-      });
+      if (error.response && error.response.status === 404) {
+        setNoiDungChiTiet("");
+        setHienThiModalChiTiet(true);
+      } else {
+        console.log('Lỗi khi lấy chi tiết sản phẩm:', error);
+        toast.error('Không thể lấy chi tiết sản phẩm', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
+      }
     }
   };
+
   const moModalDanhGia = (sanphams_id) => {
     setSanphamIdXemDanhGia(sanphams_id); // Lưu trữ sanphams_id
     setShowModalDanhGia(true); // Hiển thị modal đánh giá
@@ -179,39 +197,39 @@ const SanPham = () => {
                     <li className="breadcrumb-item"><Link to="/admin/trangchu">Home</Link></li>
                     <li className="breadcrumb-item active">Sản Phẩm</li>
                   </ol>
+                </div>
+                <div className='col-sm-2'>
+                  <div className="dropdown">
+                    <button
+                      className="btn btn-secondary dropdown-toggle"
+                      type="button"
+                      id="dropdownCategoryButton"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      {danhMucDuocChon
+                        ? (danhMuc.find(dm => dm.id === danhMucDuocChon)?.name || "Danh mục không rõ")
+                        : "Tất cả sản phẩm"}
+                    </button>
+                    <ul className="dropdown-menu" aria-labelledby="dropdownCategoryButton">
+                      <li>
+                        <button className="dropdown-item" type="button" onClick={() => setDanhMucDuocChon('')}>
+                          Tất cả sản phẩm
+                        </button>
+                      </li>
+                      {danhMuc.map((dm) => (
+                        <li key={dm.id}>
+                          <button className="dropdown-item" type="button" onClick={() => setDanhMucDuocChon(dm.id)}>
+                            {dm.name}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <div className='col-sm-2'>
-  <div className="dropdown">
-    <button
-      className="btn btn-secondary dropdown-toggle"
-      type="button"
-      id="dropdownCategoryButton"
-      data-bs-toggle="dropdown"
-      aria-expanded="false"
-    >
-    {danhMucDuocChon 
-        ? (danhMuc.find(dm => dm.id === danhMucDuocChon)?.name || "Danh mục không rõ")
-        : "Tất cả sản phẩm"}
-    </button>
-    <ul className="dropdown-menu" aria-labelledby="dropdownCategoryButton">
-      <li>
-        <button className="dropdown-item" type="button" onClick={() => setDanhMucDuocChon('')}>
-          Tất cả sản phẩm
-        </button>
-      </li>
-      {danhMuc.map((dm) => (
-        <li key={dm.id}>
-          <button className="dropdown-item" type="button" onClick={() => setDanhMucDuocChon(dm.id)}>
-            {dm.name}
-          </button>
-        </li>
-      ))}
-    </ul>
-  </div>
-</div>
-</div>
-</div>
-</div>  
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Bảng danh sách sản phẩm */}
           <div className="container-fluid">
@@ -248,50 +266,86 @@ const SanPham = () => {
                         <th scope="col">Chi tiết sản phẩm</th>
                         <th scope="col">Đánh giá</th>
                         <th scope="col">Trạng thái</th>
+                        <th scope='col'>Khuyến mãi</th>
                         <th scope="col">Chức năng</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {sanPhamTheoTrang.map((sanPham, index) => (
-                        <tr key={nanoid()}>
-                          <td>{viTriSanPhamDau + index + 1}</td>
-                          <td>
-                            <div className="d-flex align-items-center">
-                              <img
-                                src={`${process.env.REACT_APP_BASEURL}/storage/${sanPham.hinhanh}`}
-                                alt={sanPham.tieude}
-                                style={{ height: "50px", objectFit: "cover" }}
-                              />
-                            </div>
-                          </td>
-                          <td>{sanPham.tieude}</td>
-                          <td>{sanPham.giatien} vnđ</td>
-                          <td>{sanPham.don_vi_tinh}</td>
-                          <td>
-                            <Button
-                              variant="btn btn-primary"
-                              onClick={() => moModalChiTiet(sanPham.id)}
-                            >
-                              Xem chi tiết
-                            </Button>
-                          </td>
-                          <td>
-                            <Button variant="info" onClick={() => moModalDanhGia(sanPham.id)}>
-                              Xem Đánh Giá
-                            </Button>
-                          </td>
-                          <td>{sanPham.trangthai}</td>
-                          <td>
-                            <Button variant="primary me-2" onClick={() => moModalSuaSanPham(sanPham)}>
-                              <i className="fas fa-edit"></i>
-                            </Button>
-                            <Button variant="danger" onClick={() => xoaSanPham(sanPham.id)}>
-                              <i className="fas fa-trash"></i>
-                            </Button>
-                          </td>
+                      {danhSachSanPham && danhSachSanPham.length > 0 ? (
+                        sanPhamTheoTrang.map((sanPham, index) => (
+                          <tr key={nanoid()}>
+                            <td>{viTriSanPhamDau + index + 1}</td>
+                            <td>
+                              <div className="d-flex align-items-center">
+                                <img src={sanPham.hinhanh} alt={sanPham.tieude} style={{ height: "50px", objectFit: "cover" }} />
+                              </div>
+                            </td>
+                            <td>{sanPham.tieude}</td>
+                            <td>{sanPham.giatien} vnđ</td>
+                            <td>{sanPham.donViTinh}</td>
+                            <td>
+                              <Button
+                                variant="btn btn-primary"
+                                onClick={() => moModalChiTiet(sanPham.id)}
+                              >
+                                Xem chi tiết
+                              </Button>
+                            </td>
+                            <td>
+                              <Button variant="info" onClick={() => moModalDanhGia(sanPham.id)}>
+                                Xem Đánh Giá
+                              </Button>
+                            </td>
+                            <td>{sanPham.trangthai}</td>
+                            <td>
+                              {sanPham.sanphamSales.length > 0 ? (
+                                sanPham.sanphamSales.map((sale) => (
+                                  <div key={sale.id}>
+                                    <p>Trạng thái: {sale.trangthai}</p>
+                                    {sale.trangthai === "Đang áp dụng" ? (
+                                      <p>
+                                        Còn lại:{" "}
+                                        <Countdown
+                                          date={new Date(sale.thoigianketthuc)}
+                                          renderer={({ days, hours, minutes, seconds, completed }) =>
+                                            completed ? (
+                                              <span>Khuyến mãi đã kết thúc</span>
+                                            ) : (
+                                              <span>
+                                                {days} ngày {hours} giờ {minutes} phút {seconds} giây
+                                              </span>
+                                            )
+                                          }
+                                        />
+                                      </p>
+                                    ) : (
+                                      <span>Khuyến mãi đã kết thúc</span>
+                                    )}
+                                  </div>
+                                ))
+                              ) : (
+                                <span>Không có khuyến mãi</span>
+                              )}
+                            </td>
+
+
+                            <td>
+                              <Button variant="primary me-2" onClick={() => moModalSuaSanPham(sanPham)}>
+                                <i className="fas fa-edit"></i>
+                              </Button>
+                              <Button variant="danger" onClick={() => xoaSanPham(sanPham.id)}>
+                                <i className="fas fa-trash"></i>
+                              </Button>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="10" className="text-center">Không có sản phẩm nào trong danh mục này</td>
                         </tr>
-                      ))}
+                      )}
                     </tbody>
+
                   </table>
                 )}
               </div>
@@ -339,11 +393,11 @@ const SanPham = () => {
 
 
         {/* Modal chi tiết sản phẩm */}
-        <Modal show={hienThiModalChiTiet} onHide={() => setHienThiModalChiTiet(false)} size='lg'>
+        <Modal show={hienThiModalChiTiet} onHide={() => setHienThiModalChiTiet(false)} size='xl'>
           <Modal.Header closeButton>
             <Modal.Title>Chi Tiết Sản Phẩm</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body >
             <p><strong>Mô tả chung:</strong> {noiDungChiTiet.mo_ta_chung}</p>
             <p><strong>Hình dáng:</strong> {noiDungChiTiet.hinh_dang}</p>
             <p><strong>Công dụng:</strong> {noiDungChiTiet.cong_dung}</p>
@@ -354,7 +408,7 @@ const SanPham = () => {
             <p><strong>Ngày thu hoạch:</strong> {noiDungChiTiet.ngay_thu_hoach}</p>
             <p><strong>Hương vị:</strong> {noiDungChiTiet.huong_vi}</p>
             <p><strong>Nồng độ đường:</strong> {noiDungChiTiet.nong_do_duong}</p>
-            {/* Sử dụng dangerouslySetInnerHTML để render bài viết dưới dạng HTML */}
+            {/* Use dangerouslySetInnerHTML to render bài viết as HTML */}
             <p><strong>Bài viết:</strong></p>
             <div dangerouslySetInnerHTML={{ __html: noiDungChiTiet.bai_viet }} />
           </Modal.Body>

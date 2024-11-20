@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import Footer from '../Footer';
 import axios from 'axios';
-import { Button, Modal, Form, Spinner } from 'react-bootstrap';
+import { Button, Modal, Form, Spinner, Row, Container, Col } from 'react-bootstrap';
 import { nanoid } from 'nanoid';
 import { toast, ToastContainer } from 'react-toastify';
 import HeaderAdmin from '../HeaderAdmin';
@@ -17,7 +17,7 @@ const LienHeAdmin = () => {
   const [hienThiModal, setHienThiModal] = useState(false);
   const [noiDungChiTiet, setNoiDungChiTiet] = useState('');
   const [ngayLoc, setNgayLoc] = useState('');
-  const [dangtai,setDangtai] = useState(false);
+  const [dangtai, setDangtai] = useState(false);
 
   // Logic phân trang
   const chiSoPhanTuCuoi = trangHienTai * soPhanTuMotTrang;
@@ -30,15 +30,19 @@ const LienHeAdmin = () => {
   // Lấy danh sách liên hệ từ API
   const layDanhSachLienHe = async () => {
     setDangtai(true);
-   try{
+    try {
       const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/lienhe`);
       setDanhSachLienHe(response.data);
       setDanhSachLienHeLoc(response.data);
       setDangtai(false);
-   }
-   catch(error){
-    console.log('có lỗi khi lấy lien hệ' , error);
-   }
+    }
+    catch (error) {
+      console.log('có lỗi khi lấy lien hệ', error);
+      toast.error('có lỗi khi lấy thông tin liên hê vui lòng thử lại sau', {
+        position: 'top-right',
+        autoClose: 3000
+      })
+    }
   };
 
   useEffect(() => {
@@ -47,21 +51,21 @@ const LienHeAdmin = () => {
 
   // Xóa liên hệ
   const xoaLienHe = async (id) => {
-    try{
+    try {
       await axios.delete(`${process.env.REACT_APP_BASEURL}/api/lienhe/${id}`);
 
-      toast.success('đã xóa liên hệ thành công',{
-        position:'top-right',
-        autoClose:3000
+      toast.success('đã xóa liên hệ thành công', {
+        position: 'top-right',
+        autoClose: 3000
       });
       layDanhSachLienHe(); // cập nhật danh sách liên hệ sau khi xóa thành công 
 
-    } catch(error){
+    } catch (error) {
       console.log('có lỗi khi xóa liên hệ', error);
-      
-      toast.error('có lỗi khi xóa liên hệ. vui lòng thử lại',{
-        position:'top-right',
-        autoClose:3000
+
+      toast.error('có lỗi khi xóa liên hệ. vui lòng thử lại', {
+        position: 'top-right',
+        autoClose: 3000
       });
     }
   };
@@ -93,7 +97,7 @@ const LienHeAdmin = () => {
       <div id="content-wrapper" className="d-flex flex-column">
         {/* Main Content */}
         <div id="content">
-          <HeaderAdmin/>
+          <HeaderAdmin />
           {/* Content Header */}
           <div className="content-header">
             <div className="container-fluid">
@@ -102,7 +106,7 @@ const LienHeAdmin = () => {
                   <h1 className="h3 mb-0 text-gray-800">Danh Sách Liên Hệ</h1>
                 </div>
                 <div className="col-sm-6">
-                  <ol className="breadcrumb float-sm-right">  
+                  <ol className="breadcrumb float-sm-right">
                     <li className="breadcrumb-item"><Link to="/admin/trangchu">Home</Link></li>
                     <li className="breadcrumb-item active">Danh Sách Liên Hệ</li>
                   </ol>
@@ -132,54 +136,54 @@ const LienHeAdmin = () => {
               <div className="card-body table-responsive" style={{ maxHeight: '400px' }}>
                 {dangtai ? (
                   <div className='text-center'>
-                    <Spinner animation='border' variant='primary'/>
-                      <p>Đang tải dữ liệu...</p>
+                    <Spinner animation='border' variant='primary' />
+                    <p>Đang tải dữ liệu...</p>
                   </div>
                 ) : (
                   <table className="table table-bordered table-hover table-striped">
-                  <thead>
-                    <tr>
-                      <th scope="col">STT</th>
-                      <th scope="col">Họ Tên</th>
-                      <th scope="col">Email</th>
-                      <th scope="col">Số Điện Thoại</th>
-                      <th scope="col">Nội Dung</th>
-                      <th scope="col">Ngày Tạo</th>
-                      <th scope="col">Chức Năng</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cacPhanTuHienTai.map((item, index) => (
-                      <tr key={nanoid()}>
-                        <td>{chiSoPhanTuDau + index + 1}</td>
-                        <td>{item.ten}</td>
-                        <td>{item.email}</td>
-                        <td>{item.sdt}</td>
-                        <td>
-                          {item.ghichu.length > 10 ? (
-                            <>
-                              {item.ghichu.substring(0, 10)}...
-                              <Button variant="link" onClick={() => hienThiChiTiet(item.ghichu)}>
-                                Xem chi tiết
-                              </Button>
-                            </>
-                          ) : (
-                            item.ghichu
-                          )}
-                        </td>
-                        <td>{new Date(item.created_at).toLocaleDateString()}</td>
-                        <td>
-                          <Button
-                            variant="danger"
-                            onClick={() => xoaLienHe(item.id)}
-                          >
-                            <i className="bi bi-trash3-fill"></i> Xóa
-                          </Button>
-                        </td>
+                    <thead>
+                      <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Họ Tên</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Số Điện Thoại</th>
+                        <th scope="col">Nội Dung</th>
+                        <th scope="col">Ngày Tạo</th>
+                        <th scope="col">Chức Năng</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {cacPhanTuHienTai.map((item, index) => (
+                        <tr key={nanoid()}>
+                          <td>{chiSoPhanTuDau + index + 1}</td>
+                          <td>{item.ten}</td>
+                          <td>{item.email}</td>
+                          <td>{item.sdt}</td>
+                          <td>
+                            {item.ghichu.length > 10 ? (
+                              <>
+                                {item.ghichu.substring(0, 10)}...
+                                <Button variant="link" onClick={() => hienThiChiTiet(item.ghichu)}>
+                                  Xem chi tiết
+                                </Button>
+                              </>
+                            ) : (
+                              item.ghichu
+                            )}
+                          </td>
+                          <td>{new Date(item.created_at).toLocaleDateString()}</td>
+                          <td>
+                            <Button
+                              variant="danger"
+                              onClick={() => xoaLienHe(item.id)}
+                            >
+                              <i className="bi bi-trash3-fill"></i> Xóa
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 )}
               </div>
 
@@ -211,8 +215,22 @@ const LienHeAdmin = () => {
           <Modal.Header closeButton>
             <Modal.Title>Chi Tiết Nội Dung</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            {noiDungChiTiet}
+          <Modal.Body style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <Container>
+              <Row>
+                <Col>
+                  <div
+                    className="p-2"
+                    style={{
+                      wordWrap: 'break-word',
+                      whiteSpace: 'pre-wrap', // Giữ khoảng trắng và xuống dòng theo nội dung
+                    }}
+                  >
+                    {noiDungChiTiet}
+                  </div>
+                </Col>
+              </Row>
+            </Container>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setHienThiModal(false)}>

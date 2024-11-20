@@ -11,33 +11,16 @@ const HeaderAdmin = () => {
     setShowModal(true);
   };
 
-  // Xác nhận đăng xuất
-  const handleXacNhanDangXuatTaiKhoan = async () => {
-    try {
-      // Lấy token từ localStorage
-      const token = localStorage.getItem('adminToken');
+ 
+  // Xác nhận đăng xuất (chỉ xóa token khỏi localStorage)
+  const handleXacNhanDangXuatTaiKhoan = () => {
+    // Xóa token và trạng thái đăng nhập khỏi localStorage
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('isAdminLoggedIn');
 
-      
-     // Gửi yêu cầu đăng xuất đến API
-    const response = await axios.post('http://127.0.0.1:8000/api/admin/logout', {}, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }); 
-    
-      console.log('API Response:', response.data); // Kiểm tra phản hồi từ API
-
-      // Xóa token và trạng thái đăng nhập khỏi localStorage
-      localStorage.removeItem('adminToken');
-     
-
-      // Đóng modal và chuyển hướng người dùng đến trang đăng nhập
-      setShowModal(false);
-      navigate('/admin/Login');
-    } catch (error) {
-      console.error('Đăng xuất thất bại:', error);
-      // Xử lý khi lỗi xảy ra, ví dụ như thông báo cho người dùng
-    }
+    // Đóng modal và chuyển hướng người dùng đến trang đăng nhập
+    setShowModal(false);
+    navigate('/admin/Login');
   };
 
   // Đóng modal xác nhận đăng xuất

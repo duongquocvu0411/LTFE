@@ -33,20 +33,35 @@ export const CartProvider = ({ children }) => {
   }, [giohang]);
 
 
-
   const addToCart = (sanPham) => {
     setGiohang((giohanghientai) => {
+      // Kiểm tra nếu sản phẩm có khuyến mãi và trạng thái khuyến mãi đang "active"
+      const sale = Array.isArray(sanPham.sanphamSales)
+        ? sanPham.sanphamSales.find((item) => item.trangthai === 'Đang áp dụng')
+        : null;
+  
+      const giaSanPham = sale ? sale.giasale : sanPham.giatien; // Lấy giá sale nếu có, ngược lại lấy giá gốc
+  
       const sanPhamTonTai = giohanghientai.find((item) => item.id === sanPham.id);
       let newCart;
   
       if (sanPhamTonTai) {
         // Cập nhật số lượng nếu sản phẩm đã tồn tại
         newCart = giohanghientai.map((item) =>
-          item.id === sanPham.id ? { ...item, soLuong: item.soLuong + 1 } : item
+          item.id === sanPham.id
+            ? { ...item, soLuong: item.soLuong + 1 }
+            : item
         );
       } else {
         // Thêm sản phẩm mới nếu chưa có trong giỏ hàng
-        newCart = [...giohanghientai, { ...sanPham, soLuong: 1 }];
+        newCart = [
+          ...giohanghientai,
+          {
+            ...sanPham,
+            soLuong: 1,
+            gia: giaSanPham, // Thêm giá khuyến mãi hoặc giá gốc
+          },
+        ];
       }
   
       return newCart;
@@ -59,6 +74,8 @@ export const CartProvider = ({ children }) => {
     });
   };
   
+  
+
   const XoaGioHang = (sanPhamId) => {
     // Tìm sản phẩm muốn xóa
     const sanPhamXoa = giohang.find((item) => item.id === sanPhamId);

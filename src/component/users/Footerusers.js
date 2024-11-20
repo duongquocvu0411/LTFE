@@ -8,7 +8,7 @@ const Footerusers = () => {
   useEffect(() => {
     const fetchCurrentDiaChi = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/diachichitiet/hiendiachi`);
+        const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/DiaChiChiTiet/getDiaChiHien`);
         if (response.data) {
           setChiTietDiaChi({
             diachi: response.data.diachi, // sử dụng 'diachi' từ API

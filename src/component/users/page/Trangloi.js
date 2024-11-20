@@ -34,7 +34,7 @@ const Trangloi = () => {
                   <h3 className="h2">Có vẻ như bạn bị lạc</h3>
                   <p>Trang bạn đang tìm kiếm không có sẵn!!</p>
                   <Link to="/" className="btn btn-success link_404">
-                    Go to Home
+                    Trở về trang chủ
                   </Link>
                 </div>
               </div>

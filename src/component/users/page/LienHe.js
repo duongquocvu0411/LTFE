@@ -62,7 +62,7 @@ const LienHe = () => {
   }
     axios.post(`${process.env.REACT_APP_BASEURL}/api/lienhe`, duLieuForm, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json'  
       }
     })
       .then(response => {

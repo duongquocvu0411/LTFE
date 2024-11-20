@@ -44,7 +44,7 @@ const Danhmucsanpham = () => {
   const layDanhSachDanhMuc = async () => {
     setDangtai(true); // bật trạng thái đang load để lấy dữ liệu 
     try{
-      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhmucsanphams`)
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/danhmucsanpham`)
 
       setDanhSachDanhMuc(response.data);
       setDangtai(false);
@@ -78,7 +78,7 @@ const Danhmucsanpham = () => {
   // Xóa danh mục
   const xoaDanhMuc = async (id,name) => {
     try{
-      await axios.delete(`${process.env.REACT_APP_BASEURL}/api/danhmucsanphams/${id}`);
+      await axios.delete(`${process.env.REACT_APP_BASEURL}/api/danhmucsanpham/${id}`);
       toast.success(`xóa danh muc "${name} " thành công`,{
         position:'top-right',
         autoClose:3000
@@ -94,6 +94,24 @@ const Danhmucsanpham = () => {
       });
     }
   };
+  // const anDanhMuc = async (id, name) => {
+  //   try {
+  //     await axios.delete(`${process.env.REACT_APP_BASEURL}/api/danhmucsanpham/hide/${id}`);
+  //     toast.success(`Danh mục "${name}" đã được xóa thành công!`, {
+  //       position: 'top-right',
+  //       autoClose: 3000,
+  //     });
+  //     layDanhSachDanhMuc(); // Làm mới danh sách sau khi ẩn
+  //     setTrangHienTai(1);
+  //   } catch (error) {
+  //     console.log('Có lỗi khi ẩn danh mục:', error);
+  //     toast.error(`Không thể ẩn danh mục "${name}". Vui lòng thử lại.`, {
+  //       position: 'top-right',
+  //       autoClose: 3000,
+  //     });
+  //   }
+  // };
+  
 
   return (
     <div id="wrapper">

@@ -19,46 +19,43 @@ const Tracuu = () => {
     }
 
     try {
-      // Gửi yêu cầu tra cứu đơn hàng tới API
-      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/tracuu/${madonhang}`);
+      const response = await axios.get(`${process.env.REACT_APP_BASEURL}/api/hoadon/tracuu/${madonhang}`);
       setDathangchitiet(response.data);
-      setError(""); // Xóa thông báo lỗi nếu có
+      setError("");
     } catch (error) {
       console.error("Lỗi khi tra cứu đơn hàng:", error);
       setError("Không tìm thấy đơn hàng với mã này.");
-      setDathangchitiet(null); // Xóa dữ liệu đơn hàng nếu có lỗi
+      setDathangchitiet(null);
     }
   };
 
-  // Hàm xử lý hủy đơn hàng
   const handleCancelOrder = async () => {
     try {
-      // Gửi yêu cầu hủy đơn hàng tới API
-      await axios.put(`${process.env.REACT_APP_BASEURL}/api/tracuu/${madonhang}/huydon`);
-      setDathangchitiet({ ...dathangchitiet, status: "Hủy đơn" }); // Cập nhật trạng thái đơn hàng trong state
-      toast.success("Đơn hàng của bạn đã hủy thành công",
-        {
-          position: 'top-right',
-          autoClose: 3000
-        }
-      )
+      await axios.put(`${process.env.REACT_APP_BASEURL}/api/hoadon/tracuu/${madonhang}/huydon`);
+      setDathangchitiet({ ...dathangchitiet, status: "Hủy đơn" });
+      toast.success("Đơn hàng của bạn đã hủy thành công", {
+        position: 'top-right',
+        autoClose: 3000
+      });
     } catch (error) {
       console.error("Lỗi khi hủy đơn hàng:", error);
-      toast.error('có lỗi khi hủy đơn hàng của bạn vui lòng thử lại',
-        {
-          position: 'top-right',
-          autoClose: 3000
-        }
-      )
+      toast.error('Có lỗi khi hủy đơn hàng của bạn. Vui lòng thử lại.', {
+        position: 'top-right',
+        autoClose: 3000
+      });
     }
   };
 
   return (
     <>
       <HeaderUsers />
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      
       <div className="container my-5 py-5">
-        <br />
-        <br /> <br /> <br /> <br /> <br />
         <h2 className="mb-4">Tra cứu đơn hàng</h2>
         <form onSubmit={handleLookupOrder} className="mb-4">
           <div className="input-group mb-3">
@@ -75,15 +72,12 @@ const Tracuu = () => {
           </div>
         </form>
 
-        {/* Thông báo lỗi */}
         {error && <div className="alert alert-danger">{error}</div>}
 
-        {/* Hiển thị chi tiết đơn hàng nếu có */}
         {dathangchitiet && (
           <div className="card">
-            <div className="card-header">Chi tiết đơn hàng: {dathangchitiet.order_code}</div>
+            <div className="card-header">Chi tiết đơn hàng: {dathangchitiet.orderCode}</div>
             <div className="card-body">
-              {/* <h5 className="card-title">Tổng giá: {dathangchitiet.total_price} VND</h5> */}
               <p className="card-text">Ngày đặt hàng: {new Date(dathangchitiet.created_at).toLocaleDateString()}</p>
               <p className="card-text"><strong>Trạng thái đơn hàng:</strong> {dathangchitiet.status}</p>
 
@@ -98,25 +92,29 @@ const Tracuu = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {dathangchitiet.hoadonchitiets.map((item, index) => (
-                      <tr key={index}>
-                        <td>{item.sanpham_names}</td>
-                        <td>
-                          {item.quantity} 
-                          {item.sanphamDonvitinh && item.sanphamDonvitinh.map((dvt, idx) => (
-                            <span key={idx}> {dvt.don_vi_tinh}</span>
-                          ))}
+                    {dathangchitiet.hoaDonChiTiets && Array.isArray(dathangchitiet.hoaDonChiTiets) ? (
+                      dathangchitiet.hoaDonChiTiets.map((item, index) => (
+                        <tr key={index}>
+                          <td>{item.sanPhamNames}</td>
+                          <td>
+                            {item.quantity} {item.sanPhamDonViTinh} {/* Hiển thị đơn vị tính ngay sau số lượng */}
+                          </td>
+                          <td> {parseFloat(item.price).toLocaleString("vi-VN", { minimumFractionDigits: 3 })}{" "}  VND</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="3" className="text-center">
+                          Không có chi tiết sản phẩm
                         </td>
-                        <td>{item.price} VND</td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
 
-              <p className="card-text"><strong>Tổng giá trị đơn hàng:</strong> {dathangchitiet.total_price} VND</p>
+              <p className="card-text"><strong>Tổng giá trị đơn hàng:</strong>  {parseFloat(dathangchitiet.total_price).toLocaleString("vi-VN", { minimumFractionDigits: 3 })}{" "} VND</p>
 
-              {/* Nút hủy đơn hàng và kiểm trả status nếu là Chờ xử lý thì hiện nút  */}
               {dathangchitiet.status === "Chờ xử lý" && (
                 <button className="btn btn-danger mt-3" onClick={handleCancelOrder}>
                   Hủy đơn hàng

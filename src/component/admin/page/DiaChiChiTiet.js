@@ -30,6 +30,10 @@ const DiaChiChiTiet = () => {
     }
     catch(error){
       console.log('có lỗi khi lấy danh sách địa chỉ', error);
+      toast.error('có lỗi khi lấy danh sách địa chỉ vui lòng thử lại sau',{
+        position:'top-right',
+        autoClose:3000
+      })
     }
   };
 
@@ -67,7 +71,7 @@ const DiaChiChiTiet = () => {
   const suDungDiaChi = async (id) => {
     try{
       await axios.post(`${process.env.REACT_APP_BASEURL}/api/diachichitiet/setDiaChiHien/${id}`)
-
+      
       toast.success('sử dụng dịa chỉ mới thành công',{
         position:'top-right',
         autoClose:3000

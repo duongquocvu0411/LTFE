@@ -26,8 +26,31 @@ const SiderbarAdmin = () => {
             <span>Dashboard</span>
           </Link>
         </li>
-    
-
+        <li className={`nav-item ${vitriRoute.pathname === '/admin/menu' ? 'active' : ''}`}>
+          <Link className="nav-link" to="/admin/menu">
+            <i className="fas fa-fw fa-tachometer-alt"></i>
+            <span>Menu</span>
+          </Link>
+        </li>
+        <li className={`nav-item ${vitriRoute.pathname === '/admin/tencuahang' ? 'active' : ''}`}>
+          <Link className="nav-link" to="/admin/tencuahang">
+            <i className="fas fa-fw fa-tachometer-alt"></i>
+            <span>Tên cửa hàng</span>
+          </Link>
+        </li>
+        <li className={`nav-item ${vitriRoute.pathname === '/admin/dactrung' ? 'active' : ''}`}>
+          <Link className="nav-link" to="/admin/dactrung">
+            <i className="fas fa-fw fa-tachometer-alt"></i>
+            <span>Đặc trưng </span>
+          </Link>
+        </li>
+        <li className={`nav-item ${vitriRoute.pathname === '/admin/Banners' ? 'active' : ''}`}>
+          <Link className="nav-link" to="/admin/Banners">
+            <i className="fas fa-fw fa-tachometer-alt"></i>
+            <span> Banners</span>
+          </Link>
+        </li>
+       
         {/* Divider */}
         <hr className="sidebar-divider" />
 
@@ -66,8 +89,8 @@ const SiderbarAdmin = () => {
         {/* Khách hàng */}
         <li className={`nav-item ${vitriRoute.pathname === '/admin/khachhang' ? 'active' : ''}`}>
           <Link className="nav-link" to="/admin/khachhang">
-            <i className="fas fa-fw fa-users"></i>
-            <span>Khách hàng</span>
+          <i class="bi bi-person-vcard-fill"></i>
+            <span>Đơn hàng</span>
           </Link>
         </li>
 
